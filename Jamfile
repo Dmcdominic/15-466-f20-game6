@@ -5,7 +5,7 @@
 
 if $(OS) = NT { #Windows
 	NEST_LIBS = ..\\nest-libs\\windows ;
-	C++FLAGS = /nologo /Z7 /c /EHsc /W3 /WX /MD /std:c++17
+	C++FLAGS = /nologo /Z7 /c /EHsc /W3 /WX /MD
 		/I"$(NEST_LIBS)/SDL2/include"
 		/I"$(NEST_LIBS)/glm/include"
 		/I"$(NEST_LIBS)/libpng/include"
@@ -100,18 +100,15 @@ if $(OS) = NT { #Windows
 #This is the part of the file that tells Jam how to build your project.
 
 #Store the names of various .cpp files to build into variables:
-CLIENT_NAMES =
-	client
+GAME_NAMES =
+	WalkMesh
 	PlayMode
+	main
 	LitColorTextureProgram
 	#ColorTextureProgram #not used right now, but you might want it
 	Sound
 	load_wav
 	load_opus
-	;
-
-SERVER_NAMES =
-	server
 	;
 
 COMMON_NAMES =
@@ -127,8 +124,6 @@ COMMON_NAMES =
 	Mode
 	GL
 	Load
-	Connection
-	hex_dump
 	;
 
 SHOW_MESHES_NAMES =
@@ -145,10 +140,10 @@ SHOW_SCENE_NAMES =
 	;
 
 
+
 LOCATE_TARGET = objs ; #put objects in 'objs' directory
 Objects 
-	$(CLIENT_NAMES:S=.cpp)
-	$(SERVER_NAMES:S=.cpp)
+	$(GAME_NAMES:S=.cpp)
 	$(COMMON_NAMES:S=.cpp)
 	$(SHOW_MESHES_NAMES:S=.cpp)
 	$(SHOW_SCENE_NAMES:S=.cpp)
@@ -163,8 +158,7 @@ Objects
 #------------------------
 
 LOCATE_TARGET = dist ; #put main in 'dist' directory
-MainFromObjects client : $(CLIENT_NAMES:S=$(SUFOBJ)) $(COMMON_NAMES:S=$(SUFOBJ)) ;
-MainFromObjects server : $(SERVER_NAMES:S=$(SUFOBJ)) $(COMMON_NAMES:S=$(SUFOBJ)) ;
+MainFromObjects game : $(GAME_NAMES:S=$(SUFOBJ)) $(COMMON_NAMES:S=$(SUFOBJ)) ;
 
 LOCATE_TARGET = scenes ; #put show-meshes and show-scene utilities in the 'scenes' directory:
 MainFromObjects show-meshes : $(SHOW_MESHES_NAMES:S=$(SUFOBJ)) $(COMMON_NAMES:S=$(SUFOBJ)) ;
