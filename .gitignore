@@ -1,10 +1,10 @@
 objs/
 dist/README-SDL.txt
-dist/game.ilk
-dist/game.pdb
+dist/Toxic.ilk
+dist/Toxic.pdb
 dist/SDL2.dll
-dist/game
-dist/game.exe
+dist/Toxic
+dist/Toxic.exe
 dist/freetype-test
 dist/freetype-test.*
 scenes/show-meshes*
