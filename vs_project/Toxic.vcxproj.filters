@@ -174,4 +174,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Jamfile" />
+    <None Include="..\README.md" />
+    <None Include="..\scenes\Makefile.windows" />
+  </ItemGroup>
 </Project>
