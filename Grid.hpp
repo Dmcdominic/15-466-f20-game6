@@ -12,7 +12,7 @@ struct FgObj;
 
 
 // The current grid
-Grid* current_grid = nullptr;
+extern Grid* current_grid;
 
 
 /* A grid of cells. */

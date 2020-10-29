@@ -2,6 +2,10 @@
 #include <stdexcept>
 
 
+// Variable declarations
+Grid* current_grid = nullptr;
+
+
 /* ----- Grid ----- */
 
 // Grid constructor
