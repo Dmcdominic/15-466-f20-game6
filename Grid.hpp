@@ -3,12 +3,15 @@
 #include <glm/glm.hpp>
 #include <vector>
 
+#include "Scene.hpp"
+
 
 // Forward declarations
 struct Grid;
 struct Cell;
 struct BgTile;
 struct FgObj;
+struct SkyObj;
 
 
 // The current grid
@@ -35,6 +38,7 @@ struct Cell {
 	glm::ivec2 pos = glm::ivec2();
 	BgTile* bgTile = nullptr;
 	FgObj* fgObj = nullptr;
+	SkyObj* skyObj = nullptr;
 
 	// Constructor
 	Cell(glm::ivec2 _pos);
@@ -45,6 +49,9 @@ struct Cell {
 	bool can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2 &displ);
 	void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ);
 
+	bool can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ);
+	void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ);
+
 	bool on_input(/* TODO - add some kind of input type here */);
 };
 
@@ -54,20 +61,43 @@ struct BgTile {
 	Cell* cell = nullptr;
 	BgTile(Cell* _cell) : cell(_cell) {};
 
-	bool can_fg_obj_move_onto(const FgObj& objBeingMoved, const glm::ivec2& displ);
-	void when_fg_obj_moved_onto(FgObj& objBeingMoved, const glm::ivec2& displ);
+	virtual bool can_fg_obj_move_onto(const FgObj& objBeingMoved, const glm::ivec2& displ);
+	virtual void when_fg_obj_moved_onto(FgObj& objBeingMoved, const glm::ivec2& displ);
 
-	bool on_input(/* TODO - add some kind of input type here */);
+	bool can_sky_obj_move_onto(const SkyObj& objBeingMoved, const glm::ivec2& displ);
+	void when_sky_obj_moved_onto(SkyObj& objBeingMoved, const glm::ivec2& displ);
+
+	virtual bool on_input(/* TODO - add some kind of input type here */);
 };
 
 
 /* Foreground Objects */
 struct FgObj {
 	Cell* cell = nullptr;
-	FgObj(Cell* _cell) : cell(_cell) {};
+	Scene::Transform *transform = nullptr;
+	FgObj(Cell* _cell, Scene::Transform* _transform) : cell(_cell), transform(_transform) {};
 
-	bool can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ);
-	void when_fg_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ);
+	virtual bool can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ);
+	virtual void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ);
 
-	bool on_input(/* TODO - add some kind of input type here */);
+	bool can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ);
+	void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ);
+
+	virtual bool on_input(/* TODO - add some kind of input type here */);
+};
+
+
+/* Sky Objects */
+struct SkyObj {
+	Cell* cell = nullptr;
+	Scene::Transform* transform = nullptr;
+	SkyObj(Cell* _cell, Scene::Transform* _transform) : cell(_cell), transform(_transform) {};
+
+	virtual bool can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ);
+	virtual void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ);
+
+	bool can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ);
+	void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ);
+
+	virtual bool on_input(/* TODO - add some kind of input type here */);
 };

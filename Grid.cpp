@@ -6,6 +6,7 @@
 Grid* current_grid = nullptr;
 
 
+
 /* ----- Grid ----- */
 
 // Grid constructor
@@ -23,6 +24,7 @@ Grid::~Grid() {
 }
 
 
+
 /* ----- Cell ----- */
 
 // Cell constructor
@@ -33,19 +35,24 @@ Cell::Cell(glm::ivec2 _pos) : pos(_pos) {
 Cell::~Cell() {
   if (bgTile) delete bgTile;
   if (fgObj) delete fgObj;
+  if (skyObj) delete skyObj;
   bgTile = nullptr;
   fgObj = nullptr;
+  skyObj = nullptr;
 }
 
 // When there is some input, do something?
 bool Cell::on_input() {
-  return (bgTile != nullptr && bgTile->on_input()) | (fgObj != nullptr && fgObj->on_input());
+  return (bgTile != nullptr && bgTile->on_input()) |
+         (fgObj != nullptr && fgObj->on_input()) |
+         (skyObj != nullptr && skyObj->on_input());
 }
 
 // Returns true iff a foreground object can safely be moved/pushed into this cell
 bool Cell::can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ) {
   return (bgTile == nullptr || bgTile->can_fg_obj_move_onto(objBeingMoved, displ)) &&
-         (fgObj == nullptr || fgObj->can_fg_obj_move_into(objBeingMoved, displ));
+         (fgObj == nullptr || fgObj->can_fg_obj_move_into(objBeingMoved, displ)) &&
+         (skyObj == nullptr || skyObj->can_fg_obj_move_into(objBeingMoved, displ));
 }
 
 // Does whatever should happen when the given foreground object is moved/pushed into this cell.
@@ -55,9 +62,34 @@ void Cell::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ)
     bgTile->when_fg_obj_moved_onto(objBeingMoved, displ);
   }
   if (fgObj != nullptr) {
-    fgObj->when_fg_moved_into(objBeingMoved, displ);
+    fgObj->when_fg_obj_moved_into(objBeingMoved, displ);
+  }
+  if (skyObj != nullptr) {
+    skyObj->when_fg_obj_moved_into(objBeingMoved, displ);
   }
 }
+
+// Returns true iff a sky object can safely be moved/pushed into this cell
+bool Cell::can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ) {
+  return (bgTile == nullptr || bgTile->can_sky_obj_move_onto(objBeingMoved, displ)) &&
+    (fgObj == nullptr || fgObj->can_sky_obj_move_into(objBeingMoved, displ)) &&
+    (skyObj == nullptr || skyObj->can_sky_obj_move_into(objBeingMoved, displ));
+}
+
+// Does whatever should happen when the given foreground object is moved/pushed into this cell.
+// displ is a vector representing the displacement of the object being moved.
+void Cell::when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) {
+  if (bgTile != nullptr) {
+    bgTile->when_sky_obj_moved_onto(objBeingMoved, displ);
+  }
+  if (fgObj != nullptr) {
+    fgObj->when_sky_obj_moved_into(objBeingMoved, displ);
+  }
+  if (skyObj != nullptr) {
+    skyObj->when_sky_obj_moved_into(objBeingMoved, displ);
+  }
+}
+
 
 
 /* ----- Background Tiles ----- */
@@ -73,6 +105,16 @@ void BgTile::when_fg_obj_moved_onto(FgObj& objBeingMoved, const glm::ivec2& disp
   // By default, do nothing
 }
 
+// Returns true iff a sky object can safely be moved/pushed into this cell
+bool BgTile::can_sky_obj_move_onto(const SkyObj& objBeingMoved, const glm::ivec2& displ) {
+  return true;
+}
+
+// Does whatever should happen when the given sky object is moved/pushed onto this tile.
+void BgTile::when_sky_obj_moved_onto(SkyObj& objBeingMoved, const glm::ivec2& displ) {
+  // By default, do nothing
+}
+
 // Returns true iff the input is handled somehow.
 bool BgTile::on_input(){
   // By default, don't handle any input
@@ -80,7 +122,8 @@ bool BgTile::on_input(){
 }
 
 
-/* ----- Foreground Tiles ----- */
+
+/* ----- Foreground Objects ----- */
 
 // Returns true iff the given foreground object is allowed to be moved/pushed into this object.
 // Default behavior is that this can be pushed according to displ
@@ -96,7 +139,7 @@ bool FgObj::can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& d
 }
 
 // Does whatever should happen when the given foreground object is moved/pushed into this object.
-void FgObj::when_fg_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
+void FgObj::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
   glm::ivec2 target_pos = this->cell->pos + displ;
   // First double check if this will end up outside the current grid.
   if (target_pos.x >= current_grid->cells.size() || target_pos.x < 0 ||
@@ -114,6 +157,67 @@ void FgObj::when_fg_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
   this->cell = target_cell;
 }
 
+// Returns true iff a sky object can safely be moved/pushed into this cell
+bool FgObj::can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ) {
+  return true;
+}
+
+// Does whatever should happen when the given sky object is moved/pushed into this obj.
+void FgObj::when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) {
+  // By default, do nothing
+}
+
+// Returns true iff the input is handled somehow.
 bool FgObj::on_input(){
+  return false;
+}
+
+
+
+/* ----- Sky Objects ----- */
+
+// Returns true iff the given foreground object is allowed to be moved/pushed onto this tile.
+bool SkyObj::can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ) {
+  return true;
+}
+
+// Does whatever should happen when the given foreground object is moved/pushed into this object.
+void SkyObj::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
+  // By default, do nothing
+}
+
+// Returns true iff a sky object can safely be moved/pushed into this cell
+bool SkyObj::can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ) {
+  glm::ivec2 target_pos = this->cell->pos + displ;
+  // First check if this will end up outside the current grid.
+  if (target_pos.x >= current_grid->cells.size() || target_pos.x < 0 ||
+    target_pos.y >= current_grid->cells[0].size() || target_pos.y < 0) {
+    return false;
+  }
+  // Otherwise, check if this can be moved according to displ.
+  return current_grid->cells.at(target_pos.x).at(target_pos.y).can_sky_obj_move_into(*this, displ);
+}
+
+// Does whatever should happen when the given sky object is moved/pushed onto this tile.
+void SkyObj::when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) {
+  glm::ivec2 target_pos = this->cell->pos + displ;
+  // First double check if this will end up outside the current grid.
+  if (target_pos.x >= current_grid->cells.size() || target_pos.x < 0 ||
+    target_pos.y >= current_grid->cells[0].size() || target_pos.y < 0) {
+    throw std::runtime_error("when_sky_moved_into() somehow called for an object position & displacement that would put it outside the current grid");
+  }
+  // Now move to the target cell
+  Cell* target_cell = &current_grid->cells.at(target_pos.x).at(target_pos.y);
+  target_cell->when_sky_obj_moved_into(*this, displ);
+  if (target_cell->skyObj != nullptr) {
+    throw std::runtime_error("Trying to move a SkyObj into a cell that seems to still have one");
+  }
+  target_cell->skyObj = this;
+  this->cell->skyObj = nullptr;
+  this->cell = target_cell;
+}
+
+// Returns true iff the input is handled somehow.
+bool SkyObj::on_input() {
   return false;
 }
