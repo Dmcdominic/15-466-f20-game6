@@ -2,6 +2,7 @@
 
 #include "Scene.hpp"
 #include "WalkMesh.hpp"
+#include "Grid.hpp"
 
 #include <glm/glm.hpp>
 

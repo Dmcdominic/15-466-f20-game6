@@ -72,6 +72,7 @@
   <ItemDefinitionGroup>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Grid.cpp" />
     <ClCompile Include="..\ColorProgram.cpp" />
     <ClCompile Include="..\ColorTextureProgram.cpp" />
     <ClCompile Include="..\data_path.cpp" />
@@ -101,6 +102,7 @@
     <ClCompile Include="..\WalkMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Grid.hpp" />
     <ClInclude Include="..\ColorProgram.hpp" />
     <ClInclude Include="..\ColorTextureProgram.hpp" />
     <ClInclude Include="..\data_path.hpp" />
