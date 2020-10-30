@@ -109,6 +109,7 @@ GAME_NAMES =
 	Sound
 	load_wav
 	load_opus
+	LevelLoader
 	;
 
 COMMON_NAMES =
@@ -140,6 +141,10 @@ SHOW_SCENE_NAMES =
 	ShowSceneMode
 	;
 
+PACK_NAMES =
+	pack-levels
+	data_path
+	;
 
 
 LOCATE_TARGET = objs ; #put objects in 'objs' directory
@@ -148,6 +153,7 @@ Objects
 	$(COMMON_NAMES:S=.cpp)
 	$(SHOW_MESHES_NAMES:S=.cpp)
 	$(SHOW_SCENE_NAMES:S=.cpp)
+	$(PACK_NAMES:S=.cpp)
 	;
 
 #------------------------
@@ -164,4 +170,7 @@ MainFromObjects Toxic : $(GAME_NAMES:S=$(SUFOBJ)) $(COMMON_NAMES:S=$(SUFOBJ)) ;
 LOCATE_TARGET = scenes ; #put show-meshes and show-scene utilities in the 'scenes' directory:
 MainFromObjects show-meshes : $(SHOW_MESHES_NAMES:S=$(SUFOBJ)) $(COMMON_NAMES:S=$(SUFOBJ)) ;
 MainFromObjects show-scene : $(SHOW_SCENE_NAMES:S=$(SUFOBJ)) $(COMMON_NAMES:S=$(SUFOBJ)) ;
+
+LOCATE_TARGET = levels ; 
+MainFromObjects pack : $(PACK_NAMES:S=$(SUFOBJ)) $(COMMON_NAMES:S=$(SUFOBJ)) ;
 
