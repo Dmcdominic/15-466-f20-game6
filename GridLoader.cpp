@@ -68,7 +68,6 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     break; 
                 case 4:  
                     scene->drawables.push_back(loader.create_model("Rock")); 
-                    std::cout << "rock"; 
                     grid->cells.at(x).at(y).set_fg_obj(new FixedRock(scene->drawables.back().transform));
                     break;
                 case 5:  
