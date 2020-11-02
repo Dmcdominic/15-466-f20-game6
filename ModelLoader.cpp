@@ -32,7 +32,6 @@ Load< Scene > model_scene(LoadTagDefault, []() -> Scene const * {
 
 ModelLoader::ModelLoader() : scene(*model_scene) {
 
-    templates.reserve(num_models);
 
     //TODO: save in ID order 
  	for (auto &drawable : scene.drawables) {
@@ -40,22 +39,25 @@ ModelLoader::ModelLoader() : scene(*model_scene) {
         t.type = drawable.pipeline.type; 
         t.start = drawable.pipeline.start; 
         t.count = drawable.pipeline.count; 
-        templates.push_back(t); 
+        // std::cout << "loaded " << drawable.transform->name << "\n"; 
+        templates.insert(std::make_pair(drawable.transform->name, t)); 
     }
     std::cout << "loaded " << templates.size() << " models"; 
 }
     
 
 
-Scene::Drawable ModelLoader::create_model(int model_id){
-    assert(model_id < templates.size()); 
+Scene::Drawable ModelLoader::create_model(std::string model_name){
+    std::map <std::string, ModelTemplate>::iterator it = templates.find(model_name); 
+    assert(it != templates.end()); 
+    ModelTemplate t = it->second;
     Scene::Transform *transform = new Scene::Transform; 
-    Scene::Drawable &drawable = Scene::Drawable(transform); 
+    Scene::Drawable drawable = Scene::Drawable(transform); 
     
 	drawable.pipeline = lit_color_texture_program_pipeline;
     drawable.pipeline.vao = toxic_meshes_for_lit_color_texture_program;
-    drawable.pipeline.type = templates[model_id].type; 
-    drawable.pipeline.start = templates[model_id].start; 
-    drawable.pipeline.count = templates[model_id].count; 
+    drawable.pipeline.type = t.type; 
+    drawable.pipeline.start = t.start; 
+    drawable.pipeline.count = t.count; 
     return drawable; 
 }

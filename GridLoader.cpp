@@ -3,6 +3,8 @@
 #include "read_write_chunk.hpp"
 #include <fstream>
 #include "FixedRock.hpp"
+#include "Player.hpp"
+#include "Barrel.hpp"
 
 
 Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *scene) {
@@ -11,33 +13,102 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
     scene->drawables.clear(); 
 
     std::vector< int > obj_ids; 
-    std::vector< PackedGridLayer > layers; 
+    std::vector< PackedGrid > packed_grids; 
 
     std::ifstream in(data_path("../dist/levels.bin"), std::ios::binary); 
 
     read_chunk(in, "objs", &obj_ids); 
-    read_chunk(in, "lyrs", &layers); 
+    read_chunk(in, "grid", &packed_grids); 
 
-    glm::uvec2 grid_size = glm::uvec2(30, 30); 
+    //we are loading grid 0 
+    PackedGrid packed_grid = packed_grids[0]; 
+    Grid *grid = new Grid(packed_grid.width, packed_grid.height); 
 
-    //for now, we are assuming theres just one level in the bin file. 
-    //TODO: variable level sizes
-    Grid *grid = new Grid(grid_size.x, grid_size.y); 
-
-    //TODO: find the correct PackedGridLayer
-
-    for(unsigned int y = 0; y < grid_size.y; y++) {
-        for(unsigned int x = 0; x < grid_size.x; x++) {
-            //TODO: change which fgObj is placed in based on id 
-            //TODO: repeat for bgObj and skyObj
-            Scene::Drawable drawable = loader.create_model(obj_ids[x + y * 30] % 4); 
-            grid->cells.at(x).at(y).set_fg_obj(new FixedRock(drawable.transform));
-            scene->drawables.push_back(drawable); 
-
-            std::cout << obj_ids[x + y * 30]; 
+    //set the BG objects 
+    for(unsigned int y = 0; y < packed_grid.height; y++) {
+        for(unsigned int x = 0; x < packed_grid.width; x++) {
+            switch(obj_ids[packed_grid.data_start + x + y * packed_grid.width]) {
+                case 7: 
+                    scene->drawables.push_back(loader.create_model("Hill")); 
+                    grid->cells.at(x).at(y).set_bg_tile(new BgTile(scene->drawables.back().transform));
+                    break;
+                case 8: 
+                    scene->drawables.push_back(loader.create_model("Bridge")); 
+                    grid->cells.at(x).at(y).set_bg_tile(new BgTile(scene->drawables.back().transform));
+                    break;
+                case 13: 
+                    //TODO: shape the river depending on surrounding tiles 
+                    scene->drawables.push_back(loader.create_model("River_Straight")); 
+                    grid->cells.at(x).at(y).set_bg_tile(new BgTile(scene->drawables.back().transform));
+                    break; 
+                case 14:  
+                    scene->drawables.push_back(loader.create_model("Grass")); 
+                    grid->cells.at(x).at(y).set_bg_tile(new BgTile(scene->drawables.back().transform));
+                    break; 
+            }
         }
-        std::cout << "\n"; 
     }
+
+    //set the FG objects 
+    for(unsigned int y = 0; y < packed_grid.height; y++) {
+        for(unsigned int x = 0; x < packed_grid.width; x++) {
+            switch(obj_ids[packed_grid.data_start + packed_grid.width * packed_grid.height + x + y * packed_grid.width]) {
+                case 1: 
+                    scene->drawables.push_back(loader.create_model("Player")); 
+                    grid->cells.at(x).at(y).set_fg_obj(new Player(scene->drawables.back().transform));
+                    break; 
+                case 2:  
+                    scene->drawables.push_back(loader.create_model("Barrel")); 
+                    grid->cells.at(x).at(y).set_fg_obj(new Barrel(scene->drawables.back().transform));
+                    break; 
+                case 3:  
+                    //TODO: rotate the barrel 
+                    scene->drawables.push_back(loader.create_model("Barrel")); 
+                    grid->cells.at(x).at(y).set_fg_obj(new Barrel(scene->drawables.back().transform));
+                    break; 
+                case 4:  
+                    scene->drawables.push_back(loader.create_model("Rock")); 
+                    std::cout << "rock"; 
+                    grid->cells.at(x).at(y).set_fg_obj(new FixedRock(scene->drawables.back().transform));
+                    break;
+                case 5:  
+                    scene->drawables.push_back(loader.create_model("Tree")); 
+                    grid->cells.at(x).at(y).set_fg_obj(new FixedRock(scene->drawables.back().transform));
+                    break; 
+                case 6:  
+                    scene->drawables.push_back(loader.create_model("Protesters")); 
+                    grid->cells.at(x).at(y).set_fg_obj(new FixedRock(scene->drawables.back().transform));
+                    break; 
+                case 9:  
+                    scene->drawables.push_back(loader.create_model("Button")); 
+                    grid->cells.at(x).at(y).set_fg_obj(new FixedRock(scene->drawables.back().transform));
+                    break; 
+                case 11:  
+                    scene->drawables.push_back(loader.create_model("Disposal")); 
+                    grid->cells.at(x).at(y).set_fg_obj(new FixedRock(scene->drawables.back().transform));
+                    break; 
+                case 12:  
+                    scene->drawables.push_back(loader.create_model("Animal")); 
+                    grid->cells.at(x).at(y).set_fg_obj(new FixedRock(scene->drawables.back().transform));
+                    break;            
+            }
+        }
+    }
+
+    //set the sky objects 
+    for(unsigned int y = 0; y < packed_grid.height; y++) {
+        for(unsigned int x = 0; x < packed_grid.width; x++) {
+            switch(obj_ids[packed_grid.data_start + 2 * packed_grid.width * packed_grid.height + x + y * packed_grid.width]) {
+                case 10: 
+                    //TODO: cloud path 
+                    scene->drawables.push_back(loader.create_model("Cloud")); 
+                    grid->cells.at(x).at(y).set_sky_obj(new SkyObj(scene->drawables.back().transform));
+                    break; 
+            }
+        }
+    }
+
+
     
     return grid; 
 }

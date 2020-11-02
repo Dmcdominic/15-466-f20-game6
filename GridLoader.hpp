@@ -1,7 +1,7 @@
 #pragma once
 #include "Grid.hpp"
 #include "Level.hpp"
-#include "PackedGridLayer.hpp"
+#include "PackedGrid.hpp"
 #include "ModelLoader.hpp"
 
 struct GridLoader {

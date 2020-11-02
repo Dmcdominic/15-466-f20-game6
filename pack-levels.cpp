@@ -3,7 +3,7 @@
 #include "load_save_png.hpp"
 #include "read_write_chunk.hpp"
 #include "data_path.hpp"
-#include "PackedGridLayer.hpp"
+#include "PackedGrid.hpp"
 
 #include <glm/glm.hpp>
 
@@ -13,52 +13,64 @@
 
 int main(int argc, char **argv) {
     uint8_t num_levels = 1; 
-    //files to read
+    //prefix of files to read
 	std::string level_filename = "../levels/level";
 
-    std::vector< PackedGridLayer > layers; 
+    std::vector< PackedGrid > grids; 
     std::vector< int > obj_ids; 
     std::vector< glm::u8vec4 > data; 
 
-	uint8_t currentTile = 0; 
-
-    //randomly chose 30x30 size for each grid 
     //TODO: variable level sizes 
-    glm::uvec2 grid_size = glm::uvec2(30, 30); 
+    glm::uvec2 grid_size = glm::uvec2(10, 10); 
 
 
     //load all level pngs
-    //TODO: repeat for each layer and difficulty level
     for(int i = 0; i < num_levels; i++) {
-        // std::vector <int> level(grid_size.y * grid_size.x); 
 
-        std::cout << "loading " << (level_filename + std::to_string(i) + ".png") << "\n"; 
-        load_png(data_path(level_filename  + std::to_string(i) + ".png"), &grid_size, &data, LowerLeftOrigin); 
-        std::cout << "\nsuccessfully loaded " << (level_filename + std::to_string(i) + ".png") << "\n"; 
-        PackedGridLayer layer; 
-        layer.level_id = i; 
-        layer.difficulty = 0; 
-        layer.layer_number = 0; 
-        layer.data_start = (unsigned int) obj_ids.size(); 
-        layer.width = grid_size.x; 
-        layer.height = grid_size.y; 
+        PackedGrid grid;
+
+        grid.width = grid_size.x; 
+        grid.height = grid_size.y; 
+        grid.data_start = (unsigned int) obj_ids.size(); 
+
+        //save bg 
+        load_png(data_path(level_filename  + std::to_string(i) + "_bg.png"), &grid_size, &data, LowerLeftOrigin); 
+
         for(unsigned int y = 0; y < grid_size.y; y++) {
             for(unsigned int x = 0; x < grid_size.x; x++) {
                 glm::u8vec4 color = data[x + y * grid_size.x];
-                // level[x + y * grid_size.x] = int(color[0] / 50) + 5 * int(color[1] / 50);
-                int id = int(color[0] / 50) + 5 * int(color[1] / 50);
+                int id = int(color[0] / 50) + 6 * int(color[1] / 50);
                 obj_ids.push_back(id);
-                std::cout << id << " "; 
             }
-            std::cout << "\n"; 
         }
-        layers.push_back(layer); 
-        // obj_ids.insert(obj_ids.end(), level.begin(), level.end());
+
+        //save fg
+        load_png(data_path(level_filename  + std::to_string(i) + "_fg.png"), &grid_size, &data, LowerLeftOrigin); 
+
+        for(unsigned int y = 0; y < grid_size.y; y++) {
+            for(unsigned int x = 0; x < grid_size.x; x++) {
+                glm::u8vec4 color = data[x + y * grid_size.x];
+                int id = int(color[0] / 50) + 6 * int(color[1] / 50);
+                obj_ids.push_back(id);   
+            }
+        }
+
+        //save sky
+        load_png(data_path(level_filename  + std::to_string(i) + "_sky.png"), &grid_size, &data, LowerLeftOrigin); 
+
+        for(unsigned int y = 0; y < grid_size.y; y++) {
+            for(unsigned int x = 0; x < grid_size.x; x++) {
+                glm::u8vec4 color = data[x + y * grid_size.x];
+                int id = int(color[0] / 50) + 6 * int(color[1] / 50);
+                obj_ids.push_back(id);
+            }
+        }
+        grids.push_back(grid); 
     }
 
 	std::ofstream out(data_path("../dist/levels.bin"), std::ios::binary);
     write_chunk("objs", obj_ids, &out); 
-    write_chunk("lyrs", layers, &out); 
+    write_chunk("grid", grids, &out); 
     std::cout << "\nsuccessfully saved levels "; 
 
 	return 0;

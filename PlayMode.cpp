@@ -50,26 +50,26 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 	// First, seed the random number generator
 	std::srand((unsigned int)time(NULL));
 
-	// --- PREFAB ASSIGNMENT ---
-	// TODO
-	// Get pointers to prefabs
-	for (auto& drawable : scene.drawables) {
-		if (drawable.transform->name == "Player") {
-			Player::prefab = &drawable;
-		} else if (drawable.transform->name == "Barrel") {
-			Barrel::prefab = &drawable;
-		} else if (drawable.transform->name == "FixedRock") {
-			FixedRock::prefab = &drawable;
-		} else if (drawable.transform->name == "PushableBall") {
-			PushableBall::prefab = &drawable;
-		}
-	}
-	// Check if any prefabs are null
-	if (Player::prefab == nullptr) {
-		throw std::runtime_error("prefab Player not found");
-	} else if (Barrel::prefab == nullptr) {
-		throw std::runtime_error("prefab Barrel not found");
-	}
+	// // --- PREFAB ASSIGNMENT ---
+	// // TODO
+	// // Get pointers to prefabs
+	// for (auto& drawable : scene.drawables) {
+	// 	if (drawable.transform->name == "Player") {
+	// 		Player::prefab = &drawable;
+	// 	} else if (drawable.transform->name == "Barrel") {
+	// 		Barrel::prefab = &drawable;
+	// 	} else if (drawable.transform->name == "FixedRock") {
+	// 		FixedRock::prefab = &drawable;
+	// 	} else if (drawable.transform->name == "PushableBall") {
+	// 		PushableBall::prefab = &drawable;
+	// 	}
+	// }
+	// // Check if any prefabs are null
+	// if (Player::prefab == nullptr) {
+	// 	throw std::runtime_error("prefab Player not found");
+	// } else if (Barrel::prefab == nullptr) {
+	// 	throw std::runtime_error("prefab Barrel not found");
+	// }
 
 	//create a camera
 	scene.transforms.emplace_back();
@@ -94,7 +94,7 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 	// current_grid->cells.at(5).at(5).set_fg_obj(new FixedRock(FixedRock::prefab->transform));
 	// current_grid->cells.at(8).at(8).set_fg_obj(new PushableBall(PushableBall::prefab->transform));
 
-	//
+	
 	ModelLoader loader = ModelLoader(); 
 	current_grid = GridLoader::load_level(0, loader, &scene);
 

@@ -53,6 +53,8 @@
         "xutility": "cpp",
         "array": "cpp",
         "chrono": "cpp",
-        "ratio": "cpp"
+        "ratio": "cpp",
+        "set": "cpp",
+        "sstream": "cpp"
     }
 }
