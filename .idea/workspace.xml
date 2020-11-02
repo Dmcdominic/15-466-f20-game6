@@ -28,20 +28,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5ef998e6-366e-4fc4-8f00-3afcf587ba2a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/MenuMode.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/MenuMode.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TextDrawer.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TextDrawer.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/demo_menu.cpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/demo_menu.hpp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dist/Roboto-Light.ttf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ColorTextureProgram.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/ColorTextureProgram.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Jamfile" beforeDir="false" afterPath="$PROJECT_DIR$/Jamfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Mode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Mode.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Mode.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/Mode.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PlayMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/PlayMode.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PlayMode.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/PlayMode.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,7 +95,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1603980437683</updated>
-      <workItem from="1603980441447" duration="68007000" />
+      <workItem from="1603980441447" duration="69802000" />
     </task>
     <servers />
   </component>
