@@ -109,6 +109,11 @@ GAME_NAMES =
 	Sound
 	load_wav
 	load_opus
+	Input
+	Player
+	Barrel
+	FixedRock
+	PushableBall
 	;
 
 COMMON_NAMES =

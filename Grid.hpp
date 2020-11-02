@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Scene.hpp"
+#include "Input.hpp"
 
 
 // Forward declarations
@@ -21,13 +22,20 @@ extern Grid* current_grid;
 /* A grid of cells. */
 struct Grid {
 	// Fields
+	size_t width = 0;
+	size_t height = 0;
 	std::vector<std::vector<Cell>> cells;
 
 	// Constructor
-	Grid(int width, int height);
+	Grid(size_t _width, size_t _height);
 	// Destructor
 	~Grid();
+
+	// Methods
+	bool is_valid_pos(glm::ivec2 _pos);
+	bool on_input(const Input& input);
 };
+
 
 
 /* A Cell is a single square in the puzzle grid.
@@ -46,58 +54,88 @@ struct Cell {
 	~Cell();
 
 	// Methods
+	void set_bg_tile(BgTile* _bgTile);
+	void set_fg_obj(FgObj* _fgObj);
+	void set_sky_obj(SkyObj* _skyObj);
+
 	bool can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2 &displ);
 	void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ);
 
 	bool can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ);
 	void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ);
 
-	bool on_input(/* TODO - add some kind of input type here */);
+	bool on_input(const Input &input);
 };
+
+
+
+/* Cell Items (parent class of BgTile, FgObj, SkyObj, etc.) */
+struct CellItem {
+	// Fields
+	Cell* cell = nullptr;
+	Scene::Transform* transform = nullptr;
+
+	// Constructors
+	CellItem(Scene::Transform* _transform) : transform(_transform) {};
+	CellItem(Scene::Transform* _transform, Cell* _cell) : transform(_transform), cell(_cell) {};
+
+	// Methods
+	virtual bool can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ) = 0;
+	virtual void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) = 0;
+
+	virtual bool can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ) = 0;
+	virtual void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) = 0;
+
+	virtual bool on_input(const Input& input) = 0;
+};
+
 
 
 /* Background Tiles */
-struct BgTile {
-	Cell* cell = nullptr;
-	BgTile(Cell* _cell) : cell(_cell) {};
+struct BgTile : CellItem {
+	// Constructors (inherited)
+	using CellItem::CellItem;
 
-	virtual bool can_fg_obj_move_onto(const FgObj& objBeingMoved, const glm::ivec2& displ);
-	virtual void when_fg_obj_moved_onto(FgObj& objBeingMoved, const glm::ivec2& displ);
+	// Methods
+	virtual bool can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ) override;
+	virtual void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
 
-	bool can_sky_obj_move_onto(const SkyObj& objBeingMoved, const glm::ivec2& displ);
-	void when_sky_obj_moved_onto(SkyObj& objBeingMoved, const glm::ivec2& displ);
+	virtual bool can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ) override;
+	virtual void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) override;
 
-	virtual bool on_input(/* TODO - add some kind of input type here */);
+	virtual bool on_input(const Input& input) override;
 };
+
 
 
 /* Foreground Objects */
-struct FgObj {
-	Cell* cell = nullptr;
-	Scene::Transform *transform = nullptr;
-	FgObj(Cell* _cell, Scene::Transform* _transform) : cell(_cell), transform(_transform) {};
+struct FgObj : CellItem {
+	// Constructors (inherited)
+	using CellItem::CellItem;
 
-	virtual bool can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ);
-	virtual void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ);
+	// Methods
+	virtual bool can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ) override;
+	virtual void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
 
-	bool can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ);
-	void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ);
+	virtual bool can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ) override;
+	virtual void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) override;
 
-	virtual bool on_input(/* TODO - add some kind of input type here */);
+	virtual bool on_input(const Input& input) override;
 };
 
 
+
 /* Sky Objects */
-struct SkyObj {
-	Cell* cell = nullptr;
-	Scene::Transform* transform = nullptr;
-	SkyObj(Cell* _cell, Scene::Transform* _transform) : cell(_cell), transform(_transform) {};
+struct SkyObj : CellItem {
+	// Constructors (inherited)
+	using CellItem::CellItem;
 
-	virtual bool can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ);
-	virtual void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ);
+	// Methods
+	virtual bool can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ) override;
+	virtual void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
 
-	bool can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ);
-	void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ);
+	virtual bool can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ) override;
+	virtual void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) override;
 
-	virtual bool on_input(/* TODO - add some kind of input type here */);
+	virtual bool on_input(const Input& input) override;
 };
