@@ -96,7 +96,8 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 
 	
 	ModelLoader loader = ModelLoader(); 
-	current_grid = GridLoader::load_level(1, loader, &scene);
+	//change this value to view a different level
+	current_grid = GridLoader::load_level(0, loader, &scene);
 
 }
 
