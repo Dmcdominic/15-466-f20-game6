@@ -23,6 +23,11 @@ struct Mode : std::enable_shared_from_this< Mode > {
 	//Mode::current is the Mode to which events are dispatched.
 	// use 'set_current' to change the current Mode (e.g., to switch to a menu)
 	static std::shared_ptr< Mode > current;
-	static void set_current(std::shared_ptr< Mode > const &);
+    static std::shared_ptr< Mode > demo;
+    static std::shared_ptr< Mode > play;
+    static void set_current(std::shared_ptr< Mode > const &);
+    static void set_demo(std::shared_ptr< Mode > const &);
+    static void set_play(std::shared_ptr< Mode > const &);
+    static void switch_to_play();
 };
 

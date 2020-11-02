@@ -46,7 +46,7 @@ Load< WalkMeshes > phonebank_walkmeshes(LoadTagDefault, []() -> WalkMeshes const
 
 PlayMode::PlayMode() : scene(*phonebank_scene) {
 	//Construct a starting grid
-	current_grid = new Grid(10, 10);
+//	current_grid = new Grid(10, 10);
 
 	//create a player transform:
 	scene.transforms.emplace_back();
