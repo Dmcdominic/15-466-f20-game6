@@ -27,8 +27,8 @@ Grid::~Grid() {
 
 // Returns true iff x and y are within the bounds of the grid
 bool Grid::is_valid_pos(glm::ivec2 _pos) {
-  return (_pos.x >= 0 && _pos.x < this->width &&
-          _pos.y >= 0 && _pos.y < this->height);
+  return (_pos.x >= 0 && (size_t)_pos.x < this->width &&
+          _pos.y >= 0 && (size_t)_pos.y < this->height);
 }
 
 
