@@ -4,7 +4,7 @@
 #include "Scene.hpp"
 
 
-struct Player : FgObj {
+struct Barrel : FgObj {
 	// Constructors (inherited)
 	using FgObj::FgObj;
 
@@ -12,11 +12,9 @@ struct Player : FgObj {
 	static Scene::Drawable* prefab;
 
 	// Methods
+	// TODO
+	/*
 	bool can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ) override;
 	void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
-
-	bool can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ) override;
-	void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) override;
-
-	bool on_input(const Input& input) override;
+	*/
 };

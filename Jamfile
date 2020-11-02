@@ -110,6 +110,11 @@ GAME_NAMES =
 	load_wav
 	load_opus
 	LevelLoader
+	Input
+	Player
+	Barrel
+	FixedRock
+	PushableBall
 	;
 
 COMMON_NAMES =

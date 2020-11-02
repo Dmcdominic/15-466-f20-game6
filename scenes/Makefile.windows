@@ -1,14 +1,14 @@
 
-BLENDER="C:\Program Files\Blender Foundation\Blender 2.90\blender.exe"
+BLENDER="E:\Program Files\Blender Foundation\Blender 2.90\blender.exe"
 DIST=../dist
 
 all : \
-    $(DIST)/toxic-assets.pnct \
-    $(DIST)/toxic-assets.scene \
+    $(DIST)/toxic-prefabs.pnct \
+    $(DIST)/toxic-prefabs.scene \
 
 
-$(DIST)/toxic-assets.scene : toxic-assets.blend export-scene.py
-    $(BLENDER) --background --python export-scene.py -- "toxic-assets.blend:Main" "$(DIST)/toxic-assets.scene"
+$(DIST)/toxic-prefabs.scene : toxic-prefabs.blend export-scene.py
+    $(BLENDER) --background --python export-scene.py -- "toxic-prefabs.blend:Main" "$(DIST)/toxic-prefabs.scene"
 
-$(DIST)/toxic-assets.pnct : toxic-assets.blend export-meshes.py
-    $(BLENDER) --background --python export-meshes.py -- "toxic-assets.blend:Main" "$(DIST)/toxic-assets.pnct" 
+$(DIST)/toxic-prefabs.pnct : toxic-prefabs.blend export-meshes.py
+    $(BLENDER) --background --python export-meshes.py -- "toxic-prefabs.blend:Main" "$(DIST)/toxic-prefabs.pnct" 

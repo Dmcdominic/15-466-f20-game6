@@ -72,6 +72,8 @@
   <ItemDefinitionGroup>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Barrel.cpp" />
+    <ClCompile Include="..\FixedRock.cpp" />
     <ClCompile Include="..\Grid.cpp" />
     <ClCompile Include="..\ColorProgram.cpp" />
     <ClCompile Include="..\ColorTextureProgram.cpp" />
@@ -80,6 +82,7 @@
     <ClCompile Include="..\freetype-test.cpp" />
     <ClCompile Include="..\GL.cpp" />
     <ClCompile Include="..\gl_compile_program.cpp" />
+    <ClCompile Include="..\Input.cpp" />
     <ClCompile Include="..\LitColorTextureProgram.cpp" />
     <ClCompile Include="..\Load.cpp" />
     <ClCompile Include="..\load_opus.cpp" />
@@ -92,6 +95,7 @@
     <ClCompile Include="..\PathFont.cpp" />
     <ClCompile Include="..\Player.cpp" />
     <ClCompile Include="..\PlayMode.cpp" />
+    <ClCompile Include="..\PushableBall.cpp" />
     <ClCompile Include="..\Scene.cpp" />
     <ClCompile Include="..\show-meshes.cpp" />
     <ClCompile Include="..\show-scene.cpp" />
@@ -103,6 +107,8 @@
     <ClCompile Include="..\WalkMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Barrel.hpp" />
+    <ClInclude Include="..\FixedRock.hpp" />
     <ClInclude Include="..\Grid.hpp" />
     <ClInclude Include="..\ColorProgram.hpp" />
     <ClInclude Include="..\ColorTextureProgram.hpp" />
@@ -112,6 +118,7 @@
     <ClInclude Include="..\glcorearb.h" />
     <ClInclude Include="..\gl_compile_program.hpp" />
     <ClInclude Include="..\gl_errors.hpp" />
+    <ClInclude Include="..\Input.hpp" />
     <ClInclude Include="..\LitColorTextureProgram.hpp" />
     <ClInclude Include="..\Load.hpp" />
     <ClInclude Include="..\load_opus.hpp" />
@@ -122,6 +129,7 @@
     <ClInclude Include="..\PathFont.hpp" />
     <ClInclude Include="..\Player.hpp" />
     <ClInclude Include="..\PlayMode.hpp" />
+    <ClInclude Include="..\PushableBall.hpp" />
     <ClInclude Include="..\read_write_chunk.hpp" />
     <ClInclude Include="..\Scene.hpp" />
     <ClInclude Include="..\ShowMeshesMode.hpp" />
@@ -134,6 +142,7 @@
   <ItemGroup>
     <None Include="..\Jamfile" />
     <None Include="..\README.md" />
+    <None Include="..\scenes\Makefile" />
     <None Include="..\scenes\Makefile.windows" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
