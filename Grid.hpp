@@ -72,8 +72,8 @@ struct Cell {
 /* Cell Items (parent class of BgTile, FgObj, SkyObj, etc.) */
 struct CellItem {
 	// Fields
+    Scene::Transform* transform = nullptr;
 	Cell* cell = nullptr;
-	Scene::Transform* transform = nullptr;
 
 	// Constructors
 	CellItem(Scene::Transform* _transform) : transform(_transform) {};
@@ -104,6 +104,8 @@ struct BgTile : CellItem {
 	virtual void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) override;
 
 	virtual bool on_input(const Input& input) override;
+
+    virtual ~BgTile() {};
 };
 
 
@@ -121,6 +123,8 @@ struct FgObj : CellItem {
 	virtual void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) override;
 
 	virtual bool on_input(const Input& input) override;
+
+    virtual ~FgObj() {};
 };
 
 
@@ -138,4 +142,6 @@ struct SkyObj : CellItem {
 	virtual void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) override;
 
 	virtual bool on_input(const Input& input) override;
+
+    virtual ~SkyObj() {};
 };
