@@ -149,7 +149,6 @@ SHOW_SCENE_NAMES =
 
 PACK_NAMES =
 	pack-levels
-	data_path
 	;
 
 

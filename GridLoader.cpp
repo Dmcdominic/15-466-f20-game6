@@ -21,7 +21,7 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
     read_chunk(in, "grid", &packed_grids); 
 
     //we are loading grid 0 
-    PackedGrid packed_grid = packed_grids[0]; 
+    PackedGrid packed_grid = packed_grids[grid_id]; 
     Grid *grid = new Grid(packed_grid.width, packed_grid.height); 
 
     //set the BG objects 
