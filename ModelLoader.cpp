@@ -1,15 +1,21 @@
 #include "ModelLoader.hpp"
 #include "Mesh.hpp"
 #include "Load.hpp"
+#include "data_path.hpp"
+#include "LitColorTextureProgram.hpp"
+#include <iostream>
+
+
+GLuint toxic_meshes_for_lit_color_texture_program = 0;
 
 Load< MeshBuffer > meshes(LoadTagDefault, []() -> MeshBuffer const * {
-	MeshBuffer const *ret = new MeshBuffer(data_path("toxic-assets.pnct"));
+	MeshBuffer const *ret = new MeshBuffer(data_path("toxic-prefabs.pnct"));
 	toxic_meshes_for_lit_color_texture_program = ret->make_vao_for_program(lit_color_texture_program->program);
 	return ret;
 });
 
 Load< Scene > model_scene(LoadTagDefault, []() -> Scene const * {
-	return new Scene(data_path("toxic-assets.scene"), [&](Scene &scene, Scene::Transform *transform, std::string const &mesh_name){
+	return new Scene(data_path("toxic-prefabs.scene"), [&](Scene &scene, Scene::Transform *transform, std::string const &mesh_name){
 		Mesh const &mesh = meshes->lookup(mesh_name);
 
 		scene.drawables.emplace_back(transform);
@@ -26,25 +32,29 @@ Load< Scene > model_scene(LoadTagDefault, []() -> Scene const * {
 
 ModelLoader::ModelLoader() : scene(*model_scene) {
 
-    //TODO: save ID
+    //templates = std::vector<ModelTemplate>; 
+    //TODO: save in ID order 
  	for (auto &drawable : scene.drawables) {
-         ModelTemplate template; 
-         template.type = drawable.pipeline.type; 
-         template.start = drawable.pipeline.start; 
-         template.count = drawable.pipeline.count; 
-		}
-     }
-   
+        ModelTemplate t; 
+        t.type = drawable.pipeline.type; 
+        t.start = drawable.pipeline.start; 
+        t.count = drawable.pipeline.count; 
+        templates.push_back(t); 
+    }
+    std::cout << "loaded " << templates.size() << " models"; 
 }
+    
+
 
 Scene::Drawable ModelLoader::create_model(int model_id){
     assert(model_id < templates.size()); 
     Scene::Transform *transform = new Scene::Transform; 
-    Scene::Drawable &drawable = Drawable(transform); 
+    Scene::Drawable &drawable = Scene::Drawable(transform); 
+    
+	drawable.pipeline = lit_color_texture_program_pipeline;
     drawable.pipeline.vao = toxic_meshes_for_lit_color_texture_program;
     drawable.pipeline.type = templates[model_id].type; 
     drawable.pipeline.start = templates[model_id].start; 
     drawable.pipeline.count = templates[model_id].count; 
-
-
+    return drawable; 
 }

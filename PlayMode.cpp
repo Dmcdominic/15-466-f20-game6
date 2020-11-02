@@ -11,6 +11,8 @@
 #include "Barrel.hpp"
 #include "FixedRock.hpp"
 #include "PushableBall.hpp"
+#include "GridLoader.hpp"
+#include "ModelLoader.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -83,14 +85,30 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 	//playerOLD.camera->transform->rotation = glm::angleAxis(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
 	// --- GRID INITIALIZATION ---
-	//Construct a starting grid
-	current_grid = new Grid(10, 10);
+	// //Construct a starting grid
+	// current_grid = new Grid(10, 10);
 
-	// Fill it in with *placeholder* objects
-	current_grid->cells.at(0).at(0).set_fg_obj(new Player(Player::prefab->transform));
-	current_grid->cells.at(4).at(2).set_fg_obj(new Barrel(Barrel::prefab->transform));
-	current_grid->cells.at(5).at(5).set_fg_obj(new FixedRock(FixedRock::prefab->transform));
-	current_grid->cells.at(8).at(8).set_fg_obj(new PushableBall(PushableBall::prefab->transform));
+	// // Fill it in with *placeholder* objects
+	// current_grid->cells.at(0).at(0).set_fg_obj(new Player(Player::prefab->transform));
+	// current_grid->cells.at(4).at(2).set_fg_obj(new Barrel(Barrel::prefab->transform));
+	// current_grid->cells.at(5).at(5).set_fg_obj(new FixedRock(FixedRock::prefab->transform));
+	// current_grid->cells.at(8).at(8).set_fg_obj(new PushableBall(PushableBall::prefab->transform));
+
+	//
+	ModelLoader loader = ModelLoader(); 
+	// Level level = GridLoader::load_level(0, loader, scene); 
+	// current_grid = level.easyGrid; 
+	current_grid = GridLoader::load_level(0, loader, &scene);
+	//update scene to have the models of the loaded scene 
+	//TODO: make this a separate function 
+	{
+		//delete existing models
+		// scene.drawables.clear(); 
+		//add the new models for each grid element
+
+
+	}
+
 }
 
 PlayMode::~PlayMode() {

@@ -1,4 +1,5 @@
 
+#pragma once
 struct PackedGridLayer {
     unsigned int level_id;
     unsigned int layer_number; //bg=0, fg=1, sky=2
