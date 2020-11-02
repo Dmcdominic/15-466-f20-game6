@@ -24,28 +24,28 @@ int main(int argc, char **argv) {
 
     //randomly chose 30x30 size for each grid 
     //TODO: variable level sizes 
-    glm::uvec2 level_size = glm::uvec2(30, 30); 
+    glm::uvec2 grid_size = glm::uvec2(30, 30); 
 
 
     //load all level pngs
     //TODO: repeat for each layer and difficulty level
     for(int i = 0; i < num_levels; i++) {
-        // std::vector <int> level(level_size.y * level_size.x); 
+        // std::vector <int> level(grid_size.y * grid_size.x); 
 
         std::cout << "loading " << (level_filename + std::to_string(i) + ".png") << "\n"; 
-        load_png(data_path(level_filename  + std::to_string(i) + ".png"), &level_size, &data, LowerLeftOrigin); 
+        load_png(data_path(level_filename  + std::to_string(i) + ".png"), &grid_size, &data, LowerLeftOrigin); 
         std::cout << "\nsuccessfully loaded " << (level_filename + std::to_string(i) + ".png") << "\n"; 
         PackedGridLayer layer; 
         layer.level_id = i; 
         layer.difficulty = 0; 
         layer.layer_number = 0; 
         layer.data_start = (unsigned int) obj_ids.size(); 
-        layer.width = level_size.x; 
-        layer.height = level_size.y; 
-        for(unsigned int y = 0; y < level_size.y; y++) {
-            for(unsigned int x = 0; x < level_size.x; x++) {
-                glm::u8vec4 color = data[x + y * level_size.x];
-                // level[x + y * level_size.x] = int(color[0] / 50) + 5 * int(color[1] / 50);
+        layer.width = grid_size.x; 
+        layer.height = grid_size.y; 
+        for(unsigned int y = 0; y < grid_size.y; y++) {
+            for(unsigned int x = 0; x < grid_size.x; x++) {
+                glm::u8vec4 color = data[x + y * grid_size.x];
+                // level[x + y * grid_size.x] = int(color[0] / 50) + 5 * int(color[1] / 50);
                 int id = int(color[0] / 50) + 5 * int(color[1] / 50);
                 obj_ids.push_back(id);
                 std::cout << id << " "; 
