@@ -32,7 +32,8 @@ Load< Scene > model_scene(LoadTagDefault, []() -> Scene const * {
 
 ModelLoader::ModelLoader() : scene(*model_scene) {
 
-    //templates = std::vector<ModelTemplate>; 
+    templates.reserve(num_models);
+
     //TODO: save in ID order 
  	for (auto &drawable : scene.drawables) {
         ModelTemplate t; 

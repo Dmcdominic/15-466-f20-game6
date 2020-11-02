@@ -96,18 +96,7 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 
 	//
 	ModelLoader loader = ModelLoader(); 
-	// Level level = GridLoader::load_level(0, loader, scene); 
-	// current_grid = level.easyGrid; 
 	current_grid = GridLoader::load_level(0, loader, &scene);
-	//update scene to have the models of the loaded scene 
-	//TODO: make this a separate function 
-	{
-		//delete existing models
-		// scene.drawables.clear(); 
-		//add the new models for each grid element
-
-
-	}
 
 }
 

@@ -38,7 +38,6 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
         }
         std::cout << "\n"; 
     }
-    //TODO: repeat for all layers and difficulty levels
     
     return grid; 
 }
