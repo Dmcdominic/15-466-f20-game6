@@ -17,7 +17,7 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
     std::vector< int > obj_ids; 
     std::vector< PackedGrid > packed_grids; 
 
-    std::ifstream in(data_path("../dist/levels.bin"), std::ios::binary); 
+    std::ifstream in(data_path("./levels.bin"), std::ios::binary); 
 
     read_chunk(in, "objs", &obj_ids); 
     read_chunk(in, "grid", &packed_grids); 
