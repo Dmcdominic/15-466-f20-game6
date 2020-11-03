@@ -7,6 +7,10 @@ dist/Toxic
 dist/Toxic.exe
 dist/freetype-test
 dist/freetype-test.*
+levels/pack
+levels/pack.exe
+levels/pack.ilk
+levels/pack.pdb
 scenes/show-meshes*
 scenes/show-scene*
 *.blend[0-9]

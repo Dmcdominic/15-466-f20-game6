@@ -78,8 +78,9 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 	active_camera->fovy = glm::radians(60.0f);
 	active_camera->near = 0.01f;
 
-	active_camera->transform->position = glm::vec3(4.5f, 4.5f, 12.0f);
-	active_camera->transform->rotation = glm::angleAxis(glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	//TODO: camera follow player
+	active_camera->transform->position = glm::vec3(4.5f, .8f, 7.0f);
+	active_camera->transform->rotation = glm::quat(glm::vec3(.3f, 0.0f, 0.0f));
 
 	//rotate camera facing direction (-z) to player facing direction (+y):
 	//playerOLD.camera->transform->rotation = glm::angleAxis(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
