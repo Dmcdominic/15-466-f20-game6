@@ -28,8 +28,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5ef998e6-366e-4fc4-8f00-3afcf587ba2a" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/dist/BadScript-Regular.ttf" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Jamfile" beforeDir="false" afterPath="$PROJECT_DIR$/Jamfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Mode.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Mode.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/Mode.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TextDrawer.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/TextDrawer.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/demo_menu.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/game_menu.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/demo_menu.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/game_menu.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,10 +79,11 @@
     <property name="org.elm.workspace.PROJECT_DISCOVERY" value="true" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/dist" />
       <recent name="$PROJECT_DIR$" />
     </key>
-    <key name="CopyFile.RECENT_KEYS">
+    <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/dist" />
       <recent name="$PROJECT_DIR$" />
     </key>
@@ -119,13 +127,16 @@
     </state>
     <state x="227" y="58" key="#Deployment/0.23.1280.741/-675.-1417.2560.1417@0.23.1280.741" timestamp="1603994772615" />
     <state x="-221" y="-1353" key="#Deployment/0.23.1280.777/-675.-1417.2560.1350@-675.-1417.2560.1350" timestamp="1604031446580" />
-    <state x="-240" y="-934" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1604091433367">
-      <screen x="-675" y="-1417" width="2560" height="1417" />
+    <state x="-240" y="-957" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1604381128030">
+      <screen x="-675" y="-1417" width="2560" height="1349" />
     </state>
     <state x="-240" y="-934" key="#com.intellij.fileTypes.FileTypeChooser/0.23.1280.739/-675.-1417.2560.1417@-675.-1417.2560.1417" timestamp="1604091433367" />
-    <state x="-307" y="-954" width="586" height="490" key="find.popup" timestamp="1604269376839">
-      <screen x="-675" y="-1417" width="2560" height="1417" />
+    <state x="-240" y="-957" key="#com.intellij.fileTypes.FileTypeChooser/0.23.1280.777/-675.-1417.2560.1349@-675.-1417.2560.1349" timestamp="1604381128030" />
+    <state x="-307" y="-976" width="586" height="549" key="find.popup" timestamp="1604381438873">
+      <screen x="-675" y="-1417" width="2560" height="1350" />
     </state>
     <state x="-307" y="-954" width="586" height="490" key="find.popup/0.23.1280.741/-675.-1417.2560.1417@-675.-1417.2560.1417" timestamp="1604269376839" />
+    <state x="-307" y="-976" width="586" height="548" key="find.popup/0.23.1280.777/-675.-1417.2560.1349@-675.-1417.2560.1349" timestamp="1604380928199" />
+    <state x="-307" y="-976" width="586" height="549" key="find.popup/0.23.1280.777/-675.-1417.2560.1350@-675.-1417.2560.1350" timestamp="1604381438873" />
   </component>
 </project>

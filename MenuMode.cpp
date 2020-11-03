@@ -1,5 +1,3 @@
-/* MenuMode.cpp source - f19 base6 - https://github.com/15-466/15-466-f19-base6 */
-
 #include "MenuMode.hpp"
 
 //for the GL_ERRORS() macro:

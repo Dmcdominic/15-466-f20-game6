@@ -19,12 +19,12 @@ TextDrawer::TextDrawer(){
         std::cout << "Libary not loaded." << std::endl;
     }
 
-    error = FT_New_Face(library, &data_path("Roboto-Light.ttf")[0], 0, &face);
+    error = FT_New_Face(library, &data_path("BadScript-Regular.ttf")[0], 0, &face);
     if (error)
     {
         std::cout << "Failed to create face." << std::endl;
     }
-    FT_Set_Char_Size(face, 0, 2000, 0, 0);
+    FT_Set_Char_Size(face, 0, 4000, 0, 0);
     font = hb_ft_font_create(face, NULL);
     buf = hb_buffer_create();
 }

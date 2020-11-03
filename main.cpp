@@ -4,7 +4,7 @@
 //The 'PlayMode' mode plays the game:
 #include "PlayMode.hpp"
 
-#include "demo_menu.hpp"
+#include "game_menu.hpp"
 
 //For asset loading:
 #include "Load.hpp"
@@ -103,7 +103,7 @@ int main(int argc, char **argv) {
 	//------------ create game mode + make current --------------
 //	Mode::set_current(std::make_shared< PlayMode >());
     Mode::set_play(std::make_shared< PlayMode >());
-    Mode::set_demo(demo_menu);
+    Mode::set_menu(game_menu);
 
 	//------------ main loop ------------
 
