@@ -82,7 +82,9 @@
     <ClCompile Include="..\freetype-test.cpp" />
     <ClCompile Include="..\GL.cpp" />
     <ClCompile Include="..\gl_compile_program.cpp" />
+    <ClCompile Include="..\GridLoader.cpp" />
     <ClCompile Include="..\Input.cpp" />
+    <ClCompile Include="..\Level.cpp" />
     <ClCompile Include="..\LitColorTextureProgram.cpp" />
     <ClCompile Include="..\Load.cpp" />
     <ClCompile Include="..\load_opus.cpp" />
@@ -91,10 +93,13 @@
     <ClCompile Include="..\main.cpp" />
     <ClCompile Include="..\Mesh.cpp" />
     <ClCompile Include="..\Mode.cpp" />
+    <ClCompile Include="..\ModelLoader.cpp" />
+    <ClCompile Include="..\pack-levels.cpp" />
     <ClCompile Include="..\PathFont-font.cpp" />
     <ClCompile Include="..\PathFont.cpp" />
     <ClCompile Include="..\Player.cpp" />
     <ClCompile Include="..\PlayMode.cpp" />
+    <ClCompile Include="..\Protesters.cpp" />
     <ClCompile Include="..\PushableBall.cpp" />
     <ClCompile Include="..\Scene.cpp" />
     <ClCompile Include="..\show-meshes.cpp" />
@@ -104,6 +109,7 @@
     <ClCompile Include="..\ShowSceneMode.cpp" />
     <ClCompile Include="..\ShowSceneProgram.cpp" />
     <ClCompile Include="..\Sound.cpp" />
+    <ClCompile Include="..\Tree.cpp" />
     <ClCompile Include="..\WalkMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -118,7 +124,9 @@
     <ClInclude Include="..\glcorearb.h" />
     <ClInclude Include="..\gl_compile_program.hpp" />
     <ClInclude Include="..\gl_errors.hpp" />
+    <ClInclude Include="..\GridLoader.hpp" />
     <ClInclude Include="..\Input.hpp" />
+    <ClInclude Include="..\Level.hpp" />
     <ClInclude Include="..\LitColorTextureProgram.hpp" />
     <ClInclude Include="..\Load.hpp" />
     <ClInclude Include="..\load_opus.hpp" />
@@ -126,9 +134,12 @@
     <ClInclude Include="..\load_wav.hpp" />
     <ClInclude Include="..\Mesh.hpp" />
     <ClInclude Include="..\Mode.hpp" />
+    <ClInclude Include="..\ModelLoader.hpp" />
+    <ClInclude Include="..\PackedGrid.hpp" />
     <ClInclude Include="..\PathFont.hpp" />
     <ClInclude Include="..\Player.hpp" />
     <ClInclude Include="..\PlayMode.hpp" />
+    <ClInclude Include="..\Protesters.hpp" />
     <ClInclude Include="..\PushableBall.hpp" />
     <ClInclude Include="..\read_write_chunk.hpp" />
     <ClInclude Include="..\Scene.hpp" />
@@ -137,13 +148,21 @@
     <ClInclude Include="..\ShowSceneMode.hpp" />
     <ClInclude Include="..\ShowSceneProgram.hpp" />
     <ClInclude Include="..\Sound.hpp" />
+    <ClInclude Include="..\Tree.hpp" />
     <ClInclude Include="..\WalkMesh.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Jamfile" />
+    <None Include="..\make-GL.py" />
+    <None Include="..\make-PathFont-font.py" />
+    <None Include="..\NEST.md" />
+    <None Include="..\PathFont-font.svg" />
     <None Include="..\README.md" />
     <None Include="..\scenes\Makefile" />
     <None Include="..\scenes\Makefile.windows" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\screenshot.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
