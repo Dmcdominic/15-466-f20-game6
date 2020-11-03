@@ -1,5 +1,6 @@
 #include "Grid.hpp"
 #include <stdexcept>
+#include <iostream>
 
 
 // Variable declarations
@@ -77,7 +78,7 @@ Cell::~Cell() {
 
 // See above
 void Cell::set_bg_tile(BgTile* _bgTile) {
-  if (this->bgTile != nullptr && _bgTile != nullptr) throw std::runtime_error("Setting the bgTile of a cell that already has one.");
+//  if (this->bgTile != nullptr && _bgTile != nullptr) throw std::runtime_error("Setting the bgTile of a cell that already has one.");
   this->bgTile = _bgTile;
   if (_bgTile == nullptr) return;
 

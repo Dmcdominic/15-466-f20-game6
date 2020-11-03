@@ -116,6 +116,8 @@ GAME_NAMES =
 	Barrel
 	FixedRock
 	PushableBall
+	Tree
+	Protesters
 	;
 
 COMMON_NAMES =

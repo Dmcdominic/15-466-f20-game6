@@ -5,6 +5,8 @@
 #include "FixedRock.hpp"
 #include "Player.hpp"
 #include "Barrel.hpp"
+#include "Tree.hpp"
+#include "Protesters.hpp"
 
 
 Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *scene) {
@@ -42,13 +44,12 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     grid->cells.at(x).at(y).set_bg_tile(new BgTile(scene->drawables.back().transform));
                     break; 
                 case 14:  
-                    scene->drawables.push_back(loader.create_model("Grass")); 
+                    scene->drawables.push_back(loader.create_model("Grass"));
                     grid->cells.at(x).at(y).set_bg_tile(new BgTile(scene->drawables.back().transform));
-                    break; 
+                    break;
             }
         }
     }
-
     //set the FG objects 
     for(unsigned int y = 0; y < packed_grid.height; y++) {
         for(unsigned int x = 0; x < packed_grid.width; x++) {
@@ -70,14 +71,16 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     scene->drawables.push_back(loader.create_model("Rock")); 
                     grid->cells.at(x).at(y).set_fg_obj(new FixedRock(scene->drawables.back().transform));
                     break;
-                case 5:  
-                    scene->drawables.push_back(loader.create_model("Tree")); 
-                    grid->cells.at(x).at(y).set_fg_obj(new FixedRock(scene->drawables.back().transform));
-                    break; 
-                case 6:  
-                    scene->drawables.push_back(loader.create_model("Protesters")); 
-                    grid->cells.at(x).at(y).set_fg_obj(new FixedRock(scene->drawables.back().transform));
-                    break; 
+                case 5:
+                    scene->drawables.push_back(loader.create_model("Tree"));
+                    grid->cells.at(x).at(y).set_bg_tile(new Tree(&(scene->drawables.back()),
+                                                                 loader.create_model("Rock")));
+                    break;
+                case 6:
+                    scene->drawables.push_back(loader.create_model("Protesters"));
+                    grid->cells.at(x).at(y).set_bg_tile(new Protesters(&(scene->drawables.back()),
+                                                                 loader.create_model("Rock")));
+                    break;
                 case 9:  
                     scene->drawables.push_back(loader.create_model("Button")); 
                     grid->cells.at(x).at(y).set_fg_obj(new FixedRock(scene->drawables.back().transform));
