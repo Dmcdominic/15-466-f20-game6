@@ -4,6 +4,8 @@
 #include "WalkMesh.hpp"
 #include "GridLoader.hpp"
 #include "Grid.hpp"
+#include "ModelLoader.hpp"
+
 
 #include <glm/glm.hpp>
 
@@ -21,15 +23,20 @@ struct PlayMode : Mode {
 
 	//----- game state -----
 
+	uint8_t current_level = 0; 
+	uint8_t num_levels = 2; 
+	ModelLoader loader; 
+
 	//input tracking:
 	struct Button {
 		uint8_t downs = 0;
 		uint8_t pressed = 0;
-	} left, right, down, up;
+	} left_player, right_player, down_player, up_player, left_camera, right_camera, down_camera, up_camera;
 
 	//local copy of the game scene (so code can change it during gameplay):
 	Scene scene;
 
 	// Active camera
 	Scene::Camera *active_camera = nullptr;
+	float camera_move_amount = .1f; 
 };
