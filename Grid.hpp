@@ -65,6 +65,8 @@ struct Cell {
 	void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ);
 
 	bool on_input(const Input &input);
+	//void on_pre_tick();
+	void on_post_tick();
 };
 
 
@@ -89,6 +91,8 @@ struct CellItem {
 	virtual void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) = 0;
 
 	virtual bool on_input(const Input& input) = 0;
+	//virtual bool on_pre_tick() {};
+	virtual void on_post_tick() {};
 };
 
 

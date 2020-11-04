@@ -68,6 +68,9 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 	//change this value to view a different level
 	current_grid = GridLoader::load_level(0, loader, &scene);
 
+	// Manually throwing an object into the first grid, for testing
+	/*scene.drawables.push_back(loader.create_model("Barrel"));
+	current_grid->cells.at(4).at(1).set_fg_obj(new Barrel(&(scene.drawables.back())));*/
 }
 
 PlayMode::~PlayMode() {

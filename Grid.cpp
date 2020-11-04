@@ -37,13 +37,34 @@ bool Grid::is_valid_pos(glm::ivec2 _pos) {
 // Returns true iff something handled the input.
 // For now, it only allows 1 CellItem to handle any input.
 bool Grid::on_input(const Input& input) {
+  /*for (size_t x = 0; x < width; x++) {
+    for (size_t y = 0; y < height; y++) {
+      cells[x][y].on_pre_tick();
+    }
+  }*/
+
+  // on_input()
+  bool input_handled = false;
   for (size_t x = 0; x < width; x++) {
     for (size_t y = 0; y < height; y++) {
-      if (cells[x][y].on_input(input)) return true;
+      if (cells[x][y].on_input(input)) {
+        input_handled = true;
+        x = width;
+        y = width;
+      }
     }
   }
 
-  return false;
+  if (!input_handled) return false;
+
+  // post_tick()
+  for (size_t x = 0; x < width; x++) {
+    for (size_t y = 0; y < height; y++) {
+      cells[x][y].on_post_tick();
+    }
+  }
+
+  return true;
 }
 
 
@@ -124,14 +145,6 @@ void Cell::set_sky_obj(SkyObj* _skyObj) {
 }
 
 
-// When there is some input, do something?
-bool Cell::on_input(const Input& input) {
-  return (bgTile != nullptr && bgTile->on_input(input)) |
-         (fgObj != nullptr && fgObj->on_input(input)) |
-         (skyObj != nullptr && skyObj->on_input(input));
-}
-
-
 // Returns true iff a foreground object can safely be moved/pushed into this cell
 bool Cell::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
   return (bgTile == nullptr || bgTile->can_fg_obj_move_into(objBeingMoved, displ)) &&
@@ -175,6 +188,31 @@ void Cell::when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& disp
   if (skyObj != nullptr) {
     skyObj->when_sky_obj_moved_into(objBeingMoved, displ);
   }
+}
+
+
+// When there is some input, pass the input to each tile/obj in this cell.
+// Returns true iff any of the tiles/objects return true.
+bool Cell::on_input(const Input& input) {
+  return (bgTile != nullptr && bgTile->on_input(input)) |
+    (fgObj != nullptr && fgObj->on_input(input)) |
+    (skyObj != nullptr && skyObj->on_input(input));
+}
+
+
+// Called right before on_input() for all cells.
+//void Cell::on_pre_tick() {
+//  if (bgTile != nullptr) bgTile->on_pre_tick();
+//  if (fgObj != nullptr) fgObj->on_pre_tick();
+//  if (skyObj != nullptr) skyObj->on_pre_tick();
+//}
+
+
+// Called right after on_input() for all cells.
+void Cell::on_post_tick() {
+  if (bgTile != nullptr) bgTile->on_post_tick();
+  if (fgObj != nullptr) fgObj->on_post_tick();
+  if (skyObj != nullptr) skyObj->on_post_tick();
 }
 
 
@@ -295,10 +333,10 @@ bool SkyObj::try_to_move_by(const glm::ivec2& displ) {
   Cell* target_cell = &current_grid->cells.at(target_pos.x).at(target_pos.y);
   if (!target_cell->can_sky_obj_move_into(*this, displ)) return false;
   target_cell->when_sky_obj_moved_into(*this, displ);
-  target_cell->set_sky_obj(this);
-  if (target_cell->skyObj != nullptr) {
+  /*if (target_cell->skyObj != nullptr) {
     throw std::runtime_error("Trying to move a SkyObj into a cell that seems to still have one");
-  }
+  }*/
+  target_cell->set_sky_obj(this);
   return true;
 }
 
