@@ -12,5 +12,5 @@ struct FixedRock : FgObj {
 	static Scene::Drawable* prefab;
 
 	// Methods
-	bool can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ) override;
+	bool can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
 };

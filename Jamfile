@@ -118,6 +118,8 @@ GAME_NAMES =
 	PushableBall
 	Tree
 	Protesters
+	River
+	Disposal
 	;
 
 COMMON_NAMES =

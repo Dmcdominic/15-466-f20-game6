@@ -20,7 +20,7 @@ all : \
 	$(DIST)/toxic-prefabs.scene \
 
 $(DIST)/toxic-prefabs.pnct : toxic-prefabs.blend $(EXPORT_MESHES)
-	$(BLENDER) --background --python $(EXPORT_MESHES) -- '$<':Main '$@'
+	blender --background --python $(EXPORT_MESHES) -- '$<':Main '$@'
 
 $(DIST)/toxic-prefabs.scene : toxic-prefabs.blend $(EXPORT_SCENE)
-	$(BLENDER) --background --python $(EXPORT_SCENE) -- '$<':Main '$@'
+	blender --background --python $(EXPORT_SCENE) -- '$<':Main '$@'
