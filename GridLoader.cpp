@@ -73,7 +73,7 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
 			}
 		}
 
-		for(int i = 0; i < river_tiles->size(); i++){
+		for(size_t i = 0; i < river_tiles->size(); i++){
 			(*river_tiles)[i]->tiles = new std::vector< River* >(river_counter-1);
 			int inserted = 0;
 			for(int j = 0; j < river_tiles->size(); j++) {
