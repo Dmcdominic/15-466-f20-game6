@@ -14,7 +14,7 @@ struct Barrel : FgObj {
 	// Methods
 	// TODO
 	/*
-	bool can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ) override;
+	bool can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
 	void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
 	*/
 };

@@ -5,7 +5,7 @@
 
 Scene::Drawable* Tree::prefab;
 
-bool Tree::can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ){
+bool Tree::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ){
     const FgObj* y = &objBeingMoved;
     const Barrel* x = dynamic_cast<const Barrel*>(y);
     if(x != nullptr) return true;

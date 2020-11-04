@@ -58,7 +58,7 @@ struct Cell {
 	void set_fg_obj(FgObj* _fgObj);
 	void set_sky_obj(SkyObj* _skyObj);
 
-	bool can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2 &displ);
+	bool can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2 &displ);
 	void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ);
 
 	bool can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ);
@@ -80,7 +80,7 @@ struct CellItem {
 	CellItem(Scene::Drawable* _drawable, Cell* _cell) : drawable(_drawable), cell(_cell) {};
 
 	// Methods
-	virtual bool can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ) = 0;
+	virtual bool can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) = 0;
 	virtual void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) = 0;
 
 	virtual bool can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ) = 0;
@@ -97,7 +97,7 @@ struct BgTile : CellItem {
 	using CellItem::CellItem;
 
 	// Methods
-	virtual bool can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ) override;
+	virtual bool can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
 	virtual void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
 
 	virtual bool can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ) override;
@@ -116,7 +116,7 @@ struct FgObj : CellItem {
 	using CellItem::CellItem;
 
 	// Methods
-	virtual bool can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ) override;
+	virtual bool can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
 	virtual void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
 
 	virtual bool can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ) override;
@@ -135,7 +135,7 @@ struct SkyObj : CellItem {
 	using CellItem::CellItem;
 
 	// Methods
-	virtual bool can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ) override;
+	virtual bool can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
 	virtual void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
 
 	virtual bool can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ) override;

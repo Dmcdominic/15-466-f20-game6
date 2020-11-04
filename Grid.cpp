@@ -133,7 +133,7 @@ bool Cell::on_input(const Input& input) {
 
 
 // Returns true iff a foreground object can safely be moved/pushed into this cell
-bool Cell::can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ) {
+bool Cell::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
   return (bgTile == nullptr || bgTile->can_fg_obj_move_into(objBeingMoved, displ)) &&
          (fgObj == nullptr  || fgObj->can_fg_obj_move_into(objBeingMoved, displ)) &&
          (skyObj == nullptr || skyObj->can_fg_obj_move_into(objBeingMoved, displ));
@@ -187,7 +187,7 @@ void Cell::when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& disp
 /* ----- Background Tiles ----- */
 
 // Returns true iff the given foreground object is allowed to be moved/pushed onto this tile.
-bool BgTile::can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ) {
+bool BgTile::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
   // By default, any object can move onto this
   return true;
 }
@@ -223,7 +223,7 @@ bool BgTile::on_input(const Input& input){
 
 // Returns true iff the given foreground object is allowed to be moved/pushed into this object.
 // Default behavior is that this can be pushed according to displ.
-bool FgObj::can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ) {
+bool FgObj::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
   glm::ivec2 target_pos = this->cell->pos + displ;
   // First check if this will end up outside the current grid.
   if (!current_grid->is_valid_pos(target_pos)) {
@@ -273,7 +273,7 @@ bool FgObj::on_input(const Input& input){
 /* ----- Sky Objects ----- */
 
 // Returns true iff the given foreground object is allowed to be moved/pushed onto this tile.
-bool SkyObj::can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ) {
+bool SkyObj::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
   return true;
 }
 
