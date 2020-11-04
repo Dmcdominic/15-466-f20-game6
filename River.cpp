@@ -16,7 +16,7 @@ void River::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ
 	if(dynamic_cast<Barrel*>(&objBeingMoved) != nullptr) {
 		this->rotten.transform->position = this->drawable->transform->position;
 		*(this->cell->bgTile->drawable) = this->rotten;
-		for(int i = 0; i < tiles->size(); i++) {
+		for(size_t i = 0; i < tiles->size(); i++) {
 			(*tiles)[i]->contaminated();
 		}
 	}
