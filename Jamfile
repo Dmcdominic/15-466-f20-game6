@@ -117,8 +117,11 @@ GAME_NAMES =
 	FixedRock
 	PushableBall
 	Tree
+	RottenTree
 	Protesters
 	River
+	Bridge
+	Button
 	Disposal
 	;
 
