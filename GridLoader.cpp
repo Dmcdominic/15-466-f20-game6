@@ -10,6 +10,7 @@
 #include "Protesters.hpp"
 #include "Bridge.hpp"
 #include "Button.hpp"
+#include "Disposal.hpp"
 
 
 Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *scene) {
@@ -43,6 +44,10 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     scene->drawables.push_back(loader.create_model("Bridge")); 
                     grid->cells.at(x).at(y).set_bg_tile(new BgTile(&(scene->drawables.back())));
                     break;
+                case 11:  
+                    scene->drawables.push_back(loader.create_model("Disposal")); 
+                    grid->cells.at(x).at(y).set_bg_tile(new Disposal(&(scene->drawables.back()), &scene->drawables));
+                    break; 
                 case 13:
 	                  river_counter++;
 	                  break;
@@ -129,14 +134,13 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                 case 5:
                     scene->drawables.push_back(loader.create_model("Tree"));
                     grid->cells.at(x).at(y).set_fg_obj(new Tree(&(scene->drawables.back()),
-                                                                loader.create_model("Rock"),
-                                                                &scene->drawables));
+                                                                 loader.create_model("Tree_Contaminated"), &scene->drawables));
                     break;
 
                 case 6:
                     scene->drawables.push_back(loader.create_model("Protesters"));
                     grid->cells.at(x).at(y).set_fg_obj(new Protesters(&(scene->drawables.back()),
-                                                                loader.create_model("Rock"), &scene->drawables));
+                                                                loader.create_model("Protesters_Contaminated"), &scene->drawables));
                     break;
 //                case 9:
 //                    std::cout<<"button"<<std::endl;

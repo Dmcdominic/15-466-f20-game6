@@ -12,7 +12,6 @@
 #include "FixedRock.hpp"
 #include "PushableBall.hpp"
 #include "GridLoader.hpp"
-#include "ModelLoader.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -78,8 +77,9 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 	active_camera->fovy = glm::radians(60.0f);
 	active_camera->near = 0.01f;
 
-	active_camera->transform->position = glm::vec3(4.5f, 4.5f, 12.0f);
-	active_camera->transform->rotation = glm::angleAxis(glm::radians(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	//TODO: camera follow player
+	active_camera->transform->position = glm::vec3(4.5f, .8f, 7.0f);
+	active_camera->transform->rotation = glm::quat(glm::vec3(.3f, 0.0f, 0.0f));
 
 	//rotate camera facing direction (-z) to player facing direction (+y):
 	//playerOLD.camera->transform->rotation = glm::angleAxis(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -95,7 +95,7 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 	// current_grid->cells.at(8).at(8).set_fg_obj(new PushableBall(PushableBall::prefab->transform));
 
 	
-	ModelLoader loader = ModelLoader(); 
+	loader = ModelLoader(); 
 	//change this value to view a different level
 	current_grid = GridLoader::load_level(0, loader, &scene);
 
@@ -111,47 +111,75 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 		if (evt.key.keysym.sym == SDLK_ESCAPE) {
 			SDL_SetRelativeMouseMode(SDL_FALSE);
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_a ||
-		           evt.key.keysym.sym == SDLK_LEFT) {
-			left.downs += 1;
-			left.pressed = true;
+		} else if (evt.key.keysym.sym == SDLK_LEFT) {
+			left_player.downs += 1;
+			left_player.pressed = true;
 			if (current_grid != nullptr) current_grid->on_input(Input(InputType::LEFT));
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_d ||
-		           evt.key.keysym.sym == SDLK_RIGHT) {
-			right.downs += 1;
-			right.pressed = true;
+		} else if (evt.key.keysym.sym == SDLK_RIGHT) {
+			right_player.downs += 1;
+			right_player.pressed = true;
 			if (current_grid != nullptr) current_grid->on_input(Input(InputType::RIGHT));
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_w ||
-		           evt.key.keysym.sym == SDLK_UP) {
-			up.downs += 1;
-			up.pressed = true;
+		} else if (evt.key.keysym.sym == SDLK_UP) {
+			up_player.downs += 1;
+			up_player.pressed = true;
 			if (current_grid != nullptr) current_grid->on_input(Input(InputType::UP));
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_s ||
-		           evt.key.keysym.sym == SDLK_DOWN) {
-			down.downs += 1;
-			down.pressed = true;
+		} else if (evt.key.keysym.sym == SDLK_DOWN) {
+			down_player.downs += 1;
+			down_player.pressed = true;
 			if (current_grid != nullptr) current_grid->on_input(Input(InputType::DOWN));
+			return true;
+		} else if (evt.key.keysym.sym == SDLK_a) {
+			left_camera.downs += 1;
+			left_camera.pressed = true;
+			active_camera->transform->position.x -= camera_move_amount; 
+			return true;
+		} else if (evt.key.keysym.sym == SDLK_d) {
+			right_camera.downs += 1;
+			right_camera.pressed = true;
+			active_camera->transform->position.x += camera_move_amount; 
+			return true;
+		} else if (evt.key.keysym.sym == SDLK_w) {
+			up_camera.downs += 1;
+			up_camera.pressed = true;
+			active_camera->transform->position.y += camera_move_amount; 
+			return true;
+		} else if (evt.key.keysym.sym == SDLK_s) {
+			down_camera.downs += 1;
+			down_camera.pressed = true;
+			active_camera->transform->position.y -= camera_move_amount; 
+			return true;
+		}else if (evt.key.keysym.sym == SDLK_n) {
+			current_level = (current_level + 1) % num_levels; 
+			current_grid = GridLoader::load_level(current_level, loader, &scene);
 			return true;
 		}
 	} else if (evt.type == SDL_KEYUP) {
-		if (evt.key.keysym.sym == SDLK_a ||
-		    evt.key.keysym.sym == SDLK_LEFT) {
-			left.pressed = false;
+		if (evt.key.keysym.sym == SDLK_LEFT) {
+			left_player.pressed = false;
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_d ||
-		           evt.key.keysym.sym == SDLK_RIGHT) {
-			right.pressed = false;
+		} else if (evt.key.keysym.sym == SDLK_RIGHT) {
+			right_player.pressed = false;
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_w ||
-		           evt.key.keysym.sym == SDLK_UP) {
-			up.pressed = false;
+		} else if (evt.key.keysym.sym == SDLK_UP) {
+			up_player.pressed = false;
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_s ||
-		           evt.key.keysym.sym == SDLK_DOWN) {
-			down.pressed = false;
+		} else if (evt.key.keysym.sym == SDLK_DOWN) {
+			down_player.pressed = false;
+			return true;
+		} else if (evt.key.keysym.sym == SDLK_a) {
+			left_camera.pressed = false;
+			return true;
+		} else if (evt.key.keysym.sym == SDLK_d) {
+			right_camera.pressed = false;
+			return true;
+		} else if (evt.key.keysym.sym == SDLK_w) {
+			up_camera.pressed = false;
+			return true;
+		} else if (evt.key.keysym.sym == SDLK_s) {
+			down_camera.pressed = false;
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_q) {  // QUIT
 			this->quit = true;
@@ -194,10 +222,14 @@ void PlayMode::update(float elapsed) {
 	// TODO - update stuff here?
 
 	//reset button press counters:
-	left.downs = 0;
-	right.downs = 0;
-	up.downs = 0;
-	down.downs = 0;
+	left_player.downs = 0;
+	right_player.downs = 0;
+	up_player.downs = 0;
+	down_player.downs = 0;
+	left_camera.downs = 0;
+	right_camera.downs = 0;
+	up_camera.downs = 0;
+	down_camera.downs = 0;
 }
 
 

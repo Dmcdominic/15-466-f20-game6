@@ -19,6 +19,7 @@ void Tree::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ)
         delete this->cell->bgTile->drawable->transform;
         *(this->cell->bgTile->drawable) = this->rotten;
         this->cell->bgTile = new RottenTree(this->cell->bgTile->drawable);
+        this->cell->bgTile->drawable->transform->position = glm::vec3(this->cell->pos.x, this->cell->pos.y, 0);
         delete this;
     }
 }

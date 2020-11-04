@@ -42,14 +42,17 @@ ModelLoader::ModelLoader() : scene(*model_scene) {
         // std::cout << "loaded " << drawable.transform->name << "\n"; 
         templates.insert(std::make_pair(drawable.transform->name, t)); 
     }
-    std::cout << "loaded " << templates.size() << " models"; 
+    //std::cout << "\nloaded " << templates.size() << " models\n"; 
 }
     
 
 
 Scene::Drawable ModelLoader::create_model(std::string model_name){
     std::map <std::string, ModelTemplate>::iterator it = templates.find(model_name); 
-    assert(it != templates.end()); 
+    if(it == templates.end()) {
+        std::cout << "\n failed to find model " << model_name << ". Using default cube"; 
+        it = templates.find("Cube"); 
+    }
     ModelTemplate t = it->second;
     Scene::Transform *transform = new Scene::Transform; 
     Scene::Drawable drawable = Scene::Drawable(transform); 
