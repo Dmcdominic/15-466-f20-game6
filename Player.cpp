@@ -43,12 +43,5 @@ bool Player::on_input(const Input& input) {
       return false;
   }
 
-  glm::ivec2 target_pos = this->cell->pos + displ;
-  if (!current_grid->is_valid_pos(target_pos)) return false;
-  Cell* target_cell = &current_grid->cells.at(target_pos.x).at(target_pos.y);
-  if (!target_cell->can_fg_obj_move_into(*this, displ)) return false;
-  target_cell->when_fg_obj_moved_into(*this, displ);
-  target_cell->set_fg_obj(this);
-
-  return true;
+  return try_to_move_by(displ);
 }

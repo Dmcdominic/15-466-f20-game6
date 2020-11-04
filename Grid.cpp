@@ -186,6 +186,14 @@ void Cell::when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& disp
 
 /* ----- Background Tiles ----- */
 
+// Doesn't apply to BgTile (for now)
+bool BgTile::try_to_move_by(const glm::ivec2& displ) {
+  // BgTiles can't move
+  throw std::runtime_error("try_to_move_by() called on a BgTile. BgTiles can't move.");
+  return false;
+}
+
+
 // Returns true iff the given foreground object is allowed to be moved/pushed onto this tile.
 bool BgTile::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
   // By default, any object can move onto this
@@ -221,6 +229,22 @@ bool BgTile::on_input(const Input& input){
 
 /* ----- Foreground Objects ----- */
 
+// If this obj can be moved the distance and direction indicated by displ, then do so and return true.
+// Otws return false.
+bool FgObj::try_to_move_by(const glm::ivec2& displ) {
+  glm::ivec2 target_pos = this->cell->pos + displ;
+  if (!current_grid->is_valid_pos(target_pos)) return false;
+  Cell* target_cell = &current_grid->cells.at(target_pos.x).at(target_pos.y);
+  if (!target_cell->can_fg_obj_move_into(*this, displ)) return false;
+  target_cell->when_fg_obj_moved_into(*this, displ);
+  if (target_cell->fgObj != nullptr) {
+    throw std::runtime_error("Trying to move an FgObj into a cell that seems to still have one");
+  }
+  target_cell->set_fg_obj(this);
+  return true;
+}
+
+
 // Returns true iff the given foreground object is allowed to be moved/pushed into this object.
 // Default behavior is that this can be pushed according to displ.
 bool FgObj::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
@@ -236,18 +260,9 @@ bool FgObj::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) 
 
 // Does whatever should happen when the given foreground object is moved/pushed into this object.
 void FgObj::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
-  glm::ivec2 target_pos = this->cell->pos + displ;
-  // First double check if this will end up outside the current grid.
-  if (!current_grid->is_valid_pos(target_pos)) {
-    throw std::runtime_error("when_fg_moved_into() somehow called for an object position & displacement that would put it outside the current grid");
+  if (!try_to_move_by(displ)) {
+    throw std::runtime_error("when_fg_obj_moved_into() somehow called for an object position & displacement that COULDN'T move.");
   }
-  // Now move to the target cell
-  Cell *target_cell = &current_grid->cells.at(target_pos.x).at(target_pos.y);
-  target_cell->when_fg_obj_moved_into(*this, displ);
-  if (target_cell->fgObj != nullptr) {
-    throw std::runtime_error("Trying to move an FgObj into a cell that seems to still have one");
-  }
-  target_cell->set_fg_obj(this);
 }
 
 
@@ -271,6 +286,22 @@ bool FgObj::on_input(const Input& input){
 
 
 /* ----- Sky Objects ----- */
+
+// If this obj can be moved the distance and direction indicated by displ, then do so and return true.
+// Otws return false.
+bool SkyObj::try_to_move_by(const glm::ivec2& displ) {
+  glm::ivec2 target_pos = this->cell->pos + displ;
+  if (!current_grid->is_valid_pos(target_pos)) return false;
+  Cell* target_cell = &current_grid->cells.at(target_pos.x).at(target_pos.y);
+  if (!target_cell->can_sky_obj_move_into(*this, displ)) return false;
+  target_cell->when_sky_obj_moved_into(*this, displ);
+  target_cell->set_sky_obj(this);
+  if (target_cell->skyObj != nullptr) {
+    throw std::runtime_error("Trying to move a SkyObj into a cell that seems to still have one");
+  }
+  return true;
+}
+
 
 // Returns true iff the given foreground object is allowed to be moved/pushed onto this tile.
 bool SkyObj::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
@@ -298,18 +329,9 @@ bool SkyObj::can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2
 
 // Does whatever should happen when the given sky object is moved/pushed onto this tile.
 void SkyObj::when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) {
-  glm::ivec2 target_pos = this->cell->pos + displ;
-  // First double check if this will end up outside the current grid.
-  if (!current_grid->is_valid_pos(target_pos)) {
-    throw std::runtime_error("when_sky_moved_into() somehow called for an object position & displacement that would put it outside the current grid");
+  if (!try_to_move_by(displ)) {
+    throw std::runtime_error("when_sky_obj_moved_into() somehow called for an object position & displacement that COULDN'T move.");
   }
-  // Now move to the target cell
-  Cell* target_cell = &current_grid->cells.at(target_pos.x).at(target_pos.y);
-  target_cell->when_sky_obj_moved_into(*this, displ);
-  if (target_cell->skyObj != nullptr) {
-    throw std::runtime_error("Trying to move a SkyObj into a cell that seems to still have one");
-  }
-  target_cell->set_sky_obj(this);
 }
 
 

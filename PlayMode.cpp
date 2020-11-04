@@ -49,27 +49,6 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 	// First, seed the random number generator
 	std::srand((unsigned int)time(NULL));
 
-	// // --- PREFAB ASSIGNMENT ---
-	// // TODO
-	// // Get pointers to prefabs
-	// for (auto& drawable : scene.drawables) {
-	// 	if (drawable.transform->name == "Player") {
-	// 		Player::prefab = &drawable;
-	// 	} else if (drawable.transform->name == "Barrel") {
-	// 		Barrel::prefab = &drawable;
-	// 	} else if (drawable.transform->name == "FixedRock") {
-	// 		FixedRock::prefab = &drawable;
-	// 	} else if (drawable.transform->name == "PushableBall") {
-	// 		PushableBall::prefab = &drawable;
-	// 	}
-	// }
-	// // Check if any prefabs are null
-	// if (Player::prefab == nullptr) {
-	// 	throw std::runtime_error("prefab Player not found");
-	// } else if (Barrel::prefab == nullptr) {
-	// 	throw std::runtime_error("prefab Barrel not found");
-	// }
-
 	//create a camera
 	scene.transforms.emplace_back();
 	scene.cameras.emplace_back(&scene.transforms.back());
@@ -84,17 +63,7 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 	//rotate camera facing direction (-z) to player facing direction (+y):
 	//playerOLD.camera->transform->rotation = glm::angleAxis(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
-	// --- GRID INITIALIZATION ---
-	// //Construct a starting grid
-	// current_grid = new Grid(10, 10);
-
-	// // Fill it in with *placeholder* objects
-	// current_grid->cells.at(0).at(0).set_fg_obj(new Player(Player::prefab->transform));
-	// current_grid->cells.at(4).at(2).set_fg_obj(new Barrel(Barrel::prefab->transform));
-	// current_grid->cells.at(5).at(5).set_fg_obj(new FixedRock(FixedRock::prefab->transform));
-	// current_grid->cells.at(8).at(8).set_fg_obj(new PushableBall(PushableBall::prefab->transform));
-
-	
+	// --- MODEL & GRID INITIALIZATION ---
 	loader = ModelLoader(); 
 	//change this value to view a different level
 	current_grid = GridLoader::load_level(0, loader, &scene);

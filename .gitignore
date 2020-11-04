@@ -16,3 +16,5 @@ scenes/show-scene*
 .idea/
 *.blend[0-9]
 scenes/Makefile
+
+.DS_Store
