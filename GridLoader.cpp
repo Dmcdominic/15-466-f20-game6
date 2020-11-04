@@ -108,12 +108,12 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                 case 5:
                     scene->drawables.push_back(loader.create_model("Tree"));
                     grid->cells.at(x).at(y).set_fg_obj(new Tree(&(scene->drawables.back()),
-                                                                 loader.create_model("Rock"), &scene->drawables));
+                                                                 loader.create_model("Tree_Contaminated"), &scene->drawables));
                     break;
                 case 6:
                     scene->drawables.push_back(loader.create_model("Protesters"));
                     grid->cells.at(x).at(y).set_fg_obj(new Protesters(&(scene->drawables.back()),
-                                                                loader.create_model("Rock"), &scene->drawables));
+                                                                loader.create_model("Protesters_Contaminated"), &scene->drawables));
                     break;
                 case 9:  
                     scene->drawables.push_back(loader.create_model("Button")); 
