@@ -16,6 +16,7 @@ void Protesters::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& 
     if(dynamic_cast<Barrel*>(&objBeingMoved) != nullptr) {
         this->drawables->remove(*(this->drawable));
         this->cell->fgObj= nullptr;
+        delete this->cell->bgTile->drawable->transform;
         *(this->cell->bgTile->drawable) = this->rolled_over;
         delete this;
     }

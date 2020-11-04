@@ -16,7 +16,9 @@ void Tree::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ)
     if(dynamic_cast<Barrel*>(&objBeingMoved) != nullptr) {
         this->drawables->remove(*(this->drawable));
         this->cell->fgObj= nullptr;
+        delete this->cell->bgTile->drawable->transform;
         *(this->cell->bgTile->drawable) = this->rotten;
+        this->cell->bgTile = new RottenTree(this->cell->bgTile->drawable);
         delete this;
     }
 }

@@ -28,7 +28,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5ef998e6-366e-4fc4-8f00-3afcf587ba2a" name="Default Changelist" comment="">
+<<<<<<< Updated upstream
       <change beforePath="$PROJECT_DIR$/GridLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/GridLoader.cpp" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GridLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/GridLoader.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Protesters.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Protesters.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tree.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Tree.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/levels/pack" beforeDir="false" afterPath="$PROJECT_DIR$/levels/pack" afterDir="false" />
+>>>>>>> Stashed changes
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,12 +79,12 @@
     <property name="org.elm.workspace.PROJECT_DISCOVERY" value="true" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/dist" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
     </key>
   </component>
   <component name="SpellCheckerSettings" BundledDictionaries="0" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" Dictionaries="0" CorrectionsLimit="5" DefaultDictionary="application-level" UseSingleDictionary="true" />
@@ -119,10 +127,10 @@
     </state>
     <state x="227" y="58" key="#Deployment/0.23.1280.741/-675.-1417.2560.1417@0.23.1280.741" timestamp="1603994772615" />
     <state x="-221" y="-1353" key="#Deployment/0.23.1280.777/-675.-1417.2560.1350@-675.-1417.2560.1350" timestamp="1604031446580" />
-    <state x="205" y="-1077" key="#New_File_Extensions" timestamp="1604440893044">
+    <state x="205" y="-1077" key="#New_File_Extensions" timestamp="1604461101907">
       <screen x="-675" y="-1417" width="2560" height="1349" />
     </state>
-    <state x="205" y="-1077" key="#New_File_Extensions/0.23.1280.777/-675.-1417.2560.1349@-675.-1417.2560.1349" timestamp="1604440893044" />
+    <state x="205" y="-1077" key="#New_File_Extensions/0.23.1280.777/-675.-1417.2560.1349@-675.-1417.2560.1349" timestamp="1604461101907" />
     <state x="205" y="-1077" key="#New_File_Extensions/0.23.1280.777/-675.-1417.2560.1350@-675.-1417.2560.1350" timestamp="1604363509409" />
     <state x="-240" y="-957" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1604364026477">
       <screen x="-675" y="-1417" width="2560" height="1350" />

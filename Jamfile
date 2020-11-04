@@ -119,6 +119,8 @@ GAME_NAMES =
 	Tree
 	Protesters
 	River
+	Bridge
+	Button
 	;
 
 COMMON_NAMES =
