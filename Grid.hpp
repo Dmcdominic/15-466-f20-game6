@@ -72,12 +72,12 @@ struct Cell {
 /* Cell Items (parent class of BgTile, FgObj, SkyObj, etc.) */
 struct CellItem {
 	// Fields
-    Scene::Transform* transform = nullptr;
+    Scene::Drawable* drawable = nullptr;
 	Cell* cell = nullptr;
 
 	// Constructors
-	CellItem(Scene::Transform* _transform) : transform(_transform) {};
-	CellItem(Scene::Transform* _transform, Cell* _cell) : transform(_transform), cell(_cell) {};
+	CellItem(Scene::Drawable* _drawable) : drawable(_drawable) {};
+	CellItem(Scene::Drawable* _drawable, Cell* _cell) : drawable(_drawable), cell(_cell) {};
 
 	// Methods
 	virtual bool can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ) = 0;

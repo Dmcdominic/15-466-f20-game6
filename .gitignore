@@ -9,4 +9,5 @@ dist/freetype-test
 dist/freetype-test.*
 scenes/show-meshes*
 scenes/show-scene*
+.idea/
 *.blend[0-9]

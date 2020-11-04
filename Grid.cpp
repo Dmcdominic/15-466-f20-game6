@@ -87,8 +87,8 @@ void Cell::set_bg_tile(BgTile* _bgTile) {
   }
   this->bgTile->cell = this;
   // TODO - smoothly move/animate this object?
-  if (!this->bgTile->transform) throw std::runtime_error("No transform on a BgTile that's trying to move");
-  this->bgTile->transform->position = glm::vec3(this->pos.x, this->pos.y, 0);
+  if (!this->bgTile->drawable->transform) throw std::runtime_error("No transform on a BgTile that's trying to move");
+  this->bgTile->drawable->transform->position = glm::vec3(this->pos.x, this->pos.y, 0);
 }
 
 
@@ -103,8 +103,8 @@ void Cell::set_fg_obj(FgObj* _fgObj) {
   }
   this->fgObj->cell = this;
   // TODO - smoothly move/animate this object?
-  if (!this->fgObj->transform) throw std::runtime_error("No transform on a FgObj that's trying to move");
-  this->fgObj->transform->position = glm::vec3(this->pos.x, this->pos.y, 0);
+  if (!this->fgObj->drawable->transform) throw std::runtime_error("No transform on a FgObj that's trying to move");
+  this->fgObj->drawable->transform->position = glm::vec3(this->pos.x, this->pos.y, 0);
 }
 
 
@@ -119,8 +119,8 @@ void Cell::set_sky_obj(SkyObj* _skyObj) {
   }
   this->skyObj->cell = this;
   // TODO - smoothly move/animate this object?
-  if (!this->skyObj->transform) throw std::runtime_error("No transform on a SkyObj that's trying to move");
-  this->skyObj->transform->position = glm::vec3(this->pos.x, this->pos.y, 0);
+  if (!this->skyObj->drawable->transform) throw std::runtime_error("No transform on a SkyObj that's trying to move");
+  this->skyObj->drawable->transform->position = glm::vec3(this->pos.x, this->pos.y, 0);
 }
 
 
