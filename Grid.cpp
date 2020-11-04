@@ -87,8 +87,8 @@ void Cell::set_bg_tile(BgTile* _bgTile) {
   }
   this->bgTile->cell = this;
   // TODO - smoothly move/animate this object?
-  if (!this->bgTile->transform) throw std::runtime_error("No transform on a BgTile that's trying to move");
-  this->bgTile->transform->position = glm::vec3(this->pos.x, this->pos.y, 0);
+  if (!this->bgTile->drawable->transform) throw std::runtime_error("No transform on a BgTile that's trying to move");
+  this->bgTile->drawable->transform->position = glm::vec3(this->pos.x, this->pos.y, 0);
 }
 
 
@@ -103,8 +103,8 @@ void Cell::set_fg_obj(FgObj* _fgObj) {
   }
   this->fgObj->cell = this;
   // TODO - smoothly move/animate this object?
-  if (!this->fgObj->transform) throw std::runtime_error("No transform on a FgObj that's trying to move");
-  this->fgObj->transform->position = glm::vec3(this->pos.x, this->pos.y, 0);
+  if (!this->fgObj->drawable->transform) throw std::runtime_error("No transform on a FgObj that's trying to move");
+  this->fgObj->drawable->transform->position = glm::vec3(this->pos.x, this->pos.y, 0);
 }
 
 
@@ -119,8 +119,8 @@ void Cell::set_sky_obj(SkyObj* _skyObj) {
   }
   this->skyObj->cell = this;
   // TODO - smoothly move/animate this object?
-  if (!this->skyObj->transform) throw std::runtime_error("No transform on a SkyObj that's trying to move");
-  this->skyObj->transform->position = glm::vec3(this->pos.x, this->pos.y, 0);
+  if (!this->skyObj->drawable->transform) throw std::runtime_error("No transform on a SkyObj that's trying to move");
+  this->skyObj->drawable->transform->position = glm::vec3(this->pos.x, this->pos.y, 0);
 }
 
 
@@ -133,7 +133,7 @@ bool Cell::on_input(const Input& input) {
 
 
 // Returns true iff a foreground object can safely be moved/pushed into this cell
-bool Cell::can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ) {
+bool Cell::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
   return (bgTile == nullptr || bgTile->can_fg_obj_move_into(objBeingMoved, displ)) &&
          (fgObj == nullptr  || fgObj->can_fg_obj_move_into(objBeingMoved, displ)) &&
          (skyObj == nullptr || skyObj->can_fg_obj_move_into(objBeingMoved, displ));
@@ -187,7 +187,7 @@ void Cell::when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& disp
 /* ----- Background Tiles ----- */
 
 // Returns true iff the given foreground object is allowed to be moved/pushed onto this tile.
-bool BgTile::can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ) {
+bool BgTile::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
   // By default, any object can move onto this
   return true;
 }
@@ -223,7 +223,7 @@ bool BgTile::on_input(const Input& input){
 
 // Returns true iff the given foreground object is allowed to be moved/pushed into this object.
 // Default behavior is that this can be pushed according to displ.
-bool FgObj::can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ) {
+bool FgObj::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
   glm::ivec2 target_pos = this->cell->pos + displ;
   // First check if this will end up outside the current grid.
   if (!current_grid->is_valid_pos(target_pos)) {
@@ -273,7 +273,7 @@ bool FgObj::on_input(const Input& input){
 /* ----- Sky Objects ----- */
 
 // Returns true iff the given foreground object is allowed to be moved/pushed onto this tile.
-bool SkyObj::can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ) {
+bool SkyObj::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
   return true;
 }
 

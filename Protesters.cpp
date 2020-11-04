@@ -1,10 +1,22 @@
 #include "Protesters.hpp"
+#include "Barrel.hpp"
 #include <iostream>
 
 
 Scene::Drawable* Protesters::prefab;
 
+bool Protesters::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ){
+    const FgObj* y = &objBeingMoved;
+    const Barrel* x = dynamic_cast<const Barrel*>(y);
+    if(x != nullptr) return true;
+    return false;
+}
+
 void Protesters::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
-    this->rolled_over.transform->position = this->current->transform->position;
-    *(this->current) = this->rolled_over;
+    if(dynamic_cast<Barrel*>(&objBeingMoved) != nullptr) {
+        this->drawables->remove(*(this->drawable));
+        this->cell->fgObj= nullptr;
+        *(this->cell->bgTile->drawable) = this->rolled_over;
+        delete this;
+    }
 }

@@ -79,6 +79,9 @@ struct Scene {
 				GLenum target = GL_TEXTURE_2D;
 			} textures[TextureCount];
 		} pipeline;
+		bool operator==(const Drawable& other) const {
+		    return transform == other.transform;
+		}
 	};
 
 	struct Camera {
