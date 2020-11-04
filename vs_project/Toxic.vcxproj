@@ -73,6 +73,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Barrel.cpp" />
+    <ClCompile Include="..\Disposal.cpp" />
     <ClCompile Include="..\FixedRock.cpp" />
     <ClCompile Include="..\Grid.cpp" />
     <ClCompile Include="..\ColorProgram.cpp" />
@@ -101,6 +102,7 @@
     <ClCompile Include="..\PlayMode.cpp" />
     <ClCompile Include="..\Protesters.cpp" />
     <ClCompile Include="..\PushableBall.cpp" />
+    <ClCompile Include="..\River.cpp" />
     <ClCompile Include="..\Scene.cpp" />
     <ClCompile Include="..\show-meshes.cpp" />
     <ClCompile Include="..\show-scene.cpp" />
@@ -114,6 +116,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Barrel.hpp" />
+    <ClInclude Include="..\Disposal.hpp" />
     <ClInclude Include="..\FixedRock.hpp" />
     <ClInclude Include="..\Grid.hpp" />
     <ClInclude Include="..\ColorProgram.hpp" />
@@ -142,6 +145,7 @@
     <ClInclude Include="..\Protesters.hpp" />
     <ClInclude Include="..\PushableBall.hpp" />
     <ClInclude Include="..\read_write_chunk.hpp" />
+    <ClInclude Include="..\River.hpp" />
     <ClInclude Include="..\Scene.hpp" />
     <ClInclude Include="..\ShowMeshesMode.hpp" />
     <ClInclude Include="..\ShowMeshesProgram.hpp" />
@@ -152,6 +156,7 @@
     <ClInclude Include="..\WalkMesh.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\.gitignore" />
     <None Include="..\Jamfile" />
     <None Include="..\make-GL.py" />
     <None Include="..\make-PathFont-font.py" />

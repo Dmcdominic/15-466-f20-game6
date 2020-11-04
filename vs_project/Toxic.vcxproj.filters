@@ -132,6 +132,12 @@
     <ClCompile Include="..\Tree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Disposal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\River.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\glcorearb.h">
@@ -245,6 +251,12 @@
     <ClInclude Include="..\Tree.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Disposal.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\River.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Jamfile" />
@@ -255,6 +267,7 @@
     <None Include="..\make-PathFont-font.py" />
     <None Include="..\NEST.md" />
     <None Include="..\PathFont-font.svg" />
+    <None Include="..\.gitignore" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\screenshot.png">
