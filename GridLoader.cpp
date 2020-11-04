@@ -8,6 +8,7 @@
 #include "Tree.hpp"
 #include "Protesters.hpp"
 #include "River.hpp"
+#include "Disposal.hpp"
 
 
 Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *scene) {
@@ -41,6 +42,10 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     scene->drawables.push_back(loader.create_model("Bridge")); 
                     grid->cells.at(x).at(y).set_bg_tile(new BgTile(&(scene->drawables.back())));
                     break;
+                case 11:  
+                    scene->drawables.push_back(loader.create_model("Disposal")); 
+                    grid->cells.at(x).at(y).set_bg_tile(new Disposal(&(scene->drawables.back()), &scene->drawables));
+                    break; 
                 case 13:
 	                  river_counter++;
 	                  break;
@@ -117,10 +122,6 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     break;
                 case 9:  
                     scene->drawables.push_back(loader.create_model("Button")); 
-                    grid->cells.at(x).at(y).set_fg_obj(new FixedRock(&(scene->drawables.back())));
-                    break; 
-                case 11:  
-                    scene->drawables.push_back(loader.create_model("Disposal")); 
                     grid->cells.at(x).at(y).set_fg_obj(new FixedRock(&(scene->drawables.back())));
                     break; 
                 case 12:  

@@ -119,6 +119,7 @@ GAME_NAMES =
 	Tree
 	Protesters
 	River
+	Disposal
 	;
 
 COMMON_NAMES =
