@@ -93,6 +93,8 @@ struct CellItem {
 	virtual bool on_input(const Input& input) = 0;
 	//virtual bool on_pre_tick() {};
 	virtual void on_post_tick() {};
+
+	virtual void rotate_90();
 };
 
 

@@ -7,11 +7,15 @@
 #include "Load.hpp"
 #include "gl_errors.hpp"
 #include "data_path.hpp"
+
+#include "GridLoader.hpp"
+
 #include "Player.hpp"
 #include "Barrel.hpp"
 #include "FixedRock.hpp"
 #include "PushableBall.hpp"
-#include "GridLoader.hpp"
+#include "Turnstile.hpp"
+#include "Pit.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -60,9 +64,6 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 	active_camera->transform->position = glm::vec3(4.5f, .8f, 7.0f);
 	active_camera->transform->rotation = glm::quat(glm::vec3(.3f, 0.0f, 0.0f));
 
-	//rotate camera facing direction (-z) to player facing direction (+y):
-	//playerOLD.camera->transform->rotation = glm::angleAxis(glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-
 	// --- MODEL & GRID INITIALIZATION ---
 	loader = ModelLoader(); 
 	//change this value to view a different level
@@ -70,7 +71,18 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 
 	// Manually throwing an object into the first grid, for testing
 	/*scene.drawables.push_back(loader.create_model("Barrel"));
-	current_grid->cells.at(4).at(1).set_fg_obj(new Barrel(&(scene.drawables.back())));*/
+	current_grid->cells.at(4).at(1).set_fg_obj(new Barrel(&(scene.drawables.back())));
+
+	BgTile *bgTileToRemove = current_grid->cells.at(4).at(1).bgTile;
+	scene.drawables.remove(*bgTileToRemove->drawable);
+	current_grid->cells.at(4).at(1).bgTile = nullptr;
+	delete bgTileToRemove->drawable->transform;
+
+	scene.drawables.push_back(loader.create_model("Turnstile"));
+	current_grid->cells.at(4).at(1).set_bg_tile(new Turnstile(&(scene.drawables.back())));*/
+
+	/*scene.drawables.push_back(loader.create_model("Pit"));
+	current_grid->cells.at(4).at(2).set_bg_tile(new Pit(&(scene.drawables.back())));*/
 }
 
 PlayMode::~PlayMode() {

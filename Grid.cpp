@@ -109,7 +109,7 @@ void Cell::set_bg_tile(BgTile* _bgTile) {
   this->bgTile->cell = this;
   // TODO - smoothly move/animate this object?
   if (!this->bgTile->drawable->transform) throw std::runtime_error("No transform on a BgTile that's trying to move");
-  this->bgTile->drawable->transform->position = glm::vec3(this->pos.x, this->pos.y, 0);
+  this->bgTile->drawable->transform->position = glm::vec3(this->pos.x, this->pos.y, -0.1f);
 }
 
 
@@ -218,7 +218,13 @@ void Cell::on_post_tick() {
 
 
 /* ----- Cell Items ----- */
-// Nothing to implement. This is an abstract struct with pure virtual functions.
+
+// Rotates the tile/object 90 degrees (clockwise for now)
+void CellItem::rotate_90() {
+  float roll = glm::roll(this->drawable->transform->rotation);
+  roll += glm::half_pi<float>();
+  this->drawable->transform->rotation = glm::angleAxis(roll, glm::vec3(0.0f, 0.0f, 1.0f));
+}
 
 
 

@@ -2,8 +2,6 @@
 #include <iostream>
 
 
-Scene::Drawable* Player::prefab;
-
 // For now, objects can't move into the player's cell
 bool Player::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
   return false;

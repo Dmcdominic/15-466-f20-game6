@@ -123,6 +123,8 @@ GAME_NAMES =
 	Bridge
 	Button
 	Disposal
+	Turnstile
+	Pit
 	;
 
 COMMON_NAMES =
