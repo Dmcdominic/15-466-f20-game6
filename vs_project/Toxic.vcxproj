@@ -98,6 +98,7 @@
     <ClCompile Include="..\pack-levels.cpp" />
     <ClCompile Include="..\PathFont-font.cpp" />
     <ClCompile Include="..\PathFont.cpp" />
+    <ClCompile Include="..\Pit.cpp" />
     <ClCompile Include="..\Player.cpp" />
     <ClCompile Include="..\PlayMode.cpp" />
     <ClCompile Include="..\Protesters.cpp" />
@@ -112,6 +113,7 @@
     <ClCompile Include="..\ShowSceneProgram.cpp" />
     <ClCompile Include="..\Sound.cpp" />
     <ClCompile Include="..\Tree.cpp" />
+    <ClCompile Include="..\Turnstile.cpp" />
     <ClCompile Include="..\WalkMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -140,6 +142,7 @@
     <ClInclude Include="..\ModelLoader.hpp" />
     <ClInclude Include="..\PackedGrid.hpp" />
     <ClInclude Include="..\PathFont.hpp" />
+    <ClInclude Include="..\Pit.hpp" />
     <ClInclude Include="..\Player.hpp" />
     <ClInclude Include="..\PlayMode.hpp" />
     <ClInclude Include="..\Protesters.hpp" />
@@ -153,6 +156,7 @@
     <ClInclude Include="..\ShowSceneProgram.hpp" />
     <ClInclude Include="..\Sound.hpp" />
     <ClInclude Include="..\Tree.hpp" />
+    <ClInclude Include="..\Turnstile.hpp" />
     <ClInclude Include="..\WalkMesh.hpp" />
   </ItemGroup>
   <ItemGroup>

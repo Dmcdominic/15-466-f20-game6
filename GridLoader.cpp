@@ -123,10 +123,10 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     scene->drawables.push_back(loader.create_model("Barrel")); 
                     grid->cells.at(x).at(y).set_fg_obj(new Barrel(&(scene->drawables.back())));
                     break; 
-                case 3:  
-                    //TODO: rotate the barrel 
+                case 3:
                     scene->drawables.push_back(loader.create_model("Barrel")); 
                     grid->cells.at(x).at(y).set_fg_obj(new Barrel(&(scene->drawables.back())));
+                    grid->cells.at(x).at(y).fgObj->rotate_90();
                     break; 
                 case 4:  
                     scene->drawables.push_back(loader.create_model("Rock")); 

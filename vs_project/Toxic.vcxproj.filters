@@ -138,6 +138,12 @@
     <ClCompile Include="..\River.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Turnstile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Pit.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\glcorearb.h">
@@ -255,6 +261,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\River.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Turnstile.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Pit.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
