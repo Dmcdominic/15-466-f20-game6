@@ -9,8 +9,8 @@
 #include "data_path.hpp"
 #include "Player.hpp"
 #include "Barrel.hpp"
-#include "FixedRock.hpp"
-#include "PushableBall.hpp"
+#include "Tree.hpp"
+#include "Rock.hpp"
 #include "GridLoader.hpp"
 
 #include <glm/gtc/type_ptr.hpp>

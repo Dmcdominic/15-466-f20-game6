@@ -12,7 +12,8 @@ void Disposal::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& di
 	if(dynamic_cast<Barrel*>(&objBeingMoved) != nullptr) {
         //TODO: add points or something? 
 
-        //delete the barrel 
+        //delete the barrel
+//        delete objBeingMoved.drawable->transform;
         this->drawables->remove(*(objBeingMoved.drawable));
         this->cell->set_fg_obj(nullptr);
 
