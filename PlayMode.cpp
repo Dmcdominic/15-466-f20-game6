@@ -61,7 +61,7 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 	active_camera->near = 0.01f;
 
 	//TODO: camera follow player
-	active_camera->transform->position = glm::vec3(4.5f, .8f, 7.0f);
+	active_camera->transform->position = glm::vec3(2.0f, -1.0f, 7.0f);
 	active_camera->transform->rotation = glm::quat(glm::vec3(.3f, 0.0f, 0.0f));
 
 	// --- MODEL & GRID INITIALIZATION ---
@@ -92,6 +92,7 @@ PlayMode::~PlayMode() {
 bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size) {
 
 	if (evt.type == SDL_KEYDOWN) {
+
 		if (evt.key.keysym.sym == SDLK_ESCAPE) {
 			SDL_SetRelativeMouseMode(SDL_FALSE);
 			return true;
@@ -99,21 +100,49 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 			left_player.downs += 1;
 			left_player.pressed = true;
 			if (current_grid != nullptr) current_grid->on_input(Input(InputType::LEFT));
+			
+			//advance levels
+			if(current_grid->num_disposed >= current_grid->goal){
+				current_level = (current_level + 1) % num_levels; 
+				current_grid = GridLoader::load_level(current_level, loader, &scene);
+			}
+
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_RIGHT) {
 			right_player.downs += 1;
 			right_player.pressed = true;
 			if (current_grid != nullptr) current_grid->on_input(Input(InputType::RIGHT));
+
+			//advance levels
+			if(current_grid->num_disposed >= current_grid->goal){
+				current_level = (current_level + 1) % num_levels; 
+				current_grid = GridLoader::load_level(current_level, loader, &scene);
+			}
+
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_UP) {
 			up_player.downs += 1;
 			up_player.pressed = true;
 			if (current_grid != nullptr) current_grid->on_input(Input(InputType::UP));
+
+			//advance levels
+			if(current_grid->num_disposed >= current_grid->goal){
+				current_level = (current_level + 1) % num_levels; 
+				current_grid = GridLoader::load_level(current_level, loader, &scene);
+			}
+
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_DOWN) {
 			down_player.downs += 1;
 			down_player.pressed = true;
 			if (current_grid != nullptr) current_grid->on_input(Input(InputType::DOWN));
+
+			//advance levels
+			if(current_grid->num_disposed >= current_grid->goal){
+				current_level = (current_level + 1) % num_levels; 
+				current_grid = GridLoader::load_level(current_level, loader, &scene);
+			}
+
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_a) {
 			left_camera.downs += 1;
@@ -139,7 +168,11 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 			current_level = (current_level + 1) % num_levels; 
 			current_grid = GridLoader::load_level(current_level, loader, &scene);
 			return true;
+		}else if (evt.key.keysym.sym == SDLK_r) {
+			current_grid = GridLoader::load_level(current_level, loader, &scene);
+			return true;
 		}
+		std::cout << "\n" << current_grid->num_disposed << "/" << current_grid->goal; 
 	} else if (evt.type == SDL_KEYUP) {
 		if (evt.key.keysym.sym == SDLK_LEFT) {
 			left_player.pressed = false;
@@ -249,12 +282,12 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 		));
 
 		constexpr float H = 0.09f;
-		lines.draw_text("Mouse motion looks; WASD moves; escape ungrabs mouse",
+		lines.draw_text("arrow keys to move, WASD for camera, R to reset current level",
 			glm::vec3(-aspect + 0.1f * H, -1.0 + 0.1f * H, 0.0),
 			glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
 			glm::u8vec4(0x00, 0x00, 0x00, 0x00));
 		float ofs = 2.0f / drawable_size.y;
-		lines.draw_text("Mouse motion looks; WASD moves; escape ungrabs mouse",
+		lines.draw_text("arrow keys to move, WASD for camera, R to reset current level",
 			glm::vec3(-aspect + 0.1f * H + ofs, -1.0 + + 0.1f * H + ofs, 0.0),
 			glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
 			glm::u8vec4(0xff, 0xff, 0xff, 0x00));

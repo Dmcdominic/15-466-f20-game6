@@ -24,7 +24,8 @@ struct PlayMode : Mode {
 	//----- game state -----
 
 	uint8_t current_level = 0; 
-	uint8_t num_levels = 2; 
+	//TODO: get this from assets, not hardcoded
+	uint8_t num_levels = 8; 
 	ModelLoader loader; 
 
 	//input tracking:

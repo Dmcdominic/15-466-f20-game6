@@ -24,6 +24,8 @@ struct Grid {
 	// Fields
 	size_t width = 0;
 	size_t height = 0;
+	unsigned int goal; 
+	unsigned int num_disposed;
 	std::vector<std::vector<Cell>> cells;
 
 	// Constructor

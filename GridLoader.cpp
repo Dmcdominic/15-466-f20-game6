@@ -30,7 +30,8 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
     //we are loading grid 0 
     PackedGrid packed_grid = packed_grids[grid_id]; 
     Grid *grid = new Grid(packed_grid.width, packed_grid.height);
-
+    grid->goal = packed_grid.goal;
+    grid->num_disposed = 0;
     int river_counter = 0;
 
     //set the BG objects 
