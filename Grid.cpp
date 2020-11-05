@@ -2,9 +2,19 @@
 #include <stdexcept>
 #include <iostream>
 
+#include "Sound.hpp"
+#include "Load.hpp"
+#include "data_path.hpp"
+
 
 // Variable declarations
 Grid* current_grid = nullptr;
+
+
+// Audio loading
+//Load< Sound::Sample > error_sample(LoadTagDefault, []() -> Sound::Sample const* {
+//  return new Sound::Sample(data_path("Audio/Error1.wav"));
+//});
 
 
 
@@ -50,12 +60,18 @@ bool Grid::on_input(const Input& input) {
       if (cells[x][y].on_input(input)) {
         input_handled = true;
         x = width;
-        y = width;
+        y = height;
       }
     }
   }
 
-  if (!input_handled) return false;
+  // If it was an invalid move or other input that couldn't be handled,
+  //   play the error sound.
+  if (!input_handled) {
+    // TODO - get sound working
+    //Sound::play_3D(*error_sample, 1.0f, glm::vec3(0.0f, 0.0f, 0.0f));
+    return false;
+  }
 
   // post_tick()
   for (size_t x = 0; x < width; x++) {

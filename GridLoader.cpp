@@ -12,6 +12,8 @@
 #include "Bridge.hpp"
 #include "Button.hpp"
 #include "Disposal.hpp"
+#include "Pit.hpp"
+#include "Turnstile.hpp"
 
 
 Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *scene) {
@@ -39,8 +41,8 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
         for(unsigned int x = 0; x < packed_grid.width; x++) {
             switch(obj_ids[packed_grid.data_start + x + y * packed_grid.width]) {
                 case 7:
-                    scene->drawables.push_back(loader.create_model("Hill")); 
-                    grid->cells.at(x).at(y).set_bg_tile(new BgTile(&(scene->drawables.back())));
+                    scene->drawables.push_back(loader.create_model("Turnstile")); 
+                    grid->cells.at(x).at(y).set_bg_tile(new Turnstile(&(scene->drawables.back())));
                     break;
                 case 8:
                     scene->drawables.push_back(loader.create_model("Bridge")); 
@@ -57,6 +59,10 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     scene->drawables.push_back(loader.create_model("Grass"));
                     grid->cells.at(x).at(y).set_bg_tile(new BgTile(&(scene->drawables.back())));
                     break;
+                case 15:
+                  scene->drawables.push_back(loader.create_model("Pit"));
+                  grid->cells.at(x).at(y).set_bg_tile(new Pit(&(scene->drawables.back())));
+                  break;
             }
         }
     }
