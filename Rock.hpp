@@ -4,7 +4,7 @@
 #include "Scene.hpp"
 
 
-struct FixedRock : FgObj {
+struct Rock : FgObj {
 	// Constructors (inherited)
 	using FgObj::FgObj;
 
@@ -12,5 +12,5 @@ struct FixedRock : FgObj {
 	static Scene::Drawable* prefab;
 
 	// Methods
-	bool can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
+	// No need to override anything. Pushable is default FgObj behavior.
 };

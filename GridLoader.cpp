@@ -2,11 +2,12 @@
 #include "data_path.hpp"
 #include "read_write_chunk.hpp"
 #include <fstream>
-#include "FixedRock.hpp"
+#include "Tree.hpp"
 #include "Player.hpp"
 #include "Barrel.hpp"
 #include "Tree.hpp"
-#include "RottenTree.hpp"
+//#include "RottenTree.hpp"
+#include "Rock.hpp"
 #include "Protesters.hpp"
 #include "Bridge.hpp"
 #include "Button.hpp"
@@ -67,23 +68,23 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
             switch(obj_ids[packed_grid.data_start + x + y * packed_grid.width]) {
                 case 13: {
                     //TODO: shape the river depending on surrounding tiles
-//                    if (x==2&&y==3){
-//                        scene->drawables.push_back(loader.create_model("River_Straight"));
-//                        Bridge *bridge = new Bridge(&(scene->drawables.back()),
-//                                                    loader.create_model("Tree"),
-//                                                    loader.create_model("Bridge"),
-//                                                    loader.create_model("Rock"),
-//                                                    &scene->drawables);
-//                        grid->cells.at(x).at(y).set_bg_tile(bridge);
-//                        (*river_tiles)[inserted] = bridge;
-//                        inserted++;
-//                        scene->drawables.push_back(loader.create_model("Button"));
-//                        Button *button = new Button(&(scene->drawables.back()),
-//                                                    loader.create_model("Rock"),
-//                                                    bridge);
-//                        grid->cells.at(1).at(5).set_bg_tile(button);
-//                        break;
-//                    }
+                    if (x==2&&y==3){
+                        scene->drawables.push_back(loader.create_model("River_Straight"));
+                        Bridge *bridge = new Bridge(&(scene->drawables.back()),
+                                                    loader.create_model("Tree"),
+                                                    loader.create_model("Bridge"),
+                                                    loader.create_model("Rock"),
+                                                    &scene->drawables);
+                        grid->cells.at(x).at(y).set_bg_tile(bridge);
+                        (*river_tiles)[inserted] = bridge;
+                        inserted++;
+                        scene->drawables.push_back(loader.create_model("Button"));
+                        Button *button = new Button(&(scene->drawables.back()),
+                                                    loader.create_model("Button"),
+                                                    bridge);
+                        grid->cells.at(1).at(5).set_bg_tile(button);
+                        break;
+                    }
                     scene->drawables.push_back(loader.create_model("River_Straight"));
                     River *river = new River(&(scene->drawables.back()),
                                              loader.create_model("River_Straight_Toxic"),
@@ -129,12 +130,11 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     break; 
                 case 4:  
                     scene->drawables.push_back(loader.create_model("Rock")); 
-                    grid->cells.at(x).at(y).set_fg_obj(new FixedRock(&(scene->drawables.back())));
+                    grid->cells.at(x).at(y).set_fg_obj(new Rock(&(scene->drawables.back())));
                     break;
                 case 5:
                     scene->drawables.push_back(loader.create_model("Tree"));
-                    grid->cells.at(x).at(y).set_fg_obj(new Tree(&(scene->drawables.back()),
-                                                                 loader.create_model("Tree_Contaminated"), &scene->drawables));
+                    grid->cells.at(x).at(y).set_fg_obj(new Tree(&(scene->drawables.back())));
                     break;
 
                 case 6:
@@ -149,11 +149,11 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
 //                    break;
                 case 11:
                     scene->drawables.push_back(loader.create_model("Disposal")); 
-                    grid->cells.at(x).at(y).set_fg_obj(new FixedRock(&(scene->drawables.back())));
+                    grid->cells.at(x).at(y).set_fg_obj(new Tree(&(scene->drawables.back())));
                     break; 
                 case 12:
                     scene->drawables.push_back(loader.create_model("Animal")); 
-                    grid->cells.at(x).at(y).set_fg_obj(new FixedRock(&(scene->drawables.back())));
+                    grid->cells.at(x).at(y).set_fg_obj(new Rock(&(scene->drawables.back())));
                     break;            
             }
         }

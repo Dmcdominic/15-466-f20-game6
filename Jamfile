@@ -114,8 +114,7 @@ GAME_NAMES =
 	Input
 	Player
 	Barrel
-	FixedRock
-	PushableBall
+	Rock
 	Tree
 	RottenTree
 	Protesters

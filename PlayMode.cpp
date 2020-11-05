@@ -12,10 +12,10 @@
 
 #include "Player.hpp"
 #include "Barrel.hpp"
-#include "FixedRock.hpp"
-#include "PushableBall.hpp"
 #include "Turnstile.hpp"
 #include "Pit.hpp"
+#include "Tree.hpp"
+#include "Rock.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/quaternion.hpp>
