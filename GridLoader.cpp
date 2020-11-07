@@ -36,6 +36,8 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
     grid->num_disposed = 0;
     int river_counter = 0;
 
+
+    Bridge *bridge = nullptr;
     //set the BG objects 
     for(unsigned int y = 0; y < packed_grid.height; y++) {
         for(unsigned int x = 0; x < packed_grid.width; x++) {
@@ -45,8 +47,7 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     grid->cells.at(x).at(y).set_bg_tile(new Turnstile(&(scene->drawables.back())));
                     break;
                 case 8:
-                    scene->drawables.push_back(loader.create_model("Bridge")); 
-                    grid->cells.at(x).at(y).set_bg_tile(new BgTile(&(scene->drawables.back())));
+                    river_counter++;
                     break;
                 case 11:  
                     scene->drawables.push_back(loader.create_model("Disposal")); 
@@ -73,25 +74,19 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
     for(unsigned int y = 0; y < packed_grid.height; y++) {
         for (unsigned int x = 0; x < packed_grid.width; x++) {
             switch(obj_ids[packed_grid.data_start + x + y * packed_grid.width]) {
+                case 8:
+                    scene->drawables.push_back(loader.create_model("River_Straight"));
+                    bridge = new Bridge(&(scene->drawables.back()),
+                                         loader.create_model("Tree"),
+                                         loader.create_model("Bridge"),
+                                         loader.create_model("Rock"),
+                                         &scene->drawables);
+                    (*river_tiles)[inserted] = bridge;
+                    inserted++;
+                    grid->cells.at(x).at(y).set_bg_tile(bridge);
+                    break;
                 case 13: {
                     //TODO: shape the river depending on surrounding tiles
-                    if (x==2&&y==3){
-                        scene->drawables.push_back(loader.create_model("River_Straight"));
-                        Bridge *bridge = new Bridge(&(scene->drawables.back()),
-                                                    loader.create_model("Tree"),
-                                                    loader.create_model("Bridge"),
-                                                    loader.create_model("Rock"),
-                                                    &scene->drawables);
-                        grid->cells.at(x).at(y).set_bg_tile(bridge);
-                        (*river_tiles)[inserted] = bridge;
-                        inserted++;
-                        scene->drawables.push_back(loader.create_model("Button"));
-                        Button *button = new Button(&(scene->drawables.back()),
-                                                    loader.create_model("Button"),
-                                                    bridge);
-                        grid->cells.at(1).at(5).set_bg_tile(button);
-                        break;
-                    }
                     scene->drawables.push_back(loader.create_model("River_Straight"));
                     River *river = new River(&(scene->drawables.back()),
                                              loader.create_model("River_Straight_Toxic"),
@@ -115,9 +110,19 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
             }
         }
     }
-//    scene->drawables.push_back(loader.create_model("Rock"));
-//    BgTile* bridge = new Bridge(&(scene->drawables.back()), loader.create_model("Bridge"));
-//    grid->cells.at(1).at(5).set_bg_tile(new Button(&(scene->drawables.back()), bridge));
+
+    for(unsigned int y = 0; y < packed_grid.height; y++) {
+        for (unsigned int x = 0; x < packed_grid.width; x++) {
+            switch (obj_ids[packed_grid.data_start + x + y * packed_grid.width]) {
+                case 9:
+                    scene->drawables.push_back(loader.create_model("Button"));
+                    grid->cells.at(x).at(y).set_bg_tile(new Button(&(scene->drawables.back()),
+                                                                   loader.create_model("Button"),
+                                                                   bridge));
+                    break;
+            }
+        }
+    }
     //set the FG objects
     for(unsigned int y = 0; y < packed_grid.height; y++) {
         for(unsigned int x = 0; x < packed_grid.width; x++) {
@@ -149,11 +154,6 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     grid->cells.at(x).at(y).set_fg_obj(new Protesters(&(scene->drawables.back()),
                                                                 loader.create_model("Protesters_Contaminated"), &scene->drawables));
                     break;
-//                case 9:
-//                    std::cout<<"button"<<std::endl;
-//                    scene->drawables.push_back(loader.create_model("Button"));
-//                    grid->cells.at(x).at(y).set_fg_obj(new FixedRock(&(scene->drawables.back())));
-//                    break;
                 case 11:
                     scene->drawables.push_back(loader.create_model("Disposal")); 
                     grid->cells.at(x).at(y).set_fg_obj(new Tree(&(scene->drawables.back())));

@@ -23,3 +23,9 @@ void Bridge::deactivate() {
     *(this->drawable) = this->unactivated;
     this->rotten = this->unactivated_toxic;
 }
+
+void Bridge::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ){
+    if (!activated){
+        River::when_fg_obj_moved_into(objBeingMoved, displ);
+    }
+}
