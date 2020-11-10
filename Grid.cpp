@@ -12,9 +12,9 @@ Grid* current_grid = nullptr;
 
 
 // Audio loading
-//Load< Sound::Sample > error_sample(LoadTagDefault, []() -> Sound::Sample const* {
-//  return new Sound::Sample(data_path("Audio/Error1.wav"));
-//});
+Load< Sound::Sample > error_sample(LoadTagDefault, []() -> Sound::Sample const* {
+  return new Sound::Sample(data_path("Audio/Error1.wav"));
+});
 
 
 
@@ -68,8 +68,7 @@ bool Grid::on_input(const Input& input) {
   // If it was an invalid move or other input that couldn't be handled,
   //   play the error sound.
   if (!input_handled) {
-    // TODO - get sound working
-    //Sound::play_3D(*error_sample, 1.0f, glm::vec3(0.0f, 0.0f, 0.0f));
+    Sound::play_3D(*error_sample, 0.2f, glm::vec3(0.0f, 0.0f, 0.0f));
     return false;
   }
 

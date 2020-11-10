@@ -13,6 +13,7 @@ struct Cell;
 struct BgTile;
 struct FgObj;
 struct SkyObj;
+struct Player;
 
 
 // The current grid
@@ -27,6 +28,8 @@ struct Grid {
 	unsigned int goal; 
 	unsigned int num_disposed;
 	std::vector<std::vector<Cell>> cells;
+
+	Player *player = nullptr;
 
 	// Constructor
 	Grid(size_t _width, size_t _height);

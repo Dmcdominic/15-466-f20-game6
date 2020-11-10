@@ -129,7 +129,8 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
             switch(obj_ids[packed_grid.data_start + packed_grid.width * packed_grid.height + x + y * packed_grid.width]) {
                 case 1: 
                     scene->drawables.push_back(loader.create_model("Player")); 
-                    grid->cells.at(x).at(y).set_fg_obj(new Player(&(scene->drawables.back())));
+                    grid->player = new Player(&(scene->drawables.back()));
+                    grid->cells.at(x).at(y).set_fg_obj(grid->player);
                     break; 
                 case 2:  
                     scene->drawables.push_back(loader.create_model("Barrel")); 
