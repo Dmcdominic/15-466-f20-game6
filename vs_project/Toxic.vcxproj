@@ -73,6 +73,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Barrel.cpp" />
+    <ClCompile Include="..\Bridge.cpp" />
+    <ClCompile Include="..\Button.cpp" />
     <ClCompile Include="..\Disposal.cpp" />
     <ClCompile Include="..\FixedRock.cpp" />
     <ClCompile Include="..\Grid.cpp" />
@@ -104,6 +106,8 @@
     <ClCompile Include="..\Protesters.cpp" />
     <ClCompile Include="..\PushableBall.cpp" />
     <ClCompile Include="..\River.cpp" />
+    <ClCompile Include="..\Rock.cpp" />
+    <ClCompile Include="..\RottenTree.cpp" />
     <ClCompile Include="..\Scene.cpp" />
     <ClCompile Include="..\show-meshes.cpp" />
     <ClCompile Include="..\show-scene.cpp" />
@@ -118,6 +122,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Barrel.hpp" />
+    <ClInclude Include="..\Bridge.hpp" />
+    <ClInclude Include="..\Button.hpp" />
     <ClInclude Include="..\Disposal.hpp" />
     <ClInclude Include="..\FixedRock.hpp" />
     <ClInclude Include="..\Grid.hpp" />
@@ -149,6 +155,8 @@
     <ClInclude Include="..\PushableBall.hpp" />
     <ClInclude Include="..\read_write_chunk.hpp" />
     <ClInclude Include="..\River.hpp" />
+    <ClInclude Include="..\Rock.hpp" />
+    <ClInclude Include="..\RottenTree.hpp" />
     <ClInclude Include="..\Scene.hpp" />
     <ClInclude Include="..\ShowMeshesMode.hpp" />
     <ClInclude Include="..\ShowMeshesProgram.hpp" />

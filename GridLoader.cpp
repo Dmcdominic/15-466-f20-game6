@@ -61,9 +61,9 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     grid->cells.at(x).at(y).set_bg_tile(new BgTile(&(scene->drawables.back())));
                     break;
                 case 15:
-                  scene->drawables.push_back(loader.create_model("Pit"));
-                  grid->cells.at(x).at(y).set_bg_tile(new Pit(&(scene->drawables.back())));
-                  break;
+                    scene->drawables.push_back(loader.create_model("Pit"));
+                    grid->cells.at(x).at(y).set_bg_tile(new Pit(&(scene->drawables.back())));
+                    break;
             }
         }
     }
@@ -71,6 +71,7 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
     std::vector< River* > *river_tiles = new std::vector< River* >(river_counter);
     int inserted = 0;
 
+    bool prev_is_land = true; // Used for orienting bridge tiles
     for(unsigned int y = 0; y < packed_grid.height; y++) {
         for (unsigned int x = 0; x < packed_grid.width; x++) {
             switch(obj_ids[packed_grid.data_start + x + y * packed_grid.width]) {
@@ -84,6 +85,8 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     (*river_tiles)[inserted] = bridge;
                     inserted++;
                     grid->cells.at(x).at(y).set_bg_tile(bridge);
+                    if (prev_is_land) bridge->rotate_90();
+                    prev_is_land = false;
                     break;
                 case 13: {
                     //TODO: shape the river depending on surrounding tiles
@@ -94,10 +97,15 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     (*river_tiles)[inserted] = river;
                     inserted++;
                     grid->cells.at(x).at(y).set_bg_tile(river);
+                    prev_is_land = false;
                     break;
                 }
+                default:
+                    prev_is_land = true;
+                    break;
             }
         }
+        prev_is_land = false;
     }
 
     for(size_t i = 0; i < river_tiles->size(); i++){
