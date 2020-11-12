@@ -230,7 +230,7 @@ void Cell::on_post_tick() {
 // Rotates the tile/object 90 degrees (clockwise for now)
 void CellItem::rotate_90() {
   float roll = glm::roll(this->drawable->transform->rotation);
-  roll += glm::half_pi<float>();
+  roll -= glm::half_pi<float>();
   this->drawable->transform->rotation = glm::angleAxis(roll, glm::vec3(0.0f, 0.0f, 1.0f));
 }
 

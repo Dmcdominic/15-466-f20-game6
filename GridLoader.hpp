@@ -1,6 +1,5 @@
 #pragma once
 #include "Grid.hpp"
-#include "Level.hpp"
 #include "PackedGrid.hpp"
 #include "ModelLoader.hpp"
 

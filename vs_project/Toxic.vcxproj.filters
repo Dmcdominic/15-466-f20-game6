@@ -108,16 +108,7 @@
     <ClCompile Include="..\Barrel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\FixedRock.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\PushableBall.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\GridLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Level.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\ModelLoader.cpp">
@@ -248,16 +239,7 @@
     <ClInclude Include="..\Barrel.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\FixedRock.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\PushableBall.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\GridLoader.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Level.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\ModelLoader.hpp">

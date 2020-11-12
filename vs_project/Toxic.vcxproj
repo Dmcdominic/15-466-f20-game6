@@ -77,7 +77,6 @@
     <ClCompile Include="..\Bridge.cpp" />
     <ClCompile Include="..\Button.cpp" />
     <ClCompile Include="..\Disposal.cpp" />
-    <ClCompile Include="..\FixedRock.cpp" />
     <ClCompile Include="..\Grid.cpp" />
     <ClCompile Include="..\ColorProgram.cpp" />
     <ClCompile Include="..\ColorTextureProgram.cpp" />
@@ -88,7 +87,6 @@
     <ClCompile Include="..\gl_compile_program.cpp" />
     <ClCompile Include="..\GridLoader.cpp" />
     <ClCompile Include="..\Input.cpp" />
-    <ClCompile Include="..\Level.cpp" />
     <ClCompile Include="..\LitColorTextureProgram.cpp" />
     <ClCompile Include="..\Load.cpp" />
     <ClCompile Include="..\load_opus.cpp" />
@@ -106,7 +104,6 @@
     <ClCompile Include="..\Player.cpp" />
     <ClCompile Include="..\PlayMode.cpp" />
     <ClCompile Include="..\Protesters.cpp" />
-    <ClCompile Include="..\PushableBall.cpp" />
     <ClCompile Include="..\River.cpp" />
     <ClCompile Include="..\Rock.cpp" />
     <ClCompile Include="..\RottenTree.cpp" />
@@ -127,7 +124,6 @@
     <ClInclude Include="..\Bridge.hpp" />
     <ClInclude Include="..\Button.hpp" />
     <ClInclude Include="..\Disposal.hpp" />
-    <ClInclude Include="..\FixedRock.hpp" />
     <ClInclude Include="..\Grid.hpp" />
     <ClInclude Include="..\ColorProgram.hpp" />
     <ClInclude Include="..\ColorTextureProgram.hpp" />
@@ -139,7 +135,6 @@
     <ClInclude Include="..\gl_errors.hpp" />
     <ClInclude Include="..\GridLoader.hpp" />
     <ClInclude Include="..\Input.hpp" />
-    <ClInclude Include="..\Level.hpp" />
     <ClInclude Include="..\LitColorTextureProgram.hpp" />
     <ClInclude Include="..\Load.hpp" />
     <ClInclude Include="..\load_opus.hpp" />
@@ -155,7 +150,6 @@
     <ClInclude Include="..\Player.hpp" />
     <ClInclude Include="..\PlayMode.hpp" />
     <ClInclude Include="..\Protesters.hpp" />
-    <ClInclude Include="..\PushableBall.hpp" />
     <ClInclude Include="..\read_write_chunk.hpp" />
     <ClInclude Include="..\River.hpp" />
     <ClInclude Include="..\Rock.hpp" />
