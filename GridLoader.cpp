@@ -76,12 +76,12 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
         for (unsigned int x = 0; x < packed_grid.width; x++) {
             switch(obj_ids[packed_grid.data_start + x + y * packed_grid.width]) {
                 case 8:
-                    scene->drawables.push_back(loader.create_model("River_Straight"));
+                    scene->drawables.push_back(loader.create_model("Bridge_Unactivated"));
                     bridge = new Bridge(&(scene->drawables.back()),
                                          loader.create_model("Tree"),
                                          loader.create_model("Bridge"),
                                          loader.create_model("Rock"),
-                                         &scene->drawables);
+                                         &scene->drawables);        
                     (*river_tiles)[inserted] = bridge;
                     inserted++;
                     grid->cells.at(x).at(y).set_bg_tile(bridge);
@@ -90,9 +90,9 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     break;
                 case 13: {
                     //TODO: shape the river depending on surrounding tiles
-                    scene->drawables.push_back(loader.create_model("River_Straight"));
+                    scene->drawables.push_back(loader.create_model("River"));
                     River *river = new River(&(scene->drawables.back()),
-                                             loader.create_model("River_Straight_Toxic"),
+                                             loader.create_model("River_Toxic"),
                                              &scene->drawables);
                     (*river_tiles)[inserted] = river;
                     inserted++;
