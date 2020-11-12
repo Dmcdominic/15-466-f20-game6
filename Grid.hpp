@@ -29,6 +29,8 @@ struct Grid {
 	unsigned int num_disposed;
 	std::vector<std::vector<Cell>> cells;
 
+	int environment_score = 100;
+
 	Player *player = nullptr;
 
 	// Constructor
