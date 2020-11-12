@@ -29,5 +29,8 @@ struct Mode : std::enable_shared_from_this< Mode > {
     static void set_menu(std::shared_ptr< Mode > const &);
     static void set_play(std::shared_ptr< Mode > const &);
     static void switch_to_play();
+
+	//Set this bool to quit if you want the main loop to quit after this frame.
+	bool quit = false;
 };
 

@@ -11,21 +11,16 @@ else
 endif
 
 EXPORT_MESHES=export-meshes.py
-EXPORT_WALKMESHES=export-walkmeshes.py
 EXPORT_SCENE=export-scene.py
 
 DIST=../dist
 
 all : \
-	$(DIST)/phone-bank.pnct \
-	$(DIST)/phone-bank.w \
-	$(DIST)/phone-bank.scene \
+	$(DIST)/toxic-prefabs.pnct \
+	$(DIST)/toxic-prefabs.scene \
 
-$(DIST)/phone-bank.pnct : phone-bank.blend $(EXPORT_MESHES)
-	$(BLENDER) --background --python $(EXPORT_MESHES) -- '$<':Platforms '$@'
+$(DIST)/toxic-prefabs.pnct : toxic-prefabs.blend $(EXPORT_MESHES)
+	blender --background --python $(EXPORT_MESHES) -- '$<':Main '$@'
 
-$(DIST)/phone-bank.scene : phone-bank.blend $(EXPORT_SCENE)
-	$(BLENDER) --background --python $(EXPORT_SCENE) -- '$<':Platforms '$@'
-
-$(DIST)/phone-bank.w : phone-bank.blend $(EXPORT_WALKMESHES)
-	$(BLENDER) --background --python $(EXPORT_WALKMESHES) -- '$<':WalkMeshes '$@'
+$(DIST)/toxic-prefabs.scene : toxic-prefabs.blend $(EXPORT_SCENE)
+	blender --background --python $(EXPORT_SCENE) -- '$<':Main '$@'

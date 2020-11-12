@@ -1,10 +1,19 @@
 #pragma once
 
 #include "Grid.hpp"
+#include "Scene.hpp"
+
 
 struct Player : FgObj {
-	bool can_fg_obj_move_into(const FgObj& objBeingMoved, const glm::ivec2& displ) override;
-	void when_fg_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
+	// Constructors (inherited)
+	using FgObj::FgObj;
 
-	bool on_input(/* TODO - add some kind of input type here */) override;
+	// Methods
+	bool can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
+	void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
+
+	bool can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ) override;
+	void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) override;
+
+	bool on_input(const Input& input) override;
 };

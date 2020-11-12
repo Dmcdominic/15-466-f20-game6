@@ -1,0 +1,22 @@
+#include "Barrel.hpp"
+#include <iostream>
+
+
+// The barrel can only roll along its long axis.
+bool Barrel::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
+  // First check if displ is along the right axis for the barrel to roll.
+  if (( rollable_up_down && displ.x != 0) ||
+      (!rollable_up_down && displ.y != 0)) {
+    return false;
+  }
+  // If that's all good, then use default pushable behavior.
+  return FgObj::can_fg_obj_move_into(objBeingMoved, displ);
+}
+
+
+// If the barrel gets rotated, we need to flip our rollable axis bool too.
+void Barrel::rotate_90() {
+  rollable_up_down = !rollable_up_down;
+  CellItem::rotate_90();
+}
+

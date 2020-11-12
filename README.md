@@ -1,18 +1,25 @@
-# (TODO: your game's title)
+# Toxic
 
-Author: (TODO: your name)
 
-Design: (TODO: In two sentences or fewer, describe what is new and interesting about your game.)
+### Author:
+(TODO: your name)
 
-Screen Shot:
+
+## How To Play:
+
+* Arrow Keys - Movement
+* WASD - Camera control
+* Q - Quit
+
+
+## Screen Shot:
 
 ![Screen Shot](screenshot.png)
 
-How To Play:
 
-(TODO: describe the controls and (if needed) goals/strategy.)
+## Sources:
 
-Sources: (TODO: list a source URL for any assets you did not create yourself. Make sure you have a license for the asset.)
+(TODO: list a source URL for any assets you did not create yourself. Make sure you have a license for the asset.)
 
 This game was built with [NEST](NEST.md).
 

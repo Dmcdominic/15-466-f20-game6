@@ -157,6 +157,7 @@ int main(int argc, char **argv) {
 				}
 			}
 			if (!Mode::current) break;
+			if (Mode::current->quit) break;
 		}
 
 		{ //(2) call the current mode's "update" function to deal with elapsed time:
@@ -171,6 +172,7 @@ int main(int argc, char **argv) {
 
 			Mode::current->update(elapsed);
 			if (!Mode::current) break;
+			if (Mode::current->quit) break;
 		}
 
 		{ //(3) call the current mode's "draw" function to produce output:
