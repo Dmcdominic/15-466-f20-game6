@@ -61,9 +61,9 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     grid->cells.at(x).at(y).set_bg_tile(new BgTile(&(scene->drawables.back())));
                     break;
                 case 15:
-                  scene->drawables.push_back(loader.create_model("Pit"));
-                  grid->cells.at(x).at(y).set_bg_tile(new Pit(&(scene->drawables.back())));
-                  break;
+                    scene->drawables.push_back(loader.create_model("Pit"));
+                    grid->cells.at(x).at(y).set_bg_tile(new Pit(&(scene->drawables.back())));
+                    break;
             }
         }
     }
@@ -71,33 +71,41 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
     std::vector< River* > *river_tiles = new std::vector< River* >(river_counter);
     int inserted = 0;
 
+    bool prev_is_land = true; // Used for orienting bridge tiles
     for(unsigned int y = 0; y < packed_grid.height; y++) {
         for (unsigned int x = 0; x < packed_grid.width; x++) {
             switch(obj_ids[packed_grid.data_start + x + y * packed_grid.width]) {
                 case 8:
-                    scene->drawables.push_back(loader.create_model("River_Straight"));
+                    scene->drawables.push_back(loader.create_model("Bridge_Unactivated"));
                     bridge = new Bridge(&(scene->drawables.back()),
                                          loader.create_model("Tree"),
                                          loader.create_model("Bridge"),
                                          loader.create_model("Rock"),
-                                         &scene->drawables);
+                                         &scene->drawables);        
                     (*river_tiles)[inserted] = bridge;
                     inserted++;
                     grid->cells.at(x).at(y).set_bg_tile(bridge);
+                    if (prev_is_land) bridge->rotate_90();
+                    prev_is_land = false;
                     break;
                 case 13: {
                     //TODO: shape the river depending on surrounding tiles
-                    scene->drawables.push_back(loader.create_model("River_Straight"));
+                    scene->drawables.push_back(loader.create_model("River"));
                     River *river = new River(&(scene->drawables.back()),
-                                             loader.create_model("River_Straight_Toxic"),
+                                             loader.create_model("River_Toxic"),
                                              &scene->drawables);
                     (*river_tiles)[inserted] = river;
                     inserted++;
                     grid->cells.at(x).at(y).set_bg_tile(river);
+                    prev_is_land = false;
                     break;
                 }
+                default:
+                    prev_is_land = true;
+                    break;
             }
         }
+        prev_is_land = false;
     }
 
     for(size_t i = 0; i < river_tiles->size(); i++){
@@ -129,7 +137,8 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
             switch(obj_ids[packed_grid.data_start + packed_grid.width * packed_grid.height + x + y * packed_grid.width]) {
                 case 1: 
                     scene->drawables.push_back(loader.create_model("Player")); 
-                    grid->cells.at(x).at(y).set_fg_obj(new Player(&(scene->drawables.back())));
+                    grid->player = new Player(&(scene->drawables.back()));
+                    grid->cells.at(x).at(y).set_fg_obj(grid->player);
                     break; 
                 case 2:  
                     scene->drawables.push_back(loader.create_model("Barrel")); 

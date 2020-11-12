@@ -9,7 +9,7 @@ std::shared_ptr< MenuMode > game_menu;
 
 Load< void > load_game_menu(LoadTagDefault, []() {
 	std::vector< MenuMode::Item > items;
-	items.emplace_back("Start Level 1");
+	items.emplace_back("Start Game");
 	items.back().on_select = [](MenuMode::Item const&) {
 	    Mode::switch_to_play();
 	};

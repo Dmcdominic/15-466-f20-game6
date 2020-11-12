@@ -8,8 +8,8 @@
 
 #include <glm/glm.hpp>
 
-#include <vector>
-#include <deque>
+#include <queue>
+
 
 struct PlayMode : Mode {
 	PlayMode();
@@ -31,12 +31,20 @@ struct PlayMode : Mode {
 	struct Button {
 		uint8_t downs = 0;
 		uint8_t pressed = 0;
-	} left_player, right_player, down_player, up_player, left_camera, right_camera, down_camera, up_camera;
+	} left_player, right_player, down_player, up_player;
+
+	std::queue<Input> input_q;
 
 	//local copy of the game scene (so code can change it during gameplay):
 	Scene scene;
 
 	// Active camera
 	Scene::Camera *active_camera = nullptr;
-	float camera_move_amount = .1f; 
+
+	float camera_height = 7.5f;
+	glm::vec3 camera_offset_from_player = glm::vec3(-0.2f, -2.0f, camera_height);
+
+	float camera_max_speed = 0.05f;
+	float camera_accel = 0.15f;
+	glm::vec3 camera_velo = glm::vec3();
 };

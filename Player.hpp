@@ -15,5 +15,5 @@ struct Player : FgObj {
 	bool can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ) override;
 	void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) override;
 
-	bool on_input(const Input& input) override;
+	bool on_input(const Input& input, Output* output) override;
 };

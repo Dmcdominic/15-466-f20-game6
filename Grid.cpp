@@ -2,7 +2,6 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "Sound.hpp"
 #include "Load.hpp"
 #include "data_path.hpp"
 
@@ -10,11 +9,6 @@
 // Variable declarations
 Grid* current_grid = nullptr;
 
-
-// Audio loading
-//Load< Sound::Sample > error_sample(LoadTagDefault, []() -> Sound::Sample const* {
-//  return new Sound::Sample(data_path("Audio/Error1.wav"));
-//});
 
 
 
@@ -46,7 +40,7 @@ bool Grid::is_valid_pos(glm::ivec2 _pos) {
 // Calls the on_input function on every cell in the grid.
 // Returns true iff something handled the input.
 // For now, it only allows 1 CellItem to handle any input.
-bool Grid::on_input(const Input& input) {
+bool Grid::on_input(const Input& input, Output* output) {
   /*for (size_t x = 0; x < width; x++) {
     for (size_t y = 0; y < height; y++) {
       cells[x][y].on_pre_tick();
@@ -57,7 +51,7 @@ bool Grid::on_input(const Input& input) {
   bool input_handled = false;
   for (size_t x = 0; x < width; x++) {
     for (size_t y = 0; y < height; y++) {
-      if (cells[x][y].on_input(input)) {
+      if (cells[x][y].on_input(input, output)) {
         input_handled = true;
         x = width;
         y = height;
@@ -68,8 +62,6 @@ bool Grid::on_input(const Input& input) {
   // If it was an invalid move or other input that couldn't be handled,
   //   play the error sound.
   if (!input_handled) {
-    // TODO - get sound working
-    //Sound::play_3D(*error_sample, 1.0f, glm::vec3(0.0f, 0.0f, 0.0f));
     return false;
   }
 
@@ -209,10 +201,10 @@ void Cell::when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& disp
 
 // When there is some input, pass the input to each tile/obj in this cell.
 // Returns true iff any of the tiles/objects return true.
-bool Cell::on_input(const Input& input) {
-  return (bgTile != nullptr && bgTile->on_input(input)) |
-    (fgObj != nullptr && fgObj->on_input(input)) |
-    (skyObj != nullptr && skyObj->on_input(input));
+bool Cell::on_input(const Input& input, Output* output) {
+  return (bgTile != nullptr && bgTile->on_input(input, output)) |
+    (fgObj != nullptr && fgObj->on_input(input, output)) |
+    (skyObj != nullptr && skyObj->on_input(input, output));
 }
 
 
@@ -280,7 +272,7 @@ void BgTile::when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& di
 
 
 // Returns true iff the input is handled somehow.
-bool BgTile::on_input(const Input& input){
+bool BgTile::on_input(const Input& input, Output* output){
   // By default, don't handle any input
   return false;
 }
@@ -339,7 +331,7 @@ void FgObj::when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& dis
 
 
 // Returns true iff the input is handled somehow.
-bool FgObj::on_input(const Input& input){
+bool FgObj::on_input(const Input& input, Output* output){
   return false;
 }
 
@@ -396,6 +388,6 @@ void SkyObj::when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& di
 
 
 // Returns true iff the input is handled somehow.
-bool SkyObj::on_input(const Input& input) {
+bool SkyObj::on_input(const Input& input, Output* output) {
   return false;
 }

@@ -139,7 +139,7 @@ void MenuMode::draw(glm::uvec2 const& drawable_size) {
 
         if (c.line!=line){
             cursor_x = (float)drawable_size.x/2.0f*c.start_x;
-            cursor_y = (float)drawable_size.y/2.0f*c.start_y+c.line*y_offset;
+            cursor_y = (float)drawable_size.y/2.0f*c.start_y+(float)c.line*y_offset;
             line = c.line;
         }
 

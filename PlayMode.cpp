@@ -7,6 +7,7 @@
 #include "Load.hpp"
 #include "gl_errors.hpp"
 #include "data_path.hpp"
+#include "Sound.hpp"
 
 #include "GridLoader.hpp"
 
@@ -48,6 +49,11 @@ Load< Scene > toxic_prefabs_scene(LoadTagDefault, []() -> Scene const * {
 	});
 });
 
+// Audio loading
+Load< Sound::Sample > error_sample(LoadTagDefault, []() -> Sound::Sample const* {
+	return new Sound::Sample(data_path("Audio/Error1.wav"));
+});
+
 PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 	// First, seed the random number generator
 	std::srand((unsigned int)time(NULL));
@@ -59,9 +65,9 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 	active_camera->fovy = glm::radians(60.0f);
 	active_camera->near = 0.01f;
 
-	//TODO: camera follow player
-	active_camera->transform->position = glm::vec3(2.0f, -1.0f, 7.0f);
-	active_camera->transform->rotation = glm::quat(glm::vec3(.3f, 0.0f, 0.0f));
+	// Init camera position & rotation
+	active_camera->transform->position = glm::vec3(2.0f, -1.0f, camera_height);
+	active_camera->transform->rotation = glm::quat(glm::vec3(0.3f, 0.0f, 0.0f));
 
 	// --- MODEL & GRID INITIALIZATION ---
 	loader = ModelLoader(); 
@@ -95,110 +101,53 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 		if (evt.key.keysym.sym == SDLK_ESCAPE) {
 			SDL_SetRelativeMouseMode(SDL_FALSE);
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_LEFT) {
+		} else if (evt.key.keysym.sym == SDLK_LEFT || evt.key.keysym.sym == SDLK_a) {
 			left_player.downs += 1;
 			left_player.pressed = true;
-			if (current_grid != nullptr) current_grid->on_input(Input(InputType::LEFT));
-			
-			//advance levels
-			if(current_grid->num_disposed >= current_grid->goal){
-				current_level = (current_level + 1) % num_levels; 
-				current_grid = GridLoader::load_level(current_level, loader, &scene);
-			}
-
+			input_q.push(Input(InputType::LEFT));
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_RIGHT) {
+		} else if (evt.key.keysym.sym == SDLK_RIGHT || evt.key.keysym.sym == SDLK_d) {
 			right_player.downs += 1;
 			right_player.pressed = true;
-			if (current_grid != nullptr) current_grid->on_input(Input(InputType::RIGHT));
-
-			//advance levels
-			if(current_grid->num_disposed >= current_grid->goal){
-				current_level = (current_level + 1) % num_levels; 
-				current_grid = GridLoader::load_level(current_level, loader, &scene);
-			}
-
+			input_q.push(Input(InputType::RIGHT));
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_UP) {
+		} else if (evt.key.keysym.sym == SDLK_UP || evt.key.keysym.sym == SDLK_w) {
 			up_player.downs += 1;
 			up_player.pressed = true;
-			if (current_grid != nullptr) current_grid->on_input(Input(InputType::UP));
-
-			//advance levels
-			if(current_grid->num_disposed >= current_grid->goal){
-				current_level = (current_level + 1) % num_levels; 
-				current_grid = GridLoader::load_level(current_level, loader, &scene);
-			}
-
+			input_q.push(Input(InputType::UP));
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_DOWN) {
+		} else if (evt.key.keysym.sym == SDLK_DOWN || evt.key.keysym.sym == SDLK_s) {
 			down_player.downs += 1;
 			down_player.pressed = true;
-			if (current_grid != nullptr) current_grid->on_input(Input(InputType::DOWN));
-
-			//advance levels
-			if(current_grid->num_disposed >= current_grid->goal){
-				current_level = (current_level + 1) % num_levels; 
-				current_grid = GridLoader::load_level(current_level, loader, &scene);
-			}
-
+			input_q.push(Input(InputType::DOWN));
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_a) {
-			left_camera.downs += 1;
-			left_camera.pressed = true;
-			active_camera->transform->position.x -= camera_move_amount; 
+		} else if (evt.key.keysym.sym == SDLK_e || evt.key.keysym.sym == SDLK_SPACE) {
+			input_q.push(Input(InputType::INTERACT));
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_d) {
-			right_camera.downs += 1;
-			right_camera.pressed = true;
-			active_camera->transform->position.x += camera_move_amount; 
+		} else if (evt.key.keysym.sym == SDLK_q) {  // QUIT
+			this->quit = true;
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_w) {
-			up_camera.downs += 1;
-			up_camera.pressed = true;
-			active_camera->transform->position.y += camera_move_amount; 
-			return true;
-		} else if (evt.key.keysym.sym == SDLK_s) {
-			down_camera.downs += 1;
-			down_camera.pressed = true;
-			active_camera->transform->position.y -= camera_move_amount; 
-			return true;
-		}else if (evt.key.keysym.sym == SDLK_n) {
+		} else if (evt.key.keysym.sym == SDLK_n) {
 			current_level = (current_level + 1) % num_levels; 
 			current_grid = GridLoader::load_level(current_level, loader, &scene);
 			return true;
-		}else if (evt.key.keysym.sym == SDLK_r) {
+		} else if (evt.key.keysym.sym == SDLK_r) {
 			current_grid = GridLoader::load_level(current_level, loader, &scene);
 			return true;
 		}
 		std::cout << "\n" << current_grid->num_disposed << "/" << current_grid->goal; 
 	} else if (evt.type == SDL_KEYUP) {
-		if (evt.key.keysym.sym == SDLK_LEFT) {
+		if (evt.key.keysym.sym == SDLK_LEFT || evt.key.keysym.sym == SDLK_a) {
 			left_player.pressed = false;
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_RIGHT) {
+		} else if (evt.key.keysym.sym == SDLK_RIGHT || evt.key.keysym.sym == SDLK_d) {
 			right_player.pressed = false;
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_UP) {
+		} else if (evt.key.keysym.sym == SDLK_UP || evt.key.keysym.sym == SDLK_w) {
 			up_player.pressed = false;
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_DOWN) {
+		} else if (evt.key.keysym.sym == SDLK_DOWN || evt.key.keysym.sym == SDLK_s) {
 			down_player.pressed = false;
-			return true;
-		} else if (evt.key.keysym.sym == SDLK_a) {
-			left_camera.pressed = false;
-			return true;
-		} else if (evt.key.keysym.sym == SDLK_d) {
-			right_camera.pressed = false;
-			return true;
-		} else if (evt.key.keysym.sym == SDLK_w) {
-			up_camera.pressed = false;
-			return true;
-		} else if (evt.key.keysym.sym == SDLK_s) {
-			down_camera.pressed = false;
-			return true;
-		} else if (evt.key.keysym.sym == SDLK_q) {  // QUIT
-			this->quit = true;
 			return true;
 		}
 	} else if (evt.type == SDL_MOUSEBUTTONDOWN) {
@@ -235,17 +184,63 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 
 
 void PlayMode::update(float elapsed) {
-	// TODO - update stuff here?
+	// If the current grid isn't set, early-out.
+	if (current_grid == nullptr) return;
+
+	// Process input
+	while (!input_q.empty()) {
+		Output output = Output();
+		bool handled = current_grid->on_input(Input(input_q.front()), &output);
+		input_q.pop();
+		if (!handled) {
+			Sound::play_3D(*error_sample, 0.2f, glm::vec3(0.0f, 0.0f, 0.0f));
+		}
+
+		// Check if the output indicates a new level to load, e.g. they interacted with an overworld node.
+		if (output.level_to_load) {
+			current_level = (*output.level_to_load) % num_levels;
+			current_grid = GridLoader::load_level(current_level, loader, &scene);
+			break;
+		}
+
+		// Check if we should advance levels.
+		if (current_grid->num_disposed >= current_grid->goal) {
+			current_level = (current_level + 1) % num_levels;
+			current_grid = GridLoader::load_level(current_level, loader, &scene);
+			break;
+		}
+	}
+
+	// --- Move camera to follow player ---
+	glm::vec3 target_cam_pos = current_grid->player->drawable->transform->position + camera_offset_from_player;
+	glm::vec3 cam_displacement = target_cam_pos - active_camera->transform->position;
+	float dist = glm::length(cam_displacement);
+	float local_max_speed = glm::min(camera_max_speed, dist);
+
+	// Update the camera's velocity, and upper bound by local_max_speed
+	camera_velo += cam_displacement * camera_accel * elapsed * dist;
+	if (glm::length(camera_velo) > local_max_speed) {
+		camera_velo = local_max_speed * glm::normalize(camera_velo);
+	}
+
+	// If we're going in the wrong direction, slow it down
+	if (glm::dot(camera_velo, cam_displacement) < 0.2f * glm::length(camera_velo)) {
+		camera_velo *= 0.9f;
+	}
+
+	// Update the camera's position
+	if (dist <= glm::length(camera_velo) * elapsed * 1.5f) {
+		active_camera->transform->position = target_cam_pos;
+		camera_velo = glm::vec3(0.0f);
+	} else {
+		active_camera->transform->position += camera_velo;
+	}
 
 	//reset button press counters:
 	left_player.downs = 0;
 	right_player.downs = 0;
 	up_player.downs = 0;
 	down_player.downs = 0;
-	left_camera.downs = 0;
-	right_camera.downs = 0;
-	up_camera.downs = 0;
-	down_camera.downs = 0;
 }
 
 
