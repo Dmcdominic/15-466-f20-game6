@@ -38,7 +38,7 @@ struct Grid {
 
 	// Methods
 	bool is_valid_pos(glm::ivec2 _pos);
-	bool on_input(const Input& input);
+	bool on_input(const Input& input, Output* output);
 };
 
 
@@ -69,7 +69,7 @@ struct Cell {
 	bool can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ);
 	void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ);
 
-	bool on_input(const Input &input);
+	bool on_input(const Input &input, Output* output);
 	//void on_pre_tick();
 	void on_post_tick();
 };
@@ -95,7 +95,7 @@ struct CellItem {
 	virtual bool can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ) = 0;
 	virtual void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) = 0;
 
-	virtual bool on_input(const Input& input) = 0;
+	virtual bool on_input(const Input& input, Output *output) = 0;
 	//virtual bool on_pre_tick() {};
 	virtual void on_post_tick() {};
 
@@ -120,7 +120,7 @@ struct BgTile : CellItem {
 	virtual bool can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ) override;
 	virtual void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) override;
 
-	virtual bool on_input(const Input& input) override;
+	virtual bool on_input(const Input& input, Output* output) override;
 };
 
 
@@ -141,7 +141,7 @@ struct FgObj : CellItem {
 	virtual bool can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ) override;
 	virtual void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) override;
 
-	virtual bool on_input(const Input& input) override;
+	virtual bool on_input(const Input& input, Output* output) override;
 };
 
 
@@ -162,5 +162,5 @@ struct SkyObj : CellItem {
 	virtual bool can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ) override;
 	virtual void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) override;
 
-	virtual bool on_input(const Input& input) override;
+	virtual bool on_input(const Input& input, Output* output) override;
 };

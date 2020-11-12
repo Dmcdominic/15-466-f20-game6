@@ -5,7 +5,7 @@
 
 if $(OS) = NT { #Windows
 	NEST_LIBS = ..\\nest-libs\\windows ;
-	C++FLAGS = /nologo /Z7 /c /EHsc /W3 /WX /MD
+	C++FLAGS = /nologo /Z7 /c /EHsc /W3 /WX /MD /std:c++17
 		/I"$(NEST_LIBS)/SDL2/include"
 		/I"$(NEST_LIBS)/glm/include"
 		/I"$(NEST_LIBS)/libpng/include"
@@ -106,9 +106,13 @@ GAME_NAMES =
 	main
 	LitColorTextureProgram
 	#ColorTextureProgram #not used right now, but you might want it
+	Sound
+	load_wav
+	load_opus
 	GridLoader
 	ModelLoader
 	Input
+	Overworld
 	Player
 	Barrel
 	Rock
@@ -125,9 +129,6 @@ GAME_NAMES =
 
 COMMON_NAMES =
 	data_path
-	Sound
-	load_wav
-	load_opus
 	PathFont
 	PathFont-font
 	DrawLines

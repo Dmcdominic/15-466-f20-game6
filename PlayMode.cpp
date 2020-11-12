@@ -7,6 +7,7 @@
 #include "Load.hpp"
 #include "gl_errors.hpp"
 #include "data_path.hpp"
+#include "Sound.hpp"
 
 #include "GridLoader.hpp"
 
@@ -48,6 +49,11 @@ Load< Scene > toxic_prefabs_scene(LoadTagDefault, []() -> Scene const * {
 	});
 });
 
+// Audio loading
+Load< Sound::Sample > error_sample(LoadTagDefault, []() -> Sound::Sample const* {
+	return new Sound::Sample(data_path("Audio/Error1.wav"));
+});
+
 
 PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 	// First, seed the random number generator
@@ -60,7 +66,7 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 	active_camera->fovy = glm::radians(60.0f);
 	active_camera->near = 0.01f;
 
-	//TODO: camera follow player
+	// Init camera position & rotation
 	active_camera->transform->position = glm::vec3(2.0f, -1.0f, camera_height);
 	active_camera->transform->rotation = glm::quat(glm::vec3(0.3f, 0.0f, 0.0f));
 
@@ -115,6 +121,9 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 			down_player.downs += 1;
 			down_player.pressed = true;
 			input_q.push(Input(InputType::DOWN));
+			return true;
+		} else if (evt.key.keysym.sym == SDLK_e || evt.key.keysym.sym == SDLK_SPACE) {
+			input_q.push(Input(InputType::INTERACT));
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_q) {  // QUIT
 			this->quit = true;
@@ -176,15 +185,26 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 
 
 void PlayMode::update(float elapsed) {
-	// If the current grid isn't set, early-out
+	// If the current grid isn't set, early-out.
 	if (current_grid == nullptr) return;
 
 	// Process input
 	while (!input_q.empty()) {
-		current_grid->on_input(Input(input_q.front()));
+		Output output = Output();
+		bool handled = current_grid->on_input(Input(input_q.front()), &output);
 		input_q.pop();
+		if (!handled) {
+			Sound::play_3D(*error_sample, 0.2f, glm::vec3(0.0f, 0.0f, 0.0f));
+		}
 
-		// Check if we should advance levels
+		// Check if the output indicates a new level to load, e.g. they interacted with an overworld node.
+		if (output.level_to_load) {
+			current_level = (*output.level_to_load) % num_levels;
+			current_grid = GridLoader::load_level(current_level, loader, &scene);
+			break;
+		}
+
+		// Check if we should advance levels.
 		if (current_grid->num_disposed >= current_grid->goal) {
 			current_level = (current_level + 1) % num_levels;
 			current_grid = GridLoader::load_level(current_level, loader, &scene);
@@ -192,9 +212,7 @@ void PlayMode::update(float elapsed) {
 		}
 	}
 
-	// Move camera to follow player
-	//active_camera->transform->position = current_grid->player->drawable->transform->position + camera_offset_from_player;
-
+	// --- Move camera to follow player ---
 	glm::vec3 target_cam_pos = current_grid->player->drawable->transform->position + camera_offset_from_player;
 	glm::vec3 cam_displacement = target_cam_pos - active_camera->transform->position;
 	float dist = glm::length(cam_displacement);

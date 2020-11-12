@@ -1,5 +1,5 @@
 #include "Player.hpp"
-#include <iostream>
+#include "Overworld.hpp"
 
 
 // For now, objects can't move into the player's cell
@@ -22,7 +22,17 @@ void Player::when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& di
 
 // Controls the player's movement.
 // If up/down/left/right is pressed, move in the grid.
-bool Player::on_input(const Input& input) {
+// Also handles interaction logic (at least for overworld nodes).
+bool Player::on_input(const Input& input, Output* output) {
+  if (input.type == InputType::INTERACT) {
+    OverworldNode *current_node = dynamic_cast<OverworldNode*>(cell->bgTile);
+    if (current_node != nullptr) {
+      output->level_to_load = { current_node->level_index };
+      return true;
+    }
+    return false;
+  }
+
   glm::ivec2 displ;
   float roll;
   switch (input.type) {
