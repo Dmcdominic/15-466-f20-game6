@@ -18,3 +18,9 @@ void Disposal::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& di
 
 	}
 }
+
+void Disposal::position_models() {
+    //position the layered models
+	if(&grass)
+    	grass.transform->position = this->drawable->transform->position;
+}

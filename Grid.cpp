@@ -117,7 +117,7 @@ void Cell::set_bg_tile(BgTile* _bgTile) {
   this->bgTile->cell = this;
   // TODO - smoothly move/animate this object?
   if (!this->bgTile->drawable->transform) throw std::runtime_error("No transform on a BgTile that's trying to move");
-  this->bgTile->drawable->transform->position = glm::vec3(this->pos.x, this->pos.y, -0.1f);
+  this->bgTile->drawable->transform->position = glm::vec3(this->pos.x, this->pos.y, 0.0f);
 }
 
 

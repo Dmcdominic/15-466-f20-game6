@@ -16,3 +16,9 @@ void Button::on_post_tick(){
       bridge->deactivate();
   }
 }
+
+void Button::position_models() {
+    //position the layered models
+	if(&grass)
+    	grass.transform->position = this->drawable->transform->position;
+}

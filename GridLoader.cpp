@@ -42,28 +42,43 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
     for(unsigned int y = 0; y < packed_grid.height; y++) {
         for(unsigned int x = 0; x < packed_grid.width; x++) {
             switch(obj_ids[packed_grid.data_start + x + y * packed_grid.width]) {
-                case 7:
+                case 7: {
                     scene->drawables.push_back(loader.create_model("Turnstile")); 
-                    grid->cells.at(x).at(y).set_bg_tile(new Turnstile(&(scene->drawables.back())));
+                    Scene::Drawable grass = loader.create_model("Grass"); 
+                    Turnstile *turnstile = new Turnstile(&(scene->drawables.back()), grass);
+                    grid->cells.at(x).at(y).set_bg_tile(turnstile);
+                    scene->drawables.push_back(grass);
+                    turnstile->position_models(); 
                     break;
+                }
                 case 8:
                     river_counter++;
                     break;
-                case 11:  
+                case 11: {
                     scene->drawables.push_back(loader.create_model("Disposal")); 
-                    grid->cells.at(x).at(y).set_bg_tile(new Disposal(&(scene->drawables.back()), &scene->drawables));
+                    Scene::Drawable grass = loader.create_model("Grass"); 
+                    Disposal *disposal = new Disposal(&(scene->drawables.back()), grass, &scene->drawables); 
+                    grid->cells.at(x).at(y).set_bg_tile(disposal);
+                    scene->drawables.push_back(grass);
+                    disposal->position_models(); 
                     break; 
+                }
                 case 13:
 	                  river_counter++;
 	                  break;
-                case 14:  
+                case 14: 
                     scene->drawables.push_back(loader.create_model("Grass"));
                     grid->cells.at(x).at(y).set_bg_tile(new BgTile(&(scene->drawables.back())));
                     break;
-                case 15:
+                case 15: {
                     scene->drawables.push_back(loader.create_model("Pit"));
-                    grid->cells.at(x).at(y).set_bg_tile(new Pit(&(scene->drawables.back())));
+                    Scene::Drawable grass = loader.create_model("Grass"); 
+                    Pit *pit = new Pit(&(scene->drawables.back()), grass); 
+                    grid->cells.at(x).at(y).set_bg_tile(pit);
+                    scene->drawables.push_back(grass);
+                    pit->position_models(); 
                     break;
+                }
             }
         }
     }
@@ -75,28 +90,39 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
     for(unsigned int y = 0; y < packed_grid.height; y++) {
         for (unsigned int x = 0; x < packed_grid.width; x++) {
             switch(obj_ids[packed_grid.data_start + x + y * packed_grid.width]) {
-                case 8:
+                case 8:{
                     scene->drawables.push_back(loader.create_model("Bridge_Unactivated"));
+                    Scene::Drawable water = loader.create_model("Water"); 
                     bridge = new Bridge(&(scene->drawables.back()),
                                          loader.create_model("Tree"),
+                                         water,
                                          loader.create_model("Bridge"),
                                          loader.create_model("Rock"),
-                                         &scene->drawables);        
+                                         &scene->drawables);    
+                    scene->drawables.push_back(water);
+    
                     (*river_tiles)[inserted] = bridge;
                     inserted++;
                     grid->cells.at(x).at(y).set_bg_tile(bridge);
+                    bridge->position_models(); 
                     if (prev_is_land) bridge->rotate_90();
                     prev_is_land = false;
                     break;
+                }
                 case 13: {
                     //TODO: shape the river depending on surrounding tiles
-                    scene->drawables.push_back(loader.create_model("River"));
+                    scene->drawables.push_back(loader.create_model("River_Straight"));
+                    Scene::Drawable grass = loader.create_model("Water"); 
                     River *river = new River(&(scene->drawables.back()),
-                                             loader.create_model("River_Toxic"),
+                                             loader.create_model("Water_Toxic"),
+                                             grass,
                                              &scene->drawables);
+                    scene->drawables.push_back(grass);
+
                     (*river_tiles)[inserted] = river;
                     inserted++;
                     grid->cells.at(x).at(y).set_bg_tile(river);
+                    river->position_models(); 
                     prev_is_land = false;
                     break;
                 }
@@ -122,12 +148,18 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
     for(unsigned int y = 0; y < packed_grid.height; y++) {
         for (unsigned int x = 0; x < packed_grid.width; x++) {
             switch (obj_ids[packed_grid.data_start + x + y * packed_grid.width]) {
-                case 9:
+                case 9:{
                     scene->drawables.push_back(loader.create_model("Button"));
-                    grid->cells.at(x).at(y).set_bg_tile(new Button(&(scene->drawables.back()),
-                                                                   loader.create_model("Button"),
-                                                                   bridge));
+                    Scene::Drawable grass = loader.create_model("Grass"); 
+                    Button *button = new Button(&(scene->drawables.back()),
+                                                loader.create_model("Button_Pushed"),
+                                                grass,
+                                                bridge);
+                    grid->cells.at(x).at(y).set_bg_tile(button);
+                    scene->drawables.push_back(grass);
+                    button->position_models(); 
                     break;
+                }
             }
         }
     }
