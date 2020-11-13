@@ -10,6 +10,6 @@ void Turnstile::on_post_tick(){
 }
 void Turnstile::position_models() {
     //position the layered models
-	if(&grass)
+	if(grass.transform)
     	grass.transform->position = this->drawable->transform->position;
 }

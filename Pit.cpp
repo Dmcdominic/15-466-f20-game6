@@ -8,6 +8,6 @@ bool Pit::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
 }
 void Pit::position_models() {
     //position the layered models
-	if(&grass)
-    	grass.transform->position = this->drawable->transform->position;
+	if(grass.transform)
+    grass.transform->position = this->drawable->transform->position;
 }

@@ -30,6 +30,6 @@ void River::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ
 
 void River::position_models() {
     //position the layered models
-	if(&water)
-    	water.transform->position = this->drawable->transform->position;
+	if(water.transform)
+		water.transform->position = this->drawable->transform->position;
 }
