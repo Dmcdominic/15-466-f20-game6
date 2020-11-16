@@ -6,6 +6,7 @@
 #include "Player.hpp"
 #include "Barrel.hpp"
 #include "Tree.hpp"
+#include "Railing.hpp"
 //#include "RottenTree.hpp"
 #include "Rock.hpp"
 #include "Protesters.hpp"
@@ -121,8 +122,8 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                                 || (obj_ids[packed_grid.data_start + (x+1) + y * packed_grid.width] == 8));
                     bool left = (x >= 1)
                                 &&((obj_ids[packed_grid.data_start + (x-1) + y * packed_grid.width] == 13)
-                                || (obj_ids[packed_grid.data_start + (x-1) + y * packed_grid.width] == 8));  
-                    int num_rotations = 0; 
+                                || (obj_ids[packed_grid.data_start + (x-1) + y * packed_grid.width] == 8));
+                    int num_rotations = 0;
                     if(!left && !right && !upper && !lower){
                         scene->drawables.push_back(loader.create_model("River_Single"));
                     }
@@ -177,7 +178,21 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     grid->cells.at(x).at(y).set_bg_tile(river);
                     river->set_position_model(&(scene->drawables.back()));
                     river->position_models();
-                    for(int i=0; i <num_rotations; i++) river->rotate_90(); 
+                    for(int i=0; i <num_rotations; i++) river->rotate_90();
+
+                    if(obj_ids[packed_grid.data_start + packed_grid.width * packed_grid.height + x + y * packed_grid.width]==16){
+//                        if ((!left && right && !upper && lower)||(!left && right && upper && !lower)||
+//                        (left && !right && upper && !lower)||(left && !right && !upper && lower)){
+//                            scene->drawables.push_back(loader.create_model("Railing_Bent"));
+//                            grid->cells.at(x).at(y).set_fg_obj(new Railing(&(scene->drawables.back())));
+//                        } else{
+                        scene->drawables.push_back(loader.create_model("Railing_Straight"));
+                        Railing *railing = new Railing(&(scene->drawables.back()));
+                        grid->cells.at(x).at(y).set_fg_obj(railing);
+                        for(int i=0; i <num_rotations; i++) railing->rotate_90();
+//                        }
+                    }
+
                     prev_is_land = false;
                     break;
                 }
@@ -257,7 +272,12 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                 case 12:
                     scene->drawables.push_back(loader.create_model("Animal")); 
                     grid->cells.at(x).at(y).set_fg_obj(new Rock(&(scene->drawables.back())));
-                    break;            
+                    break;
+//                case 16: {
+//                    scene->drawables.push_back(loader.create_model("Railing_Straight"));
+//                    grid->cells.at(x).at(y).set_fg_obj(new Railing(&(scene->drawables.back())));
+//                    break;
+                }
             }
         }
     }
