@@ -27,7 +27,7 @@ struct PlayMode : Mode {
 
 	uint8_t current_level = 0; 
 	//TODO: get this from assets, not hardcoded
-	uint8_t num_levels = 8; 
+	uint8_t num_levels = 10; 
 	ModelLoader loader; 
 
 	//input tracking:
