@@ -29,12 +29,6 @@
   <component name="ChangeListManager">
     <list default="true" id="5ef998e6-366e-4fc4-8f00-3afcf587ba2a" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Mode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Mode.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Mode.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/Mode.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PlayMode.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/PlayMode.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PlayMode.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/PlayMode.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/River.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/River.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/levels/pack" beforeDir="false" afterPath="$PROJECT_DIR$/levels/pack" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -166,18 +160,20 @@
     <state x="684" y="-1417" width="930" height="1348" key="dock-window-1/0.23.1280.777/-675.-1417.2560.1349@-675.-1417.2560.1349" timestamp="1604369850253" />
     <state x="606" y="-1417" width="926" height="951" key="dock-window-1/0.23.1280.777/-675.-1417.2560.1355@-675.-1417.2560.1355" timestamp="1605416314720" />
     <state x="1" y="23" width="926" height="744" key="dock-window-1/0.23.1280.777/-675.-1417.2560.1361@-675.-1417.2560.1361" timestamp="1605486824867" />
-    <state x="830" y="-1417" width="943" height="962" key="dock-window-2" timestamp="1605499220204">
-      <screen x="-675" y="-1417" width="2560" height="1365" />
+    <state x="830" y="-1417" width="943" height="962" key="dock-window-2" timestamp="1605553178456">
+      <screen x="-675" y="-1417" width="2560" height="1417" />
     </state>
+    <state x="830" y="-1417" width="943" height="962" key="dock-window-2/0.23.1280.748/-675.-1417.2560.1417@-675.-1417.2560.1417" timestamp="1605553178456" />
     <state x="830" y="-1417" width="943" height="962" key="dock-window-2/0.23.1280.777/-675.-1417.2560.1365@-675.-1417.2560.1365" timestamp="1605499220204" />
-    <state x="-307" y="-970" width="1853" height="893" key="find.popup" timestamp="1605499900966">
-      <screen x="-675" y="-1417" width="2560" height="1364" />
+    <state x="-307" y="-970" width="1853" height="893" key="find.popup" timestamp="1605500190446">
+      <screen x="-675" y="-1417" width="2560" height="1363" />
     </state>
     <state x="-307" y="-954" width="586" height="490" key="find.popup/0.23.1280.741/-675.-1417.2560.1417@-675.-1417.2560.1417" timestamp="1604269376839" />
     <state x="-307" y="-976" width="1851" height="880" key="find.popup/0.23.1280.777/-675.-1417.2560.1349@-675.-1417.2560.1349" timestamp="1604445712881" />
     <state x="-307" y="-976" width="586" height="490" key="find.popup/0.23.1280.777/-675.-1417.2560.1350@-675.-1417.2560.1350" timestamp="1604370743525" />
     <state x="-307" y="-974" width="1853" height="885" key="find.popup/0.23.1280.777/-675.-1417.2560.1354@-675.-1417.2560.1354" timestamp="1605415669133" />
     <state x="-307" y="-973" width="1853" height="887" key="find.popup/0.23.1280.777/-675.-1417.2560.1356@-675.-1417.2560.1356" timestamp="1605419037857" />
+    <state x="-307" y="-970" width="1853" height="893" key="find.popup/0.23.1280.777/-675.-1417.2560.1363@-675.-1417.2560.1363" timestamp="1605500190446" />
     <state x="-307" y="-970" width="1853" height="893" key="find.popup/0.23.1280.777/-675.-1417.2560.1364@-675.-1417.2560.1364" timestamp="1605499900966" />
     <state x="207" y="292" width="1042" height="537" key="find.popup/0.23.1440.822@0.23.1440.822" timestamp="1605209908215" />
     <state x="303" y="86" width="670" height="676" key="search.everywhere.popup" timestamp="1604419610042">
