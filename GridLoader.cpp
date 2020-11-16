@@ -181,16 +181,10 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     for(int i=0; i <num_rotations; i++) river->rotate_90();
 
                     if(obj_ids[packed_grid.data_start + packed_grid.width * packed_grid.height + x + y * packed_grid.width]==16){
-//                        if ((!left && right && !upper && lower)||(!left && right && upper && !lower)||
-//                        (left && !right && upper && !lower)||(left && !right && !upper && lower)){
-//                            scene->drawables.push_back(loader.create_model("Railing_Bent"));
-//                            grid->cells.at(x).at(y).set_fg_obj(new Railing(&(scene->drawables.back())));
-//                        } else{
                         scene->drawables.push_back(loader.create_model("Railing_Straight"));
                         Railing *railing = new Railing(&(scene->drawables.back()));
                         grid->cells.at(x).at(y).set_fg_obj(railing);
                         for(int i=0; i <num_rotations; i++) railing->rotate_90();
-//                        }
                     }
 
                     prev_is_land = false;
@@ -273,10 +267,6 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     scene->drawables.push_back(loader.create_model("Animal")); 
                     grid->cells.at(x).at(y).set_fg_obj(new Rock(&(scene->drawables.back())));
                     break;
-//                case 16: {
-//                    scene->drawables.push_back(loader.create_model("Railing_Straight"));
-//                    grid->cells.at(x).at(y).set_fg_obj(new Railing(&(scene->drawables.back())));
-//                    break;
                 }
             }
         }
