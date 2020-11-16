@@ -267,7 +267,6 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     scene->drawables.push_back(loader.create_model("Animal")); 
                     grid->cells.at(x).at(y).set_fg_obj(new Rock(&(scene->drawables.back())));
                     break;
-                }
             }
         }
     }
