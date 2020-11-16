@@ -24,7 +24,7 @@ TextDrawer::TextDrawer(){
     {
         std::cout << "Failed to create face." << std::endl;
     }
-    FT_Set_Char_Size(face, 0, 4000, 0, 0);
+    FT_Set_Char_Size(face, 0, 2000, 0, 0);
     font = hb_ft_font_create(face, NULL);
     buf = hb_buffer_create();
 }
