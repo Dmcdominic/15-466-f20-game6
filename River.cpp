@@ -11,6 +11,7 @@ bool River::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ){
 
 
 void River::contaminated() {
+    current_grid->environment_score -= 5;
     iscontaminated = true;
     willbecontaminated = false;
 	this->rotten.transform->position = this->drawable->transform->position;
@@ -22,7 +23,7 @@ void River::contaminated() {
 void River::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ){
 	if(dynamic_cast<Barrel*>(&objBeingMoved) != nullptr) {
         iscontaminated = true;
-		current_grid->environment_score -= 30;
+		current_grid->environment_score -= 5;
 		this->rotten.transform->position = this->drawable->transform->position;
         delete this->water->transform;
         *water = this->rotten;
@@ -40,7 +41,7 @@ void River::position_models() {
 }
 
 bool check_contaminated(int x, int y){
-    if (x<0 || x>= current_grid->width || y<0 || y>= current_grid->height) return false;
+    if (x<0 || (size_t)x>= current_grid->width || y<0 || (size_t)y>= current_grid->height) return false;
     River* r = dynamic_cast<River*>(current_grid->cells[x][y].bgTile);
     if (r != nullptr && r->iscontaminated) return true;
     return false;
