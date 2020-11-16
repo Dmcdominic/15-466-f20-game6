@@ -27,7 +27,17 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5ef998e6-366e-4fc4-8f00-3afcf587ba2a" name="Default Changelist" comment="" />
+    <list default="true" id="5ef998e6-366e-4fc4-8f00-3afcf587ba2a" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Bridge.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Bridge.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Bridge.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/Bridge.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Grid.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Grid.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Grid.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/Grid.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GridLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/GridLoader.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/River.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/River.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/River.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/River.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/levels/pack" beforeDir="false" afterPath="$PROJECT_DIR$/levels/pack" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -76,6 +86,13 @@
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/dist" />
     </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="false" />
   <component name="SvnConfiguration">
@@ -143,17 +160,22 @@
       <screen x="0" y="23" width="1440" height="822" />
     </state>
     <state x="100" y="123" width="1240" height="622" key="com.intellij.history.integration.ui.views.FileHistoryDialog/0.23.1440.822@0.23.1440.822" timestamp="1604516685031" />
-    <state x="678" y="-1417" width="1116" height="1022" key="dock-window-1" timestamp="1604430732801">
-      <screen x="-675" y="-1417" width="2560" height="1417" />
+    <state x="1" y="23" width="926" height="744" key="dock-window-1" timestamp="1605486824867">
+      <screen x="0" y="23" width="1280" height="777" />
     </state>
     <state x="678" y="-1417" width="1116" height="1022" key="dock-window-1/0.23.1280.739/-675.-1417.2560.1417@-675.-1417.2560.1417" timestamp="1604430732801" />
+    <state x="1" y="23" width="926" height="777" key="dock-window-1/0.23.1280.743@0.23.1280.743" timestamp="1605420879939" />
     <state x="684" y="-1417" width="930" height="1348" key="dock-window-1/0.23.1280.777/-675.-1417.2560.1349@-675.-1417.2560.1349" timestamp="1604369850253" />
-    <state x="207" y="292" width="1042" height="537" key="find.popup" timestamp="1605209908215">
-      <screen x="0" y="23" width="1440" height="822" />
+    <state x="606" y="-1417" width="926" height="951" key="dock-window-1/0.23.1280.777/-675.-1417.2560.1355@-675.-1417.2560.1355" timestamp="1605416314720" />
+    <state x="1" y="23" width="926" height="744" key="dock-window-1/0.23.1280.777/-675.-1417.2560.1361@-675.-1417.2560.1361" timestamp="1605486824867" />
+    <state x="-307" y="-973" width="1853" height="887" key="find.popup" timestamp="1605419037857">
+      <screen x="-675" y="-1417" width="2560" height="1356" />
     </state>
     <state x="-307" y="-954" width="586" height="490" key="find.popup/0.23.1280.741/-675.-1417.2560.1417@-675.-1417.2560.1417" timestamp="1604269376839" />
     <state x="-307" y="-976" width="1851" height="880" key="find.popup/0.23.1280.777/-675.-1417.2560.1349@-675.-1417.2560.1349" timestamp="1604445712881" />
     <state x="-307" y="-976" width="586" height="490" key="find.popup/0.23.1280.777/-675.-1417.2560.1350@-675.-1417.2560.1350" timestamp="1604370743525" />
+    <state x="-307" y="-974" width="1853" height="885" key="find.popup/0.23.1280.777/-675.-1417.2560.1354@-675.-1417.2560.1354" timestamp="1605415669133" />
+    <state x="-307" y="-973" width="1853" height="887" key="find.popup/0.23.1280.777/-675.-1417.2560.1356@-675.-1417.2560.1356" timestamp="1605419037857" />
     <state x="207" y="292" width="1042" height="537" key="find.popup/0.23.1440.822@0.23.1440.822" timestamp="1605209908215" />
     <state x="303" y="86" width="670" height="676" key="search.everywhere.popup" timestamp="1604419610042">
       <screen x="0" y="23" width="1280" height="739" />

@@ -41,11 +41,11 @@ bool Grid::is_valid_pos(glm::ivec2 _pos) {
 // Returns true iff something handled the input.
 // For now, it only allows 1 CellItem to handle any input.
 bool Grid::on_input(const Input& input, Output* output) {
-  /*for (size_t x = 0; x < width; x++) {
+  for (size_t x = 0; x < width; x++) {
     for (size_t y = 0; y < height; y++) {
       cells[x][y].on_pre_tick();
     }
-  }*/
+  }
 
   // on_input()
   bool input_handled = false;
@@ -209,11 +209,11 @@ bool Cell::on_input(const Input& input, Output* output) {
 
 
 // Called right before on_input() for all cells.
-//void Cell::on_pre_tick() {
-//  if (bgTile != nullptr) bgTile->on_pre_tick();
-//  if (fgObj != nullptr) fgObj->on_pre_tick();
-//  if (skyObj != nullptr) skyObj->on_pre_tick();
-//}
+void Cell::on_pre_tick() {
+  if (bgTile != nullptr) bgTile->on_pre_tick();
+  if (fgObj != nullptr) fgObj->on_pre_tick();
+  if (skyObj != nullptr) skyObj->on_pre_tick();
+}
 
 
 // Called right after on_input() for all cells.

@@ -92,19 +92,18 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
             switch(obj_ids[packed_grid.data_start + x + y * packed_grid.width]) {
                 case 8:{
                     scene->drawables.push_back(loader.create_model("Bridge_Unactivated"));
-                    Scene::Drawable water = loader.create_model("Water"); 
+                    Scene::Drawable water = loader.create_model("Water");
                     bridge = new Bridge(&(scene->drawables.back()),
-                                         loader.create_model("Tree"),
-                                         water,
-                                         loader.create_model("Bridge"),
-                                         loader.create_model("Rock"),
-                                         &scene->drawables);    
+                                        loader.create_model("Bridge"),
+                                        loader.create_model("Water_Toxic"),
+                                        &scene->drawables);
                     scene->drawables.push_back(water);
     
                     (*river_tiles)[inserted] = bridge;
                     inserted++;
                     grid->cells.at(x).at(y).set_bg_tile(bridge);
-                    bridge->position_models(); 
+                    bridge->set_position_model(&(scene->drawables.back()));
+                    bridge->position_models();
                     if (prev_is_land) bridge->rotate_90();
                     prev_is_land = false;
                     break;
@@ -112,17 +111,17 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                 case 13: {
                     //TODO: shape the river depending on surrounding tiles
                     scene->drawables.push_back(loader.create_model("River_Straight"));
-                    Scene::Drawable grass = loader.create_model("Water"); 
+                    Scene::Drawable water = loader.create_model("Water");
                     River *river = new River(&(scene->drawables.back()),
                                              loader.create_model("Water_Toxic"),
-                                             grass,
                                              &scene->drawables);
-                    scene->drawables.push_back(grass);
+                    scene->drawables.push_back(water);
 
                     (*river_tiles)[inserted] = river;
                     inserted++;
                     grid->cells.at(x).at(y).set_bg_tile(river);
-                    river->position_models(); 
+                    river->set_position_model(&(scene->drawables.back()));
+                    river->position_models();
                     prev_is_land = false;
                     break;
                 }
