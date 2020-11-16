@@ -110,7 +110,62 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                 }
                 case 13: {
                     //TODO: shape the river depending on surrounding tiles
-                    scene->drawables.push_back(loader.create_model("River_Straight"));
+                    bool upper = (y <= (packed_grid.height - 2))
+                                &&((obj_ids[packed_grid.data_start + x + (y+1) * packed_grid.width] == 13)
+                                || (obj_ids[packed_grid.data_start + x + (y+1) * packed_grid.width] == 8));
+                    bool lower = (y >= 1)
+                                &&((obj_ids[packed_grid.data_start + x + (y-1) * packed_grid.width] == 13)
+                                || (obj_ids[packed_grid.data_start + x + (y-1) * packed_grid.width] == 8));
+                    bool right = (x <= (packed_grid.width - 2))
+                                &&((obj_ids[packed_grid.data_start + (x+1) + y * packed_grid.width] == 13)
+                                || (obj_ids[packed_grid.data_start + (x+1) + y * packed_grid.width] == 8));
+                    bool left = (x >= 1)
+                                &&((obj_ids[packed_grid.data_start + (x-1) + y * packed_grid.width] == 13)
+                                || (obj_ids[packed_grid.data_start + (x-1) + y * packed_grid.width] == 8));  
+                    int num_rotations = 0; 
+                    if(!left && !right && !upper && !lower){
+                        scene->drawables.push_back(loader.create_model("River_Single"));
+                    }
+                    else if(left && right && !upper && !lower){
+                        scene->drawables.push_back(loader.create_model("River_Straight"));
+                        num_rotations = 1; 
+                    }
+                    else if(!left && !right && upper && lower){
+                        scene->drawables.push_back(loader.create_model("River_Straight"));
+                    }
+                    else if(!left && right && !upper && lower){
+                        scene->drawables.push_back(loader.create_model("River_Bent"));
+                    }                    
+                    else if(!left && right && upper && !lower){
+                        scene->drawables.push_back(loader.create_model("River_Bent"));
+                        num_rotations = 3; 
+                    }                   
+                    else if(left && !right && upper && !lower){
+                        scene->drawables.push_back(loader.create_model("River_Bent"));
+                        num_rotations = 2; 
+                    }
+                    else if(left && !right && !upper && lower){
+                        scene->drawables.push_back(loader.create_model("River_Bent"));
+                        num_rotations = 1; 
+                    }       
+                    else if(!left && !right && upper && !lower){
+                        scene->drawables.push_back(loader.create_model("River_End"));
+                    }                    
+                    else if(!left && right && !upper && !lower){
+                        scene->drawables.push_back(loader.create_model("River_End"));
+                        num_rotations = 1; 
+                    }                   
+                    else if(!left && !right && !upper && lower){
+                        scene->drawables.push_back(loader.create_model("River_End"));
+                        num_rotations = 2; 
+                    }
+                    else if(left && !right && !upper && !lower){
+                        scene->drawables.push_back(loader.create_model("River_End"));
+                        num_rotations = 3; 
+                    }                  
+                    else{
+                        scene->drawables.push_back(loader.create_model("River_None"));
+                    }
                     Scene::Drawable water = loader.create_model("Water");
                     River *river = new River(&(scene->drawables.back()),
                                              loader.create_model("Water_Toxic"),
@@ -122,6 +177,7 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     grid->cells.at(x).at(y).set_bg_tile(river);
                     river->set_position_model(&(scene->drawables.back()));
                     river->position_models();
+                    for(int i=0; i <num_rotations; i++) river->rotate_90(); 
                     prev_is_land = false;
                     break;
                 }
