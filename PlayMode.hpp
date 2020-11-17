@@ -23,6 +23,7 @@ struct PlayMode : Mode {
 	//----- game state -----
 
 	uint8_t current_level = 0; 
+	uint8_t completed_level = 0;
 	//TODO: get this from assets, not hardcoded
 	uint8_t num_levels = 8; 
 	ModelLoader loader; 
@@ -41,7 +42,7 @@ struct PlayMode : Mode {
 	// Active camera
 	Scene::Camera *active_camera = nullptr;
 
-	float camera_height = 7.5f;
+	float camera_height = 8.0f;
 	glm::vec3 camera_offset_from_player = glm::vec3(-0.2f, -2.0f, camera_height);
 
 	float camera_max_speed = 0.05f;
