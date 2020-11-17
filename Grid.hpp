@@ -32,6 +32,10 @@ struct Grid {
 	int environment_score = 100;
 
 	Player *player = nullptr;
+	std::vector< int > tree_flower_states;
+
+	int tree_num_states = 3;
+	std::vector< int > tree_prob { 50, 20, 20 };
 
 	// Constructor
 	Grid(size_t _width, size_t _height);

@@ -227,6 +227,9 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
             }
         }
     }
+
+    int tree_id = 0;
+
     //set the FG objects
     for(unsigned int y = 0; y < packed_grid.height; y++) {
         for(unsigned int x = 0; x < packed_grid.width; x++) {
@@ -251,9 +254,12 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     break;
                 case 5:
                     scene->drawables.push_back(loader.create_model("Tree"));
-                    grid->cells.at(x).at(y).set_fg_obj(new Tree(&(scene->drawables.back())));
+		            tree_id++;
+                    grid->cells.at(x).at(y).set_fg_obj(new Tree(&(scene->drawables.back()),
+                    		loader.create_model("Tree"),
+                    		loader.create_model("Tree_Flower1"), loader.create_model("Tree_Flower2"), tree_id));
+                    grid->tree_flower_states.push_back(0);
                     break;
-
                 case 6:
                     scene->drawables.push_back(loader.create_model("Protesters"));
                     grid->cells.at(x).at(y).set_fg_obj(new Protesters(&(scene->drawables.back()),
