@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
     
     uint8_t num_levels = 10; 
     std::vector < glm::uvec2 > grid_sizes = {glm::uvec2(4,4), glm::uvec2(4,4), glm::uvec2(4,4), glm::uvec2(4,4), glm::uvec2(4,4), glm::uvec2(8,8), glm::uvec2(4,6), glm::uvec2(8,8), glm::uvec2(8,8), glm::uvec2(8,8)}; 
-    std::vector < unsigned int > goals = {1, 2, 1, 1, 1, 2, 1, 1, 1, 1}; 
+    std::vector < unsigned int > goals = {1, 2, 1, 1, 1, 3, 1, 1, 1, 1}; 
     
     std::vector< PackedGrid > grids; 
     std::vector< int > obj_ids; 
