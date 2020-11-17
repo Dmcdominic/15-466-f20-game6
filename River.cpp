@@ -14,14 +14,22 @@ void River::contaminated() {
     *water = this->rotten;
 }
 
+bool River::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
+  if (!sunk_object && dynamic_cast<Player*>(&objBeingMoved) != nullptr) return false;
+  return BgTile::can_fg_obj_move_into(objBeingMoved, displ);
+}
 
 void River::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ){
-	if(dynamic_cast<Barrel*>(&objBeingMoved) != nullptr) {
-        iscontaminated = true;
-		current_grid->environment_score -= 5;
-		this->rotten.transform->position = this->drawable->transform->position;
-        delete this->water->transform;
-        *water = this->rotten;
+	if(!sunk_object) {
+		if(dynamic_cast<Barrel*>(&objBeingMoved) != nullptr) {
+			iscontaminated = true;
+			current_grid->environment_score -= 5;
+			this->rotten.transform->position = this->drawable->transform->position;
+			delete this->water->transform;
+			*water = this->rotten;
+		}
+		sunk_object = objBeingMoved.drawable;
+		just_sunk = true; 
 	}
 }
 
@@ -43,6 +51,12 @@ bool check_contaminated(int x, int y){
 }
 
 void River::on_post_tick(){
+	if(just_sunk) {
+		just_sunk = false; 
+		delete this->cell->fgObj; 
+		this->cell->fgObj = nullptr; 
+		sunk_object->transform->position.z -= 0.25; 
+	}
     if (iscontaminated || willbecontaminated) {
         return;
     }

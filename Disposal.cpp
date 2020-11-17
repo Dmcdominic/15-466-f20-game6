@@ -15,7 +15,7 @@ void Disposal::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& di
         //delete the barrel
         this->drawables->remove(*(objBeingMoved.drawable));
         this->cell->set_fg_obj(nullptr);
-
+        //TODO: delete fg object (memory leak?)
 	}
 }
 
