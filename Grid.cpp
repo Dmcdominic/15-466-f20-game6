@@ -66,7 +66,7 @@ bool Grid::on_input(const Input& input, Output* output) {
   }
 
   // animate trees
-  for (int i = 0; i < current_grid->tree_flower_states.size(); i++) {
+  for (size_t i = 0; i < current_grid->tree_flower_states.size(); i++) {
   	if (rand() % 100 < tree_prob[current_grid->tree_flower_states[i]]) {
   		current_grid->tree_flower_states[i]++;
   		current_grid->tree_flower_states[i] %= tree_num_states;
