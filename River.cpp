@@ -28,7 +28,6 @@ void River::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ
 			delete this->water->transform;
 			*water = this->rotten;
 		}
-		sunk_object = objBeingMoved.drawable;
 		just_sunk = true; 
 	}
 }
@@ -53,6 +52,7 @@ bool check_contaminated(int x, int y){
 void River::on_post_tick(){
 	if(just_sunk) {
 		just_sunk = false; 
+		sunk_object = this->cell->fgObj->drawable;
 		delete this->cell->fgObj; 
 		this->cell->fgObj = nullptr; 
 		sunk_object->transform->position.z -= 0.25; 
