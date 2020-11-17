@@ -28,15 +28,25 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5ef998e6-366e-4fc4-8f00-3afcf587ba2a" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Railing.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Railing.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Bridge.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Bridge.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Bridge.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/Bridge.hpp" afterDir="false" />
+<<<<<<< HEAD
       <change beforePath="$PROJECT_DIR$/Grid.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Grid.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Grid.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/Grid.hpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GridLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/GridLoader.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tree.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Tree.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tree.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/Tree.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/toxic-prefabs.pnct" beforeDir="false" afterPath="$PROJECT_DIR$/dist/toxic-prefabs.pnct" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/toxic-prefabs.scene" beforeDir="false" afterPath="$PROJECT_DIR$/dist/toxic-prefabs.scene" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/levels/pack" beforeDir="false" afterPath="$PROJECT_DIR$/levels/pack" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/scenes/toxic-prefabs.blend" beforeDir="false" afterPath="$PROJECT_DIR$/scenes/toxic-prefabs.blend" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/GridLoader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/GridLoader.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Jamfile" beforeDir="false" afterPath="$PROJECT_DIR$/Jamfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/River.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/River.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/River.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/River.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/levels/pack" beforeDir="false" afterPath="$PROJECT_DIR$/levels/pack" afterDir="false" />
+>>>>>>> 789b43bd8384cb7cb5d504280cd3abf12e267bdb
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,22 +89,15 @@
     <property name="org.elm.workspace.PROJECT_DISCOVERY" value="true" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/dist" />
     </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
   </component>
-  <component name="RunManager">
-    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-  </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="false" />
+  <component name="SpellCheckerSettings" BundledDictionaries="0" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" Dictionaries="0" CorrectionsLimit="5" DefaultDictionary="application-level" UseSingleDictionary="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -110,6 +113,8 @@
       <workItem from="1604415798670" duration="13259000" />
       <workItem from="1604452281249" duration="22469000" />
       <workItem from="1605207253673" duration="2026000" />
+      <workItem from="1605556248973" duration="1458000" />
+      <workItem from="1605562403507" duration="5244000" />
     </task>
     <servers />
   </component>
@@ -121,12 +126,13 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
     <state x="320" y="99" key="#C/C++" timestamp="1604515494723">
@@ -138,9 +144,10 @@
     </state>
     <state x="227" y="58" key="#Deployment/0.23.1280.741/-675.-1417.2560.1417@0.23.1280.741" timestamp="1603994772615" />
     <state x="-221" y="-1353" key="#Deployment/0.23.1280.777/-675.-1417.2560.1350@-675.-1417.2560.1350" timestamp="1604031446580" />
-    <state x="205" y="-1077" key="#New_File_Extensions" timestamp="1604440893044">
-      <screen x="-675" y="-1417" width="2560" height="1349" />
+    <state x="205" y="-1060" key="#New_File_Extensions" timestamp="1605561492184">
+      <screen x="-675" y="-1417" width="2560" height="1417" />
     </state>
+    <state x="205" y="-1060" key="#New_File_Extensions/0.23.1280.748/-675.-1417.2560.1417@-675.-1417.2560.1417" timestamp="1605561492184" />
     <state x="205" y="-1077" key="#New_File_Extensions/0.23.1280.777/-675.-1417.2560.1349@-675.-1417.2560.1349" timestamp="1604440893044" />
     <state x="205" y="-1077" key="#New_File_Extensions/0.23.1280.777/-675.-1417.2560.1350@-675.-1417.2560.1350" timestamp="1604363509409" />
     <state x="-240" y="-957" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1604364026477">
@@ -168,15 +175,23 @@
     <state x="684" y="-1417" width="930" height="1348" key="dock-window-1/0.23.1280.777/-675.-1417.2560.1349@-675.-1417.2560.1349" timestamp="1604369850253" />
     <state x="606" y="-1417" width="926" height="951" key="dock-window-1/0.23.1280.777/-675.-1417.2560.1355@-675.-1417.2560.1355" timestamp="1605416314720" />
     <state x="1" y="23" width="926" height="744" key="dock-window-1/0.23.1280.777/-675.-1417.2560.1361@-675.-1417.2560.1361" timestamp="1605486824867" />
-    <state x="-307" y="-973" width="1853" height="887" key="find.popup" timestamp="1605419037857">
-      <screen x="-675" y="-1417" width="2560" height="1356" />
+    <state x="830" y="-1417" width="943" height="962" key="dock-window-2" timestamp="1605560501976">
+      <screen x="-675" y="-1417" width="2560" height="1417" />
+    </state>
+    <state x="830" y="-1417" width="943" height="962" key="dock-window-2/0.23.1280.748/-675.-1417.2560.1417@-675.-1417.2560.1417" timestamp="1605560501976" />
+    <state x="225" y="23" width="943" height="747" key="dock-window-2/0.23.1280.748@0.23.1280.748" timestamp="1605555390123" />
+    <state x="830" y="-1417" width="943" height="962" key="dock-window-2/0.23.1280.777/-675.-1417.2560.1365@-675.-1417.2560.1365" timestamp="1605499220204" />
+    <state x="207" y="292" width="1042" height="537" key="find.popup" timestamp="1605567724819">
+      <screen x="0" y="23" width="1440" height="822" />
     </state>
     <state x="-307" y="-954" width="586" height="490" key="find.popup/0.23.1280.741/-675.-1417.2560.1417@-675.-1417.2560.1417" timestamp="1604269376839" />
     <state x="-307" y="-976" width="1851" height="880" key="find.popup/0.23.1280.777/-675.-1417.2560.1349@-675.-1417.2560.1349" timestamp="1604445712881" />
     <state x="-307" y="-976" width="586" height="490" key="find.popup/0.23.1280.777/-675.-1417.2560.1350@-675.-1417.2560.1350" timestamp="1604370743525" />
     <state x="-307" y="-974" width="1853" height="885" key="find.popup/0.23.1280.777/-675.-1417.2560.1354@-675.-1417.2560.1354" timestamp="1605415669133" />
     <state x="-307" y="-973" width="1853" height="887" key="find.popup/0.23.1280.777/-675.-1417.2560.1356@-675.-1417.2560.1356" timestamp="1605419037857" />
-    <state x="207" y="292" width="1042" height="537" key="find.popup/0.23.1440.822@0.23.1440.822" timestamp="1605209908215" />
+    <state x="-307" y="-970" width="1853" height="893" key="find.popup/0.23.1280.777/-675.-1417.2560.1363@-675.-1417.2560.1363" timestamp="1605500190446" />
+    <state x="-307" y="-970" width="1853" height="893" key="find.popup/0.23.1280.777/-675.-1417.2560.1364@-675.-1417.2560.1364" timestamp="1605499900966" />
+    <state x="207" y="292" width="1042" height="537" key="find.popup/0.23.1440.822@0.23.1440.822" timestamp="1605567724819" />
     <state x="303" y="86" width="670" height="676" key="search.everywhere.popup" timestamp="1604419610042">
       <screen x="0" y="23" width="1280" height="739" />
     </state>

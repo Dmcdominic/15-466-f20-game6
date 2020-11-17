@@ -205,8 +205,16 @@ void PlayMode::update(float elapsed) {
 
 		// Check if we should advance levels.
 		if (current_grid->num_disposed >= current_grid->goal) {
-			current_level = (current_level + 1) % num_levels;
-			current_grid = GridLoader::load_level(current_level, loader, &scene);
+            std::vector< MenuMode::Item > items;
+            if (current_level+1 == num_levels) {
+                update_congrats_items(items);
+            } else {
+                update_pass_items(items);
+            }
+            game_menu->update_items(items);
+            Mode::switch_to_menu();
+            current_level = (current_level + 1) % num_levels;
+            current_grid = GridLoader::load_level(current_level, loader, &scene);
 			break;
 		}
 	}
@@ -256,7 +264,7 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	glUniform3fv(lit_color_texture_program->LIGHT_ENERGY_vec3, 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 0.95f)));
 	glUseProgram(0);
 
-	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+	glClearColor(0.4f, 0.6f, .85f, 1.0f);
 	glClearDepth(1.0f); //1.0 is actually the default value to clear the depth buffer to, but FYI you can change it.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -296,3 +304,32 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	}
 	GL_ERRORS();
 }
+
+void PlayMode::update_congrats_items(std::vector< MenuMode::Item > &items){
+    items.emplace_back("Congratulations!");
+    items.emplace_back("Restart from Level 0");
+    items.back().on_select = [this](MenuMode::Item const &) {
+        Mode::switch_to_play();
+        current_level = (current_level + 1) % num_levels;
+        current_grid = GridLoader::load_level(current_level, loader, &scene);
+    };
+    items.back().on_select = [](MenuMode::Item const&) {
+        Mode::switch_to_play();
+    };
+}
+
+void PlayMode::update_pass_items(std::vector< MenuMode::Item > &items){
+    if (current_grid->environment_score==100)
+        items.emplace_back("You nailed it! Your environmental score for this level is 100");
+    else
+        items.emplace_back("Try harder! Your environmental score for this level is"+std::to_string(current_grid->environment_score));
+    items.emplace_back("Go to Level "+ std::to_string(current_level+1));
+    items.back().on_select = [](MenuMode::Item const &) {
+        Mode::switch_to_play();
+    };
+    items.back().on_select = [](MenuMode::Item const&) {
+        Mode::switch_to_play();
+    };
+}
+
+

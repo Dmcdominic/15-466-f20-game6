@@ -5,6 +5,7 @@
 #include "GridLoader.hpp"
 #include "Grid.hpp"
 #include "ModelLoader.hpp"
+#include "game_menu.hpp"
 
 #include <glm/glm.hpp>
 
@@ -19,13 +20,15 @@ struct PlayMode : Mode {
 	virtual bool handle_event(SDL_Event const &, glm::uvec2 const &window_size) override;
 	virtual void update(float elapsed) override;
 	virtual void draw(glm::uvec2 const &drawable_size) override;
+    void update_congrats_items(std::vector< MenuMode::Item > &items);
+    void update_pass_items(std::vector< MenuMode::Item > &items);
 
 	//----- game state -----
 
 	uint8_t current_level = 0; 
 	uint8_t completed_level = 0;
 	//TODO: get this from assets, not hardcoded
-	uint8_t num_levels = 8; 
+	uint8_t num_levels = 10; 
 	ModelLoader loader; 
 
 	//input tracking:

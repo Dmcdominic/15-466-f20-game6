@@ -10,8 +10,10 @@ struct River : BgTile {
 		// static Scene::Drawable* prefab;
         bool iscontaminated = false;
         bool willbecontaminated = false;
+		bool just_sunk = false; 
 		Scene::Drawable rotten;
 		Scene::Drawable* water = nullptr;
+		Scene::Drawable* sunk_object = nullptr;
 		std::list<Scene::Drawable> *drawables = nullptr;
 
 		std::vector<River*> *tiles = nullptr;
@@ -19,8 +21,8 @@ struct River : BgTile {
 		// Methods
 		River(Scene::Drawable* _drawable, Scene::Drawable _rotten, std::list<Scene::Drawable>* _drawables): BgTile(_drawable),
 		rotten(_rotten), drawables(_drawables){};
-
-		bool can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
+  	
+	  	bool can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
 		void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
 		void contaminated();
 		void set_position_model(Scene::Drawable* _water);

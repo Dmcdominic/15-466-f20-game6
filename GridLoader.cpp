@@ -6,6 +6,7 @@
 #include "Player.hpp"
 #include "Barrel.hpp"
 #include "Tree.hpp"
+#include "Railing.hpp"
 //#include "RottenTree.hpp"
 #include "Rock.hpp"
 #include "Protesters.hpp"
@@ -110,7 +111,62 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                 }
                 case 13: {
                     //TODO: shape the river depending on surrounding tiles
-                    scene->drawables.push_back(loader.create_model("River_Straight"));
+                    bool upper = (y <= (packed_grid.height - 2))
+                                &&((obj_ids[packed_grid.data_start + x + (y+1) * packed_grid.width] == 13)
+                                || (obj_ids[packed_grid.data_start + x + (y+1) * packed_grid.width] == 8));
+                    bool lower = (y >= 1)
+                                &&((obj_ids[packed_grid.data_start + x + (y-1) * packed_grid.width] == 13)
+                                || (obj_ids[packed_grid.data_start + x + (y-1) * packed_grid.width] == 8));
+                    bool right = (x <= (packed_grid.width - 2))
+                                &&((obj_ids[packed_grid.data_start + (x+1) + y * packed_grid.width] == 13)
+                                || (obj_ids[packed_grid.data_start + (x+1) + y * packed_grid.width] == 8));
+                    bool left = (x >= 1)
+                                &&((obj_ids[packed_grid.data_start + (x-1) + y * packed_grid.width] == 13)
+                                || (obj_ids[packed_grid.data_start + (x-1) + y * packed_grid.width] == 8));
+                    int num_rotations = 0;
+                    if(!left && !right && !upper && !lower){
+                        scene->drawables.push_back(loader.create_model("River_Single"));
+                    }
+                    else if(left && right && !upper && !lower){
+                        scene->drawables.push_back(loader.create_model("River_Straight"));
+                        num_rotations = 1; 
+                    }
+                    else if(!left && !right && upper && lower){
+                        scene->drawables.push_back(loader.create_model("River_Straight"));
+                    }
+                    else if(!left && right && !upper && lower){
+                        scene->drawables.push_back(loader.create_model("River_Bent"));
+                    }                    
+                    else if(!left && right && upper && !lower){
+                        scene->drawables.push_back(loader.create_model("River_Bent"));
+                        num_rotations = 3; 
+                    }                   
+                    else if(left && !right && upper && !lower){
+                        scene->drawables.push_back(loader.create_model("River_Bent"));
+                        num_rotations = 2; 
+                    }
+                    else if(left && !right && !upper && lower){
+                        scene->drawables.push_back(loader.create_model("River_Bent"));
+                        num_rotations = 1; 
+                    }       
+                    else if(!left && !right && upper && !lower){
+                        scene->drawables.push_back(loader.create_model("River_End"));
+                    }                    
+                    else if(!left && right && !upper && !lower){
+                        scene->drawables.push_back(loader.create_model("River_End"));
+                        num_rotations = 1; 
+                    }                   
+                    else if(!left && !right && !upper && lower){
+                        scene->drawables.push_back(loader.create_model("River_End"));
+                        num_rotations = 2; 
+                    }
+                    else if(left && !right && !upper && !lower){
+                        scene->drawables.push_back(loader.create_model("River_End"));
+                        num_rotations = 3; 
+                    }                  
+                    else{
+                        scene->drawables.push_back(loader.create_model("River_None"));
+                    }
                     Scene::Drawable water = loader.create_model("Water");
                     River *river = new River(&(scene->drawables.back()),
                                              loader.create_model("Water_Toxic"),
@@ -122,6 +178,15 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     grid->cells.at(x).at(y).set_bg_tile(river);
                     river->set_position_model(&(scene->drawables.back()));
                     river->position_models();
+                    for(int i=0; i <num_rotations; i++) river->rotate_90();
+
+                    if(obj_ids[packed_grid.data_start + packed_grid.width * packed_grid.height + x + y * packed_grid.width]==16){
+                        scene->drawables.push_back(loader.create_model("Railing_Straight"));
+                        Railing *railing = new Railing(&(scene->drawables.back()));
+                        grid->cells.at(x).at(y).set_fg_obj(railing);
+                        for(int i=0; i <num_rotations; i++) railing->rotate_90();
+                    }
+
                     prev_is_land = false;
                     break;
                 }
@@ -162,6 +227,9 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
             }
         }
     }
+
+    int tree_id = 0;
+
     //set the FG objects
     for(unsigned int y = 0; y < packed_grid.height; y++) {
         for(unsigned int x = 0; x < packed_grid.width; x++) {
@@ -186,9 +254,12 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     break;
                 case 5:
                     scene->drawables.push_back(loader.create_model("Tree"));
-                    grid->cells.at(x).at(y).set_fg_obj(new Tree(&(scene->drawables.back())));
+		            tree_id++;
+                    grid->cells.at(x).at(y).set_fg_obj(new Tree(&(scene->drawables.back()),
+                    		loader.create_model("Tree"),
+                    		loader.create_model("Tree_Flower1"), loader.create_model("Tree_Flower2"), tree_id));
+                    grid->tree_flower_states.push_back(0);
                     break;
-
                 case 6:
                     scene->drawables.push_back(loader.create_model("Protesters"));
                     grid->cells.at(x).at(y).set_fg_obj(new Protesters(&(scene->drawables.back()),
@@ -201,7 +272,7 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                 case 12:
                     scene->drawables.push_back(loader.create_model("Animal")); 
                     grid->cells.at(x).at(y).set_fg_obj(new Rock(&(scene->drawables.back())));
-                    break;            
+                    break;
             }
         }
     }

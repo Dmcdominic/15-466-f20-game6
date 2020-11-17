@@ -1,4 +1,5 @@
 #include "Bridge.hpp"
+#include "Barrel.hpp"
 #include <iostream>
 
 
@@ -21,6 +22,17 @@ void Bridge::deactivate() {
     this->bridge.transform->rotation = this->drawable->transform->rotation;
 //    delete this->drawable->transform;
     *(this->drawable) = this->unactivated;
+    
+    //sink object if it is on top
+    if(dynamic_cast<Barrel*>(this->cell->fgObj) != nullptr) {
+        iscontaminated = true;
+        current_grid->environment_score -= 5;
+        this->rotten.transform->position = this->drawable->transform->position;
+        delete this->water->transform;
+        *water = this->rotten;
+    }
+
+    if(this->cell->fgObj) just_sunk = true; 
 }
 
 void Bridge::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ){
