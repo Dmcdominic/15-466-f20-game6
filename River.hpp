@@ -20,7 +20,6 @@ struct River : BgTile {
 		River(Scene::Drawable* _drawable, Scene::Drawable _rotten, std::list<Scene::Drawable>* _drawables): BgTile(_drawable),
 		rotten(_rotten), drawables(_drawables){};
 
-		bool can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
 		void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
 		void contaminated();
 		void set_position_model(Scene::Drawable* _water);
