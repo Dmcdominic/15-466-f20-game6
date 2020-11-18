@@ -130,6 +130,7 @@ GAME_NAMES =
 	Turnstile
 	Pit
 	Grid
+	PngView
 	;
 
 COMMON_NAMES =

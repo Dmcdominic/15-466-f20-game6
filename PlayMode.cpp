@@ -18,6 +18,8 @@
 #include "Tree.hpp"
 #include "Rock.hpp"
 
+#include "PngView.hpp"
+
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/quaternion.hpp>
 
@@ -272,6 +274,9 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	glDepthFunc(GL_LESS); //this is the default depth comparison function, but FYI you can change it.
 
 	scene.draw(*active_camera);
+
+	//draw environment meter png
+	meter_png.draw();
 
 	{ //use DrawLines to overlay some text:
 		glDisable(GL_DEPTH_TEST);
