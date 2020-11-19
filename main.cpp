@@ -92,7 +92,7 @@ int main(int argc, char **argv) {
 	}
 
 	//Hide mouse cursor (note: showing can be useful for debugging):
-	//SDL_ShowCursor(SDL_DISABLE);
+	SDL_ShowCursor(SDL_DISABLE);
 
 	//------------ init sound --------------
 	Sound::init();
