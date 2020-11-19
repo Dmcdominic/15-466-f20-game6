@@ -77,6 +77,7 @@
     <ClCompile Include="..\Bridge.cpp" />
     <ClCompile Include="..\Button.cpp" />
     <ClCompile Include="..\Disposal.cpp" />
+    <ClCompile Include="..\game_menu.cpp" />
     <ClCompile Include="..\Grid.cpp" />
     <ClCompile Include="..\ColorProgram.cpp" />
     <ClCompile Include="..\ColorTextureProgram.cpp" />
@@ -87,12 +88,14 @@
     <ClCompile Include="..\gl_compile_program.cpp" />
     <ClCompile Include="..\GridLoader.cpp" />
     <ClCompile Include="..\Input.cpp" />
+    <ClCompile Include="..\level_sequence.cpp" />
     <ClCompile Include="..\LitColorTextureProgram.cpp" />
     <ClCompile Include="..\Load.cpp" />
     <ClCompile Include="..\load_opus.cpp" />
     <ClCompile Include="..\load_save_png.cpp" />
     <ClCompile Include="..\load_wav.cpp" />
     <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\MenuMode.cpp" />
     <ClCompile Include="..\Mesh.cpp" />
     <ClCompile Include="..\Mode.cpp" />
     <ClCompile Include="..\ModelLoader.cpp" />
@@ -103,7 +106,9 @@
     <ClCompile Include="..\Pit.cpp" />
     <ClCompile Include="..\Player.cpp" />
     <ClCompile Include="..\PlayMode.cpp" />
+    <ClCompile Include="..\PngView.cpp" />
     <ClCompile Include="..\Protesters.cpp" />
+    <ClCompile Include="..\Railing.cpp" />
     <ClCompile Include="..\River.cpp" />
     <ClCompile Include="..\Rock.cpp" />
     <ClCompile Include="..\RottenTree.cpp" />
@@ -115,6 +120,7 @@
     <ClCompile Include="..\ShowSceneMode.cpp" />
     <ClCompile Include="..\ShowSceneProgram.cpp" />
     <ClCompile Include="..\Sound.cpp" />
+    <ClCompile Include="..\TextDrawer.cpp" />
     <ClCompile Include="..\Tree.cpp" />
     <ClCompile Include="..\Turnstile.cpp" />
     <ClCompile Include="..\WalkMesh.cpp" />
@@ -124,6 +130,7 @@
     <ClInclude Include="..\Bridge.hpp" />
     <ClInclude Include="..\Button.hpp" />
     <ClInclude Include="..\Disposal.hpp" />
+    <ClInclude Include="..\game_menu.hpp" />
     <ClInclude Include="..\Grid.hpp" />
     <ClInclude Include="..\ColorProgram.hpp" />
     <ClInclude Include="..\ColorTextureProgram.hpp" />
@@ -135,11 +142,13 @@
     <ClInclude Include="..\gl_errors.hpp" />
     <ClInclude Include="..\GridLoader.hpp" />
     <ClInclude Include="..\Input.hpp" />
+    <ClInclude Include="..\level_sequence.hpp" />
     <ClInclude Include="..\LitColorTextureProgram.hpp" />
     <ClInclude Include="..\Load.hpp" />
     <ClInclude Include="..\load_opus.hpp" />
     <ClInclude Include="..\load_save_png.hpp" />
     <ClInclude Include="..\load_wav.hpp" />
+    <ClInclude Include="..\MenuMode.hpp" />
     <ClInclude Include="..\Mesh.hpp" />
     <ClInclude Include="..\Mode.hpp" />
     <ClInclude Include="..\ModelLoader.hpp" />
@@ -149,7 +158,9 @@
     <ClInclude Include="..\Pit.hpp" />
     <ClInclude Include="..\Player.hpp" />
     <ClInclude Include="..\PlayMode.hpp" />
+    <ClInclude Include="..\PngView.hpp" />
     <ClInclude Include="..\Protesters.hpp" />
+    <ClInclude Include="..\Railing.hpp" />
     <ClInclude Include="..\read_write_chunk.hpp" />
     <ClInclude Include="..\River.hpp" />
     <ClInclude Include="..\Rock.hpp" />
@@ -160,6 +171,7 @@
     <ClInclude Include="..\ShowSceneMode.hpp" />
     <ClInclude Include="..\ShowSceneProgram.hpp" />
     <ClInclude Include="..\Sound.hpp" />
+    <ClInclude Include="..\TextDrawer.hpp" />
     <ClInclude Include="..\Tree.hpp" />
     <ClInclude Include="..\Turnstile.hpp" />
     <ClInclude Include="..\WalkMesh.hpp" />

@@ -15,7 +15,7 @@
 #include "Disposal.hpp"
 #include "Pit.hpp"
 #include "Turnstile.hpp"
-
+#include "Overworld.hpp"
 
 Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *scene) {
 
@@ -36,6 +36,7 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
     grid->goal = packed_grid.goal;
     grid->num_disposed = 0;
     int river_counter = 0;
+    uint8_t node_counter = 1;
 
 
     Bridge *bridge = nullptr;
@@ -79,6 +80,25 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     scene->drawables.push_back(grass);
                     pit->position_models(); 
                     break;
+                }
+                case 17: {
+                  scene->drawables.push_back(loader.create_model("OverworldPath"));
+                  Scene::Drawable grass = loader.create_model("Grass");
+                  OverworldPath* overworldPath = new OverworldPath(&(scene->drawables.back()), grass);
+                  grid->cells.at(x).at(y).set_bg_tile(overworldPath);
+                  scene->drawables.push_back(grass);
+                  overworldPath->position_models();
+                  break;
+                }
+                case 18: {
+                  scene->drawables.push_back(loader.create_model("OverworldNode"));
+                  Scene::Drawable grass = loader.create_model("Grass");
+                  OverworldNode* overworldNode = new OverworldNode(&(scene->drawables.back()), grass, node_counter);
+                  node_counter++;
+                  grid->cells.at(x).at(y).set_bg_tile(overworldNode);
+                  scene->drawables.push_back(grass);
+                  overworldNode->position_models();
+                  break;
                 }
             }
         }

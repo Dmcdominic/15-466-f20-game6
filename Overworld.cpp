@@ -13,7 +13,19 @@ void OverworldPath::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec
 }
 
 
+// Position the layered models
+void OverworldPath::position_models() {
+  if (grass.transform) {
+    grass.transform->position = this->drawable->transform->position;
+  }
+}
+
 
 // ----- OVERWORLD NODE -----
 
-// No overrides
+// Position the layered models
+void OverworldNode::position_models() {
+  if (grass.transform) {
+    grass.transform->position = this->drawable->transform->position;
+  }
+}

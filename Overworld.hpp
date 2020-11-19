@@ -6,11 +6,15 @@
 
 // The tiles for paths between nodes for levels in the overworld
 struct OverworldPath : BgTile {
-  // Constructors (inherited)
-  using BgTile::BgTile;
+  // Fields
+  Scene::Drawable grass;
+
+  // Constructors
+  OverworldPath(Scene::Drawable* _drawable, Scene::Drawable _grass) : BgTile(_drawable), grass(_grass) {};
 
   // Methods
   void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
+  void position_models();
 };
 
 
@@ -19,8 +23,11 @@ struct OverworldPath : BgTile {
 struct OverworldNode : BgTile {
   // Fields
   uint8_t level_index;
+  Scene::Drawable grass;
 
   // Constructors
-  OverworldNode(Scene::Drawable* _drawable, uint8_t _level_index) : BgTile(_drawable), level_index(_level_index) {}
-  OverworldNode(Scene::Drawable* _drawable, Cell* _cell, uint8_t _level_index) : BgTile(_drawable, _cell), level_index(_level_index) {}
+  OverworldNode(Scene::Drawable* _drawable, Scene::Drawable _grass, uint8_t _level_index) : BgTile(_drawable), grass(_grass), level_index(_level_index) {};
+
+  // Methods
+  void position_models();
 };

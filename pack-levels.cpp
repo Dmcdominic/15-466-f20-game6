@@ -4,6 +4,7 @@
 #include "read_write_chunk.hpp"
 #include "data_path.hpp"
 #include "PackedGrid.hpp"
+#include "level_sequence.hpp"
 
 #include <glm/glm.hpp>
 
@@ -15,16 +16,13 @@ int main(int argc, char **argv) {
     //prefix of files to read
 	std::string level_filename = "../levels/level";
     
-    uint8_t num_levels = 10; 
-    std::vector < glm::uvec2 > grid_sizes = {glm::uvec2(4,4), glm::uvec2(4,4), glm::uvec2(4,4), glm::uvec2(4,4), glm::uvec2(4,4), glm::uvec2(8,8), glm::uvec2(4,6), glm::uvec2(8,8), glm::uvec2(8,8), glm::uvec2(8,8)}; 
-    std::vector < unsigned int > goals = {1, 2, 1, 1, 1, 3, 1, 1, 1, 1}; 
-    
     std::vector< PackedGrid > grids; 
     std::vector< int > obj_ids; 
     std::vector< glm::u8vec4 > data; 
 
     //load all level pngs
     for(int i = 0; i < num_levels; i++) {
+        std::string level_filename_full = level_filename + level_sequence[i];
 
         PackedGrid grid;
 
@@ -34,7 +32,7 @@ int main(int argc, char **argv) {
         grid.data_start = (unsigned int) obj_ids.size(); 
 
         //save bg 
-        load_png(data_path(level_filename  + std::to_string(i) + "_bg.png"), &grid_sizes[i], &data, LowerLeftOrigin); 
+        load_png(data_path(level_filename_full + "_bg.png"), &grid_sizes[i], &data, LowerLeftOrigin);
 
         for(unsigned int y = 0; y < grid.height; y++) {
             for(unsigned int x = 0; x < grid.width; x++) {
@@ -45,7 +43,7 @@ int main(int argc, char **argv) {
         }
 
         //save fg
-        load_png(data_path(level_filename  + std::to_string(i) + "_fg.png"), &grid_sizes[i], &data, LowerLeftOrigin); 
+        load_png(data_path(level_filename_full + "_fg.png"), &grid_sizes[i], &data, LowerLeftOrigin);
 
         for(unsigned int y = 0; y < grid.height; y++) {
             for(unsigned int x = 0; x < grid.width; x++) {
@@ -56,7 +54,7 @@ int main(int argc, char **argv) {
         }
 
         //save sky
-        load_png(data_path(level_filename  + std::to_string(i) + "_sky.png"), &grid_sizes[i], &data, LowerLeftOrigin); 
+        load_png(data_path(level_filename_full + "_sky.png"), &grid_sizes[i], &data, LowerLeftOrigin);
 
         for(unsigned int y = 0; y < grid.height; y++) {
             for(unsigned int x = 0; x < grid.width; x++) {
