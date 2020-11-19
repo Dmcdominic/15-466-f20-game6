@@ -7,6 +7,8 @@
 #include "ModelLoader.hpp"
 #include "game_menu.hpp"
 
+#include "PngView.hpp"
+
 #include <glm/glm.hpp>
 
 #include <queue>
@@ -51,4 +53,6 @@ struct PlayMode : Mode {
 	float camera_max_speed = 0.05f;
 	float camera_accel = 0.15f;
 	glm::vec3 camera_velo = glm::vec3();
+
+	PngView meter_png{};
 };

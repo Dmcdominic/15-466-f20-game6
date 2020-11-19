@@ -18,6 +18,8 @@
 #include "Tree.hpp"
 #include "Rock.hpp"
 
+#include "PngView.hpp"
+
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/quaternion.hpp>
 
@@ -273,6 +275,9 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 
 	scene.draw(*active_camera);
 
+	//draw environment meter png
+	meter_png.draw();
+
 	{ //use DrawLines to overlay some text:
 		glDisable(GL_DEPTH_TEST);
 		float aspect = float(drawable_size.x) / float(drawable_size.y);
@@ -284,12 +289,12 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 		));
 
 		constexpr float H = 0.09f;
-		lines.draw_text("arrow keys to move, WASD for camera, R to reset current level",
+		lines.draw_text("arrow keys or WASD to move, R to reset current level",
 			glm::vec3(-aspect + 0.1f * H, -1.0 + 0.1f * H, 0.0),
 			glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
 			glm::u8vec4(0x00, 0x00, 0x00, 0x00));
 		float ofs = 2.0f / drawable_size.y;
-		lines.draw_text("arrow keys to move, WASD for camera, R to reset current level",
+		lines.draw_text("arrow keys or WASD to move, R to reset current level",
 			glm::vec3(-aspect + 0.1f * H + ofs, -1.0 + + 0.1f * H + ofs, 0.0),
 			glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
 			glm::u8vec4(0xff, 0xff, 0xff, 0x00));
