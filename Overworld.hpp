@@ -22,8 +22,8 @@ struct OverworldPath : BgTile {
 // The node for each level in the overworld
 struct OverworldNode : BgTile {
   // Fields
-  uint8_t level_index;
   Scene::Drawable grass;
+  uint8_t level_index;
 
   // Constructors
   OverworldNode(Scene::Drawable* _drawable, Scene::Drawable _grass, uint8_t _level_index) : BgTile(_drawable), grass(_grass), level_index(_level_index) {};
