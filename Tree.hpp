@@ -9,7 +9,6 @@ struct Tree : FgObj {
 	using FgObj::FgObj;
 
 	// Fields
-	static Scene::Drawable *prefab;
 	Scene::Drawable tree1 = nullptr;
 	Scene::Drawable tree2 = nullptr;
 	Scene::Drawable tree3 = nullptr;

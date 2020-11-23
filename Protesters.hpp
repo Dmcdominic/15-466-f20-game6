@@ -8,7 +8,6 @@ struct Protesters : FgObj {
     // Constructors (inherited)
 
     // Fields
-    static Scene::Drawable* prefab;
     Scene::Drawable rolled_over = nullptr;
     std::list<Scene::Drawable>* drawables = nullptr;
 

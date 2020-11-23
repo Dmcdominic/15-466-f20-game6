@@ -3,8 +3,6 @@
 #include <iostream>
 
 
-Scene::Drawable* Protesters::prefab;
-
 bool Protesters::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ){
     const FgObj* y = &objBeingMoved;
     const Barrel* x = dynamic_cast<const Barrel*>(y);

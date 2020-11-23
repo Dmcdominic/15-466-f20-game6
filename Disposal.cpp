@@ -1,7 +1,6 @@
 #include "Disposal.hpp"
 #include "Barrel.hpp"
 
-Scene::Drawable* Disposal::prefab;
 
 bool Disposal::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ){
 	return (dynamic_cast<Barrel*>(&objBeingMoved) != nullptr);

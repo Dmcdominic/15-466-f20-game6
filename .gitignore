@@ -18,3 +18,4 @@ scenes/show-scene*
 scenes/Makefile
 
 .DS_Store
+vs_project/Debug/

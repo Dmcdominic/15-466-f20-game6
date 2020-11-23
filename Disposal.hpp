@@ -5,7 +5,6 @@ struct Disposal : BgTile {
 		// Constructors (inherited)
 
 		// Fields
-		static Scene::Drawable* prefab;
 		Scene::Drawable grass;
         std::list<Scene::Drawable>* drawables = nullptr;
 

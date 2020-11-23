@@ -7,7 +7,6 @@ struct River : BgTile {
 		// Constructors (inherited)
 
 		// Fields
-		// static Scene::Drawable* prefab;
         bool iscontaminated = false;
         bool willbecontaminated = false;
 		bool just_sunk = false; 
