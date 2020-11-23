@@ -1,13 +1,14 @@
 #include "GridLoader.hpp"
 #include "data_path.hpp"
 #include "read_write_chunk.hpp"
+
 #include <fstream>
+
 #include "Tree.hpp"
 #include "Player.hpp"
 #include "Barrel.hpp"
 #include "Tree.hpp"
 #include "Railing.hpp"
-//#include "RottenTree.hpp"
 #include "Rock.hpp"
 #include "Protesters.hpp"
 #include "Bridge.hpp"
@@ -16,6 +17,7 @@
 #include "Pit.hpp"
 #include "Turnstile.hpp"
 #include "Overworld.hpp"
+
 
 Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *scene) {
 
@@ -130,7 +132,7 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
           *this_path->drawable = path_faded;
         }
       } else {
-        throw std::exception("OverworldTile was neither an OverworldNode nor an OverworldPath...");
+        throw std::runtime_error("OverworldTile was neither an OverworldNode nor an OverworldPath...");
       }
       glm::ivec2 pos = OTile->cell->pos;
       OTile = nullptr;
