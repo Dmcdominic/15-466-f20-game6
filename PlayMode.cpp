@@ -17,6 +17,7 @@
 #include "Pit.hpp"
 #include "Tree.hpp"
 #include "Rock.hpp"
+#include "Overworld.hpp"
 
 #include "PngView.hpp"
 
@@ -33,6 +34,7 @@ Load< MeshBuffer > toxic_prefabs_meshes(LoadTagDefault, []() -> MeshBuffer const
 	toxic_prefabs_meshes_for_lit_color_texture_program = ret->make_vao_for_program(lit_color_texture_program->program);
 	return ret;
 });
+
 
 Load< Scene > toxic_prefabs_scene(LoadTagDefault, []() -> Scene const * {
 	return new Scene(data_path("toxic-prefabs.scene"), [&](Scene &scene, Scene::Transform *transform, std::string const &mesh_name){
@@ -51,11 +53,19 @@ Load< Scene > toxic_prefabs_scene(LoadTagDefault, []() -> Scene const * {
 	});
 });
 
+
 // Audio loading
 Load< Sound::Sample > error_sample(LoadTagDefault, []() -> Sound::Sample const* {
 	return new Sound::Sample(data_path("Audio/Error1.wav"));
 });
 
+
+// Static variable initialization
+uint8_t PlayMode::current_level = 0;
+uint8_t PlayMode::completed_level = 0;
+
+
+// Constructor
 PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 	// First, seed the random number generator
 	std::srand((unsigned int)time(NULL));
@@ -74,7 +84,7 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 	// --- MODEL & GRID INITIALIZATION ---
 	loader = ModelLoader(); 
 	//change this value to view a different level
-	current_grid = GridLoader::load_level(0, loader, &scene);
+	load_level(0);
 
 	// Manually throwing an object into the first grid, for testing
 	/*scene.drawables.push_back(loader.create_model("Barrel"));
@@ -123,18 +133,17 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 			down_player.pressed = true;
 			input_q.push(Input(InputType::DOWN));
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_e || evt.key.keysym.sym == SDLK_SPACE) {
+		} else if (evt.key.keysym.sym == SDLK_e || evt.key.keysym.sym == SDLK_SPACE || evt.key.keysym.sym == SDLK_RETURN) {
 			input_q.push(Input(InputType::INTERACT));
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_q) {  // QUIT
 			this->quit = true;
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_n) {
-			current_level = (current_level + 1) % num_levels; 
-			current_grid = GridLoader::load_level(current_level, loader, &scene);
+			load_level((current_level + 1) % num_levels);
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_r) {
-			current_grid = GridLoader::load_level(current_level, loader, &scene);
+			load_level(current_level);
 			return true;
 		}
 		std::cout << "\n" << current_grid->num_disposed << "/" << current_grid->goal; 
@@ -200,32 +209,39 @@ void PlayMode::update(float elapsed) {
 
 		// Check if the output indicates a new level to load, e.g. they interacted with an overworld node.
 		if (output.level_to_load) {
-			current_level = (*output.level_to_load) % num_levels;
-			current_grid = GridLoader::load_level(current_level, loader, &scene);
+			load_level(*output.level_to_load);
 			break;
 		}
 
 		// Check if we should advance levels.
 		if (current_grid->num_disposed >= current_grid->goal) {
-            std::vector< MenuMode::Item > items;
-            if (current_level+1 == num_levels) {
-                update_congrats_items(items);
-            } else {
-                update_pass_items(items);
-            }
-            game_menu->update_items(items);
-            Mode::switch_to_menu();
-            current_level = (current_level + 1) % num_levels;
-            current_grid = GridLoader::load_level(current_level, loader, &scene);
+			completed_level = std::max(completed_level, current_level);
+      std::vector< MenuMode::Item > items;
+      if (current_level + 1 == num_levels) {
+        update_congrats_items(items);
+      } else {
+        update_pass_items(items);
+      }
+			game_menu->update_items(items);
+      Mode::switch_to_menu();
+			// load the Overworld
+      load_level(0);
 			break;
 		}
+	}
+
+	// While the player has a forced move, move them.
+	while (current_grid->player->next_forced_move != std::nullopt) {
+		glm::ivec2 displ = *current_grid->player->next_forced_move;
+		current_grid->player->next_forced_move = std::nullopt;
+		current_grid->player->try_to_move_by(displ);
 	}
 
 	// --- Move camera to follow player ---
 	glm::vec3 target_cam_pos = current_grid->player->drawable->transform->position + camera_offset_from_player;
 	glm::vec3 cam_displacement = target_cam_pos - active_camera->transform->position;
 	float dist = glm::length(cam_displacement);
-	float local_max_speed = glm::min(camera_max_speed, dist);
+	float local_max_speed = glm::min(get_cam_max_speed(), dist);
 
 	// Update the camera's velocity, and upper bound by local_max_speed
 	camera_velo += cam_displacement * camera_accel * elapsed * dist;
@@ -310,18 +326,19 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	GL_ERRORS();
 }
 
+
 void PlayMode::update_congrats_items(std::vector< MenuMode::Item > &items){
     items.emplace_back("Congratulations!");
     items.emplace_back("Restart from Level 0");
     items.back().on_select = [this](MenuMode::Item const &) {
         Mode::switch_to_play();
-        current_level = (current_level + 1) % num_levels;
-        current_grid = GridLoader::load_level(current_level, loader, &scene);
+        load_level(current_level + 1);
     };
     items.back().on_select = [](MenuMode::Item const&) {
         Mode::switch_to_play();
     };
 }
+
 
 void PlayMode::update_pass_items(std::vector< MenuMode::Item > &items){
     if (current_grid->environment_score==100)
@@ -337,4 +354,23 @@ void PlayMode::update_pass_items(std::vector< MenuMode::Item > &items){
     };
 }
 
+
+// Loads a level using the GridLoader
+void PlayMode::load_level(uint8_t level_index) {
+	bool resetting = (level_index == current_level);
+	current_level = level_index % num_levels;
+	current_grid = GridLoader::load_level(current_level, loader, &scene);
+	if (is_Overworld() && current_grid->highest_level_node != nullptr) {
+		// Find the position of the node you should teleport the player to
+		if (current_grid->highest_level_node->cell->fgObj != current_grid->player) {
+			assert(current_grid->highest_level_node->cell->fgObj == nullptr);
+			current_grid->highest_level_node->cell->set_fg_obj(current_grid->player);
+		}
+	}
+	if (!resetting || is_Overworld()) {
+		glm::vec3 offset = reset_cam_offset_from_player();
+		active_camera->transform->position = current_grid->player->drawable->transform->position + offset;
+		camera_velo = glm::vec3();
+	}
+}
 

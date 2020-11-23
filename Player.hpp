@@ -1,10 +1,15 @@
 #pragma once
 
+#include <optional>
+
 #include "Grid.hpp"
 #include "Scene.hpp"
 
 
 struct Player : FgObj {
+	// Fields
+	std::optional<glm::ivec2> next_forced_move;
+
 	// Constructors (inherited)
 	using FgObj::FgObj;
 

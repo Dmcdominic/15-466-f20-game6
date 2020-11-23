@@ -35,8 +35,9 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
     Grid *grid = new Grid(packed_grid.width, packed_grid.height);
     grid->goal = packed_grid.goal;
     grid->num_disposed = 0;
+
     int river_counter = 0;
-    uint8_t node_counter = 1;
+    OverworldNode* first_node = nullptr;
 
 
     Bridge *bridge = nullptr;
@@ -82,7 +83,7 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     break;
                 }
                 case 17: {
-                  scene->drawables.push_back(loader.create_model("OverworldPath"));
+                  scene->drawables.push_back(loader.create_model("Path"));
                   Scene::Drawable grass = loader.create_model("Grass");
                   OverworldPath* overworldPath = new OverworldPath(&(scene->drawables.back()), grass);
                   grid->cells.at(x).at(y).set_bg_tile(overworldPath);
@@ -91,10 +92,10 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                   break;
                 }
                 case 18: {
-                  scene->drawables.push_back(loader.create_model("OverworldNode"));
+                  scene->drawables.push_back(loader.create_model("Node"));
                   Scene::Drawable grass = loader.create_model("Grass");
-                  OverworldNode* overworldNode = new OverworldNode(&(scene->drawables.back()), grass, node_counter);
-                  node_counter++;
+                  OverworldNode* overworldNode = new OverworldNode(&(scene->drawables.back()), grass);
+                  if (first_node == nullptr) first_node = overworldNode;
                   grid->cells.at(x).at(y).set_bg_tile(overworldNode);
                   scene->drawables.push_back(grass);
                   overworldNode->position_models();
@@ -104,6 +105,49 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
         }
     }
 
+
+    // Start from first_node and set all the level_indices
+    uint8_t level_index = 1;
+    OverworldTile* OTile = first_node;
+    std::vector<glm::ivec2> displ_to_try = { glm::ivec2(1, 0), glm::ivec2(-1, 0), glm::ivec2(0, 1), glm::ivec2(0, -1) };
+    while (OTile != nullptr) {
+      OTile->visited = true;
+      OverworldNode* this_node = dynamic_cast<OverworldNode*>(OTile);
+      OverworldPath* this_path = dynamic_cast<OverworldPath*>(OTile);
+      // Update the node or path's level_index/max_adjacent_level
+      if (this_node != nullptr) {
+        this_node->level_index = level_index;
+        level_index++;
+        if (this_node->accessible()) grid->highest_level_node = this_node;
+      } else if (this_path != nullptr) {
+        this_path->max_adjacent_lvl = level_index;
+        // Set path to be faded if this isn't accessible
+        if (!this_path->faded && !this_path->accessible()) {
+          this_path->faded = true;
+          Scene::Drawable path_faded = loader.create_model("Path_Faded");
+          path_faded.transform->position = this_path->drawable->transform->position;
+          delete this_path->drawable->transform;
+          *this_path->drawable = path_faded;
+        }
+      } else {
+        throw std::exception("OverworldTile was neither an OverworldNode nor an OverworldPath...");
+      }
+      glm::ivec2 pos = OTile->cell->pos;
+      OTile = nullptr;
+      // Find the next OTile by checking the 4 neighbors
+      for (auto displ_iter = displ_to_try.begin(); displ_iter != displ_to_try.end(); displ_iter++) {
+        glm::ivec2 new_pos = pos + *displ_iter;
+        if (!grid->is_valid_pos(new_pos)) continue; // has to be a valid position
+        OverworldTile* next_tile = dynamic_cast<OverworldTile*>(grid->cell_at(new_pos)->bgTile);
+        if (next_tile != nullptr && !next_tile->visited) {
+          OTile = next_tile;
+          break;
+        }
+      }
+    }
+
+
+    // Instantiate and shape the river/bridges
     std::vector< River* > *river_tiles = new std::vector< River* >(river_counter);
     int inserted = 0;
 
@@ -130,7 +174,7 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
                     break;
                 }
                 case 13: {
-                    //TODO: shape the river depending on surrounding tiles
+                    //shape the river depending on surrounding tiles
                     bool upper = (y <= (packed_grid.height - 2))
                                 &&((obj_ids[packed_grid.data_start + x + (y+1) * packed_grid.width] == 13)
                                 || (obj_ids[packed_grid.data_start + x + (y+1) * packed_grid.width] == 8));
@@ -229,6 +273,7 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
         }
     }
 
+    // Instantiate buttons
     for(unsigned int y = 0; y < packed_grid.height; y++) {
         for (unsigned int x = 0; x < packed_grid.width; x++) {
             switch (obj_ids[packed_grid.data_start + x + y * packed_grid.width]) {
@@ -248,9 +293,8 @@ Grid* GridLoader::load_level(unsigned int grid_id, ModelLoader loader, Scene *sc
         }
     }
 
-    int tree_id = 0;
-
     //set the FG objects
+    int tree_id = 0;
     for(unsigned int y = 0; y < packed_grid.height; y++) {
         for(unsigned int x = 0; x < packed_grid.width; x++) {
             switch(obj_ids[packed_grid.data_start + packed_grid.width * packed_grid.height + x + y * packed_grid.width]) {

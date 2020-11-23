@@ -37,6 +37,13 @@ bool Grid::is_valid_pos(glm::ivec2 _pos) {
 }
 
 
+// Returns the cell at the given position.
+Cell* Grid::cell_at(glm::ivec2 _pos) {
+  assert(is_valid_pos(_pos));
+  return &cells.at(_pos.x).at(_pos.y);
+}
+
+
 // Calls the on_input function on every cell in the grid.
 // Returns true iff something handled the input.
 // For now, it only allows 1 CellItem to handle any input.
@@ -81,6 +88,12 @@ bool Grid::on_input(const Input& input, Output* output) {
   }
 
   return true;
+}
+
+
+// Returns a copy of a displacement vector with any positive coordinates set to 1.
+glm::ivec2 Grid::normalize_displ(const glm::ivec2& displ) {
+  return glm::ivec2(displ.x == 0 ? 0 : 1, displ.y == 0 ? 0 : 1);
 }
 
 
@@ -294,7 +307,7 @@ bool BgTile::on_input(const Input& input, Output* output){
 bool FgObj::try_to_move_by(const glm::ivec2& displ) {
   glm::ivec2 target_pos = this->cell->pos + displ;
   if (!current_grid->is_valid_pos(target_pos)) return false;
-  Cell* target_cell = &current_grid->cells.at(target_pos.x).at(target_pos.y);
+  Cell* target_cell = current_grid->cell_at(target_pos);
   if (!target_cell->can_fg_obj_move_into(*this, displ)) return false;
   target_cell->when_fg_obj_moved_into(*this, displ);
   if (target_cell->fgObj != nullptr) {
@@ -314,7 +327,7 @@ bool FgObj::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) 
     return false;
   }
   // Otherwise, check if this can be pushed according to displ.
-  return current_grid->cells.at(target_pos.x).at(target_pos.y).can_fg_obj_move_into(*this, displ);
+  return current_grid->cell_at(target_pos)->can_fg_obj_move_into(*this, displ);
 }
 
 
@@ -352,7 +365,7 @@ bool FgObj::on_input(const Input& input, Output* output){
 bool SkyObj::try_to_move_by(const glm::ivec2& displ) {
   glm::ivec2 target_pos = this->cell->pos + displ;
   if (!current_grid->is_valid_pos(target_pos)) return false;
-  Cell* target_cell = &current_grid->cells.at(target_pos.x).at(target_pos.y);
+  Cell* target_cell = current_grid->cell_at(target_pos);
   if (!target_cell->can_sky_obj_move_into(*this, displ)) return false;
   target_cell->when_sky_obj_moved_into(*this, displ);
   /*if (target_cell->skyObj != nullptr) {
@@ -383,7 +396,7 @@ bool SkyObj::can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2
     return false;
   }
   // Otherwise, check if this can be moved according to displ.
-  return current_grid->cells.at(target_pos.x).at(target_pos.y).can_sky_obj_move_into(*this, displ);
+  return current_grid->cell_at(target_pos)->can_sky_obj_move_into(*this, displ);
 }
 
 

@@ -14,6 +14,7 @@ struct BgTile;
 struct FgObj;
 struct SkyObj;
 struct Player;
+struct OverworldNode;
 
 
 // The current grid
@@ -32,6 +33,7 @@ struct Grid {
 	int environment_score = 100;
 
 	Player *player = nullptr;
+	OverworldNode *highest_level_node = nullptr;
 	std::vector< int > tree_flower_states;
 
 	int tree_num_states = 3;
@@ -44,7 +46,10 @@ struct Grid {
 
 	// Methods
 	bool is_valid_pos(glm::ivec2 _pos);
+	Cell* cell_at(glm::ivec2 _pos);
 	bool on_input(const Input& input, Output* output);
+
+	static glm::ivec2 normalize_displ(const glm::ivec2& displ);
 };
 
 

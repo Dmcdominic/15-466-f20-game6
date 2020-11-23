@@ -1,24 +1,30 @@
 #include "Player.hpp"
 #include "Overworld.hpp"
 
+#include <iostream>
+
 
 // For now, objects can't move into the player's cell
 bool Player::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
   return false;
 }
 
+
 // For now, does not apply
 void Player::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
 }
+
 
 // Sky objects can move over the player
 bool Player::can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ) {
   return true;
 }
 
+
 // Nothing happens
 void Player::when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) {
 }
+
 
 // Controls the player's movement.
 // If up/down/left/right is pressed, move in the grid.
@@ -57,5 +63,15 @@ bool Player::on_input(const Input& input, Output* output) {
   }
 
   this->drawable->transform->rotation = glm::angleAxis(roll, glm::vec3(0.0f, 0.0f, 1.0f));
+
+  glm::ivec2 target_pos = cell->pos + displ;
+  if (!current_grid->is_valid_pos(target_pos)) return false;
+
+  // First check if you're trying to move off of the Overworld path
+  if (dynamic_cast<OverworldTile*>(cell->bgTile) != nullptr) {
+    OverworldTile *targetTile = dynamic_cast<OverworldTile*>(current_grid->cell_at(target_pos)->bgTile);
+    if (targetTile == nullptr || !targetTile->accessible()) return false;
+  }
+
   return try_to_move_by(displ);
 }
