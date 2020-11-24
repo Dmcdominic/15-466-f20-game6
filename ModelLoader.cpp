@@ -3,15 +3,19 @@
 #include "Load.hpp"
 #include "data_path.hpp"
 #include "LitColorTextureProgram.hpp"
+#include "LitPurpleColorTextureProgram.hpp"
 #include <iostream>
+#include <glm/gtc/type_ptr.hpp>
 
 ModelLoader* model_loader = nullptr;
 
 GLuint toxic_meshes_for_lit_color_texture_program = 0;
+GLuint toxic_meshes_for_lit_purple_color_texture_program = 0;
 
 Load< MeshBuffer > meshes(LoadTagDefault, []() -> MeshBuffer const * {
 	MeshBuffer const *ret = new MeshBuffer(data_path("toxic-prefabs.pnct"));
 	toxic_meshes_for_lit_color_texture_program = ret->make_vao_for_program(lit_color_texture_program->program);
+	toxic_meshes_for_lit_purple_color_texture_program = ret->make_vao_for_program(lit_purple_color_texture_program->program);
 	return ret;
 });
 
@@ -43,6 +47,10 @@ ModelLoader::ModelLoader() : scene(*model_scene) {
         // std::cout << "loaded " << drawable.transform->name << "\n"; 
         templates.insert(std::make_pair(drawable.transform->name, t)); 
     }
+
+    //set up light type and position for lit_color_texture_program:
+	// TODO: consider using the Light(s) in the scene to do this
+
     //std::cout << "\nloaded " << templates.size() << " models\n"; 
 }
     
@@ -57,9 +65,21 @@ Scene::Drawable ModelLoader::create_model(std::string model_name){
     ModelTemplate t = it->second;
     Scene::Transform *transform = new Scene::Transform; 
     Scene::Drawable drawable = Scene::Drawable(transform); 
-    
-	drawable.pipeline = lit_color_texture_program_pipeline;
-    drawable.pipeline.vao = toxic_meshes_for_lit_color_texture_program;
+    if(model_name == "Water") {
+        drawable.pipeline = lit_purple_color_texture_program_pipeline;
+        drawable.pipeline.vao = toxic_meshes_for_lit_purple_color_texture_program;
+        drawable.pipeline.set_uniforms = [](){
+            glUniform1f(lit_purple_color_texture_program->PURPLE_AMT_float, 0.0f);
+            glUniform1i(lit_purple_color_texture_program->LIGHT_TYPE_int, 1);
+            glUniform3fv(lit_purple_color_texture_program->LIGHT_DIRECTION_vec3, 1, glm::value_ptr(glm::vec3(0.0f, 0.0f,-1.0f)));
+            glUniform3fv(lit_purple_color_texture_program->LIGHT_ENERGY_vec3, 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 0.95f)));
+        };
+
+    }
+    else {
+        drawable.pipeline = lit_color_texture_program_pipeline;
+        drawable.pipeline.vao = toxic_meshes_for_lit_color_texture_program;
+    }
     drawable.pipeline.type = t.type; 
     drawable.pipeline.start = t.start; 
     drawable.pipeline.count = t.count; 

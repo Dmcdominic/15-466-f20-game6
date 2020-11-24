@@ -44,9 +44,10 @@ void Bridge::deactivate() {
         iscontaminated = true;
         current_grid->environment_score -= 5;
 
-        delete this->water->transform;
-        *water = model_loader->create_model("Water_Toxic");
-        water->transform->position = this->drawable->transform->position;
+        // delete this->water->transform;
+        // *water = (model_loader->create_model("Water_Toxic"));
+        // water->transform->position = this->drawable->transform->position;
+        set_purple_amt(0.5); 
 
     }
 

@@ -1,6 +1,8 @@
 #include "River.hpp"
 #include "Barrel.hpp"
 #include "Player.hpp"
+#include "LitPurpleColorTextureProgram.hpp"
+
 #include <iostream>
 
 
@@ -11,13 +13,19 @@ River::River(Scene::Drawable* _drawable, std::list<Scene::Drawable>* _drawables)
     water->transform->position = glm::ivec3(1, 1, 1); 
 }
 
+void River::set_purple_amt(float amt) {
+    this->water->pipeline.set_uniforms = [amt](){
+        glUniform1f(lit_purple_color_texture_program->PURPLE_AMT_float, amt);
+    };
+}
 void River::contaminated() {
     current_grid->environment_score -= 5;
     iscontaminated = true;
     willbecontaminated = false;
-    delete this->water->transform;
-    *water = (model_loader->create_model("Water_Toxic"));
-    water->transform->position = this->drawable->transform->position;
+    // delete this->water->transform;
+    // *water = (model_loader->create_model("Water_Toxic"));
+    // water->transform->position = this->drawable->transform->position;
+    set_purple_amt(0.5); 
 }
 
 bool River::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
@@ -30,9 +38,10 @@ void River::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ
 		if(dynamic_cast<Barrel*>(&objBeingMoved) != nullptr) {
 			iscontaminated = true;
 			current_grid->environment_score -= 5;
-            delete this->water->transform;
-            *water = (model_loader->create_model("Water_Toxic"));
-            water->transform->position = this->drawable->transform->position;
+            // delete this->water->transform;
+            // *water = (model_loader->create_model("Water_Toxic"));
+            // water->transform->position = this->drawable->transform->position;
+            set_purple_amt(0.5); 
 		}
 		just_sunk = true; 
 	}
