@@ -1,6 +1,7 @@
 #include "PlayMode.hpp"
 
 #include "LitColorTextureProgram.hpp"
+#include "LitPurpleColorTextureProgram.hpp"
 
 #include "DrawLines.hpp"
 #include "Mesh.hpp"
@@ -29,27 +30,29 @@
 #include <time.h>
 
 
-GLuint toxic_prefabs_meshes_for_lit_color_texture_program = 0;
-Load< MeshBuffer > toxic_prefabs_meshes(LoadTagDefault, []() -> MeshBuffer const * {
-	MeshBuffer const *ret = new MeshBuffer(data_path("toxic-prefabs.pnct"));
-	toxic_prefabs_meshes_for_lit_color_texture_program = ret->make_vao_for_program(lit_color_texture_program->program);
-	return ret;
-});
+// GLuint toxic_prefabs_meshes_for_lit_color_texture_program = 0;
+
+// Load< MeshBuffer > toxic_prefabs_meshes(LoadTagDefault, []() -> MeshBuffer const * {
+// 	MeshBuffer const *ret = new MeshBuffer(data_path("toxic-prefabs.pnct"));
+// 	toxic_prefabs_meshes_for_lit_color_texture_program = ret->make_vao_for_program(lit_color_texture_program->program);
+// 	toxic_meshes_for_lit_purple_color_texture_program = ret->make_vao_for_program(lit_purple_color_texture_program->program);
+// 	return ret;
+// });
 
 
 Load< Scene > toxic_prefabs_scene(LoadTagDefault, []() -> Scene const * {
 	return new Scene(data_path("toxic-prefabs.scene"), [&](Scene &scene, Scene::Transform *transform, std::string const &mesh_name){
-		Mesh const &mesh = toxic_prefabs_meshes->lookup(mesh_name);
+		// Mesh const &mesh = toxic_prefabs_meshes->lookup(mesh_name);
 
-		scene.drawables.emplace_back(transform);
-		Scene::Drawable &drawable = scene.drawables.back();
+		// scene.drawables.emplace_back(transform);
+		// Scene::Drawable &drawable = scene.drawables.back();
 
-		drawable.pipeline = lit_color_texture_program_pipeline;
+		// drawable.pipeline = lit_color_texture_program_pipeline;
 
-		drawable.pipeline.vao = toxic_prefabs_meshes_for_lit_color_texture_program;
-		drawable.pipeline.type = mesh.type;
-		drawable.pipeline.start = mesh.start;
-		drawable.pipeline.count = mesh.count;
+		// drawable.pipeline.vao = toxic_prefabs_meshes_for_lit_color_texture_program;
+		// drawable.pipeline.type = mesh.type;
+		// drawable.pipeline.start = mesh.start;
+		// drawable.pipeline.count = mesh.count;
 
 	});
 });

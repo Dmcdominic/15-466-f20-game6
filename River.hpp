@@ -22,6 +22,7 @@ struct River : BgTile {
 		//River(Scene::Drawable* _drawable, Scene::Drawable *_toxic_water, std::list<Scene::Drawable>* _drawables): BgTile(_drawable), toxic_water(_toxic_water), drawables(_drawables){};
   		River(Scene::Drawable* _drawable, std::list<Scene::Drawable>* _drawables);
 
+		void set_purple_amt(float amt);
 	  	bool can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
 		void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
 		void contaminated();
