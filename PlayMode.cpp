@@ -202,7 +202,7 @@ void PlayMode::update(float elapsed) {
 	// Process input
 	while (!input_q.empty()) {
 		Output output = Output();
-		bool handled = current_grid->on_input(Input(input_q.front()), &output);
+		current_grid->on_input(Input(input_q.front()), &output);
 		input_q.pop();
 
 		// Check if the output indicates a new level to load, e.g. they interacted with an overworld node.
