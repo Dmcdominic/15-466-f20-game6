@@ -69,6 +69,7 @@ bool Grid::on_input(const Input& input, Output* output) {
   // If it was an invalid move or other input that couldn't be handled,
   //   play the error sound.
   if (!input_handled) {
+    AudioManager::clips_to_play.push(AudioManager::AudioClip::ERROR);
     return false;
   }
 
@@ -256,6 +257,21 @@ void CellItem::rotate_90() {
 }
 
 
+// Returns the audio clip that should be played when this object moves
+std::optional<AudioManager::AudioClip> CellItem::get_move_clip() {
+  return std::nullopt;
+}
+
+
+// If this CellItem has an audio clip for when it moves, push it onto the clips_to_play vector
+void CellItem::push_move_clip() {
+  std::optional<AudioManager::AudioClip> clip_opt = get_move_clip();
+  if (clip_opt != std::nullopt) {
+    AudioManager::clips_to_play.push(*clip_opt);
+  }
+}
+
+
 
 /* ----- Background Tiles ----- */
 
@@ -336,6 +352,7 @@ void FgObj::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ
   if (!try_to_move_by(displ)) {
     throw std::runtime_error("when_fg_obj_moved_into() somehow called for an object position & displacement that COULDN'T move.");
   }
+  push_move_clip();
 }
 
 
@@ -405,6 +422,7 @@ void SkyObj::when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& di
   if (!try_to_move_by(displ)) {
     throw std::runtime_error("when_sky_obj_moved_into() somehow called for an object position & displacement that COULDN'T move.");
   }
+  push_move_clip();
 }
 
 

@@ -106,6 +106,7 @@ GAME_NAMES =
     TextDrawer
 	WalkMesh
 	level_sequence
+	AudioManager
 	PlayMode
 	main
 	LitColorTextureProgram

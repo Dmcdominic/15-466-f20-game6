@@ -168,6 +168,9 @@
     <ClCompile Include="..\TextDrawer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\AudioManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\glcorearb.h">
@@ -315,6 +318,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\TextDrawer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\AudioManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

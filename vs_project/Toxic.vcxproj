@@ -73,6 +73,7 @@
   <ItemDefinitionGroup>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\AudioManager.cpp" />
     <ClCompile Include="..\Barrel.cpp" />
     <ClCompile Include="..\Bridge.cpp" />
     <ClCompile Include="..\Button.cpp" />
@@ -126,6 +127,7 @@
     <ClCompile Include="..\WalkMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\AudioManager.hpp" />
     <ClInclude Include="..\Barrel.hpp" />
     <ClInclude Include="..\Bridge.hpp" />
     <ClInclude Include="..\Button.hpp" />

@@ -20,6 +20,7 @@
 #include "Rock.hpp"
 #include "Overworld.hpp"
 
+#include "AudioManager.hpp"
 #include "PngView.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
@@ -55,12 +56,6 @@ Load< Scene > toxic_prefabs_scene(LoadTagDefault, []() -> Scene const * {
 });
 
 
-// Audio loading
-Load< Sound::Sample > error_sample(LoadTagDefault, []() -> Sound::Sample const* {
-	return new Sound::Sample(data_path("Audio/Error1.wav"));
-});
-
-
 // Static variable initialization
 uint8_t PlayMode::current_level = 0;
 uint8_t PlayMode::completed_level = 0;
@@ -81,6 +76,9 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 	// Init camera position & rotation
 	active_camera->transform->position = glm::vec3(2.0f, -1.0f, camera_height);
 	active_camera->transform->rotation = glm::quat(glm::vec3(0.3f, 0.0f, 0.0f));
+
+	// Start the background music
+	AudioManager::ensure_background_is_playing();
 
 	// --- MODEL & GRID INITIALIZATION ---
 	model_loader = new ModelLoader; 
@@ -203,9 +201,6 @@ void PlayMode::update(float elapsed) {
 		Output output = Output();
 		bool handled = current_grid->on_input(Input(input_q.front()), &output);
 		input_q.pop();
-		if (!handled) {
-			Sound::play_3D(*error_sample, 0.2f, glm::vec3(0.0f, 0.0f, 0.0f));
-		}
 
 		// Check if the output indicates a new level to load, e.g. they interacted with an overworld node.
 		if (output.level_to_load) {
@@ -228,6 +223,12 @@ void PlayMode::update(float elapsed) {
       load_level(0);
 			break;
 		}
+	}
+
+	// Play audio
+	while (!AudioManager::clips_to_play.empty()) {
+		Sound::play_3D(AudioManager::get_sample(AudioManager::clips_to_play.front()), 0.2f, glm::vec3(0.0f, 0.0f, 0.0f));
+		AudioManager::clips_to_play.pop();
 	}
 
 	// While the player has a forced move, move them.

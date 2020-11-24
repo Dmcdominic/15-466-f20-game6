@@ -5,6 +5,7 @@
 
 #include "Scene.hpp"
 #include "Input.hpp"
+#include "AudioManager.hpp"
 
 
 // Forward declarations
@@ -111,6 +112,9 @@ struct CellItem {
 	virtual void on_post_tick() {};
 
 	virtual void rotate_90();
+
+	virtual std::optional<AudioManager::AudioClip> get_move_clip();
+	void push_move_clip();
 };
 
 

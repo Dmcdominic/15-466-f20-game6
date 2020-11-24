@@ -20,3 +20,9 @@ void Barrel::rotate_90() {
   CellItem::rotate_90();
 }
 
+
+// Returns the audio clip that should be played when this object is moved
+std::optional<AudioManager::AudioClip> Barrel::get_move_clip() {
+  return std::optional(AudioManager::AudioClip::ROLL_BARREL);
+}
+

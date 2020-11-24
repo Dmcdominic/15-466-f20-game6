@@ -1,8 +1,11 @@
 # Toxic
 
 
-### Author:
-(TODO: your name)
+### Created By:
+Jianrong Yu
+Alyssa Lee
+Michelle Chang
+Dominic Calkosz
 
 
 ## How To Play:
@@ -19,7 +22,10 @@
 
 ## Sources:
 
-(TODO: list a source URL for any assets you did not create yourself. Make sure you have a license for the asset.)
-
 This game was built with [NEST](NEST.md).
 
+"Deep Relaxation" Kevin MacLeod (incompetech.com)
+Licensed under Creative Commons: By Attribution 4.0 License
+http://creativecommons.org/licenses/by/4.0/
+
+Additional audio provided by https://freesound.org/

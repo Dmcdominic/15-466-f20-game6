@@ -73,5 +73,9 @@ bool Player::on_input(const Input& input, Output* output) {
     if (targetTile == nullptr || !targetTile->accessible()) return false;
   }
 
-  return try_to_move_by(displ);
+  if (try_to_move_by(displ)) {
+    AudioManager::clips_to_play.push(AudioManager::AudioClip::FOOTSTEP);
+    return true;
+  }
+  return false;
 }
