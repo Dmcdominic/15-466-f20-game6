@@ -63,7 +63,7 @@ PngView::~PngView() {
 	glDeleteBuffers(1, &vbo_);
 	glDeleteVertexArrays(1, &vao_);
 	glDeleteTextures(1, &texture_);
-	GL_ERRORS();
+//	GL_ERRORS();
 }
 
 void PngView::draw() {

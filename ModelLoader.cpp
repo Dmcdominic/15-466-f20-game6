@@ -5,6 +5,7 @@
 #include "LitColorTextureProgram.hpp"
 #include <iostream>
 
+ModelLoader* model_loader = nullptr;
 
 GLuint toxic_meshes_for_lit_color_texture_program = 0;
 

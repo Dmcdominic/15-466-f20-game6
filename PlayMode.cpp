@@ -10,6 +10,7 @@
 #include "Sound.hpp"
 
 #include "GridLoader.hpp"
+#include "ModelLoader.hpp"
 
 #include "Player.hpp"
 #include "Barrel.hpp"
@@ -82,8 +83,7 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 	active_camera->transform->rotation = glm::quat(glm::vec3(0.3f, 0.0f, 0.0f));
 
 	// --- MODEL & GRID INITIALIZATION ---
-	loader = ModelLoader(); 
-	//change this value to view a different level
+	model_loader = new ModelLoader; 
 	load_level(0);
 
 	// Manually throwing an object into the first grid, for testing
@@ -359,7 +359,7 @@ void PlayMode::update_pass_items(std::vector< MenuMode::Item > &items){
 void PlayMode::load_level(uint8_t level_index) {
 	bool resetting = (level_index == current_level);
 	current_level = level_index % num_levels;
-	current_grid = GridLoader::load_level(current_level, loader, &scene);
+	current_grid = GridLoader::load_level(current_level, &scene);
 	if (is_Overworld() && current_grid->highest_level_node != nullptr) {
 		// Find the position of the node you should teleport the player to
 		if (current_grid->highest_level_node->cell->fgObj != current_grid->player) {

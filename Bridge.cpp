@@ -2,6 +2,22 @@
 #include "Barrel.hpp"
 #include <iostream>
 
+Bridge::Bridge(Scene::Drawable* _unactivated, Scene::Drawable _bridge, std::list<Scene::Drawable>* _drawables):
+River( _unactivated, _drawables), unactivated(*_unactivated), bridge(_bridge){
+    drawables->push_back(model_loader->create_model("River_Straight"));
+    grass = &(drawables->back());
+    grass->transform->position = glm::ivec3(1, 1, 1); 
+
+};
+
+void Bridge::position_models(){
+    if(water->transform)
+		water->transform->position = this->drawable->transform->position;
+    if(grass->transform){
+		grass->transform->position = this->drawable->transform->position;
+		grass->transform->rotation = this->drawable->transform->rotation;
+    }
+}
 
 bool Bridge::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ){
     if (activated) return true;
@@ -27,9 +43,11 @@ void Bridge::deactivate() {
     if(dynamic_cast<Barrel*>(this->cell->fgObj) != nullptr) {
         iscontaminated = true;
         current_grid->environment_score -= 5;
-        this->rotten.transform->position = this->drawable->transform->position;
+
         delete this->water->transform;
-        *water = this->rotten;
+        *water = model_loader->create_model("Water_Toxic");
+        water->transform->position = this->drawable->transform->position;
+
     }
 
     if(this->cell->fgObj) just_sunk = true; 

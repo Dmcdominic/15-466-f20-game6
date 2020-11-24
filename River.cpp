@@ -5,13 +5,19 @@
 
 
 
+River::River(Scene::Drawable* _drawable, std::list<Scene::Drawable>* _drawables): BgTile(_drawable), drawables(_drawables){
+    drawables->push_back(model_loader->create_model("Water"));
+    water = &(drawables->back());
+    water->transform->position = glm::ivec3(1, 1, 1); 
+}
+
 void River::contaminated() {
     current_grid->environment_score -= 5;
     iscontaminated = true;
     willbecontaminated = false;
-	this->rotten.transform->position = this->drawable->transform->position;
     delete this->water->transform;
-    *water = this->rotten;
+    *water = (model_loader->create_model("Water_Toxic"));
+    water->transform->position = this->drawable->transform->position;
 }
 
 bool River::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
@@ -24,16 +30,12 @@ void River::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ
 		if(dynamic_cast<Barrel*>(&objBeingMoved) != nullptr) {
 			iscontaminated = true;
 			current_grid->environment_score -= 5;
-			this->rotten.transform->position = this->drawable->transform->position;
-			delete this->water->transform;
-			*water = this->rotten;
+            delete this->water->transform;
+            *water = (model_loader->create_model("Water_Toxic"));
+            water->transform->position = this->drawable->transform->position;
 		}
 		just_sunk = true; 
 	}
-}
-
-void River::set_position_model(Scene::Drawable* _water){
-    this->water = _water;
 }
 
 void River::position_models() {

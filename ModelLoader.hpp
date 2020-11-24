@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <map>
 
+
 struct ModelLoader{
     ModelLoader(); 
     unsigned int num_models = 5; 
@@ -23,3 +24,5 @@ struct ModelLoader{
 	Scene scene;
 
 }; 
+
+extern ModelLoader* model_loader;
