@@ -20,12 +20,13 @@ void River::set_purple_amt(float amt) {
 }
 void River::contaminated() {
     current_grid->environment_score -= 5;
-    iscontaminated = true;
+    iscontaminated += 1;
     willbecontaminated = false;
     // delete this->water->transform;
     // *water = (model_loader->create_model("Water_Toxic"));
     // water->transform->position = this->drawable->transform->position;
-    set_purple_amt(0.5); 
+    if (iscontaminated==1) set_purple_amt(0.5);
+    if (iscontaminated==2) set_purple_amt(1.0);
 }
 
 bool River::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
@@ -36,12 +37,12 @@ bool River::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) 
 void River::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ){
 	if(!sunk_object) {
 		if(dynamic_cast<Barrel*>(&objBeingMoved) != nullptr) {
-			iscontaminated = true;
+			iscontaminated = 2;
 			current_grid->environment_score -= 5;
             // delete this->water->transform;
             // *water = (model_loader->create_model("Water_Toxic"));
             // water->transform->position = this->drawable->transform->position;
-            set_purple_amt(0.5); 
+            set_purple_amt(1);
 		}
 		just_sunk = true; 
 	}
@@ -56,7 +57,7 @@ void River::position_models() {
 bool check_contaminated(int x, int y){
     if (x<0 || (size_t)x>= current_grid->width || y<0 || (size_t)y>= current_grid->height) return false;
     River* r = dynamic_cast<River*>(current_grid->cells[x][y].bgTile);
-    if (r != nullptr && r->iscontaminated) return true;
+    if (r != nullptr && r->iscontaminated==2) return true;
     return false;
 }
 
@@ -80,6 +81,6 @@ void River::on_post_tick(){
 }
 
 void River::on_pre_tick(){
-    if (willbecontaminated) contaminated();
+    if (willbecontaminated||iscontaminated==1) contaminated();
 }
 

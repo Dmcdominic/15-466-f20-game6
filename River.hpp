@@ -8,7 +8,7 @@ struct River : BgTile {
 		// Constructors (inherited)
 
 		// Fields
-        bool iscontaminated = false;
+        int iscontaminated = 0;
         bool willbecontaminated = false;
 		bool just_sunk = false; 
 		//Scene::Drawable* toxic_water;
