@@ -4,9 +4,8 @@
 #include "ColorTextureProgram.hpp"
 #include "data_path.hpp"
 #include "load_save_png.hpp"
-
-#include "gl_errors.hpp"
 #include <glm/glm.hpp>
+#include "gl_errors.hpp"
 #include <glm/gtc/type_ptr.hpp>
 #include <vector>
 
@@ -14,14 +13,11 @@
 PngView::PngView() {
 	// vertex attributes for the "quad"
 	float quad_vertices[] = {
-			// positions              // colors               // texture coords
-			-1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-			-1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-			1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-
-			-1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-			1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-			1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f
+			// positions          // colors           // texture coords
+			0.5f,  0.5f, 0.0f, 1.0f,   1.0f, 0.0f, 0.0f, 1.0f,  1.0f, 1.0f,   // top right
+			0.5f, -0.5f, 0.0f, 1.0f,   0.0f, 1.0f, 0.0f, 1.0f,  1.0f, 0.0f,   // bottom right
+			-0.5f, -0.5f, 0.0f, 1.0f,   0.0f, 0.0f, 1.0f, 1.0f,  0.0f, 0.0f,   // bottom left
+			-0.5f,  0.5f, 0.0f, 1.0f,  1.0f, 1.0f, 0.0f, 1.0f,  0.0f, 1.0f    // top left
 	};
 	glGenBuffers(1, &vbo_);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_);
@@ -83,6 +79,7 @@ void PngView::draw() {
 
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
+	glUseProgram(0);
 
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
