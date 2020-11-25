@@ -91,6 +91,7 @@
     <ClCompile Include="..\Input.cpp" />
     <ClCompile Include="..\level_sequence.cpp" />
     <ClCompile Include="..\LitColorTextureProgram.cpp" />
+    <ClCompile Include="..\LitPurpleColorTextureProgram.cpp" />
     <ClCompile Include="..\Load.cpp" />
     <ClCompile Include="..\load_opus.cpp" />
     <ClCompile Include="..\load_save_png.cpp" />
@@ -110,6 +111,7 @@
     <ClCompile Include="..\PngView.cpp" />
     <ClCompile Include="..\Protesters.cpp" />
     <ClCompile Include="..\Railing.cpp" />
+    <ClCompile Include="..\Ramp.cpp" />
     <ClCompile Include="..\River.cpp" />
     <ClCompile Include="..\Rock.cpp" />
     <ClCompile Include="..\RottenTree.cpp" />
@@ -146,6 +148,7 @@
     <ClInclude Include="..\Input.hpp" />
     <ClInclude Include="..\level_sequence.hpp" />
     <ClInclude Include="..\LitColorTextureProgram.hpp" />
+    <ClInclude Include="..\LitPurpleColorTextureProgram.hpp" />
     <ClInclude Include="..\Load.hpp" />
     <ClInclude Include="..\load_opus.hpp" />
     <ClInclude Include="..\load_save_png.hpp" />
@@ -163,6 +166,7 @@
     <ClInclude Include="..\PngView.hpp" />
     <ClInclude Include="..\Protesters.hpp" />
     <ClInclude Include="..\Railing.hpp" />
+    <ClInclude Include="..\Ramp.hpp" />
     <ClInclude Include="..\read_write_chunk.hpp" />
     <ClInclude Include="..\River.hpp" />
     <ClInclude Include="..\Rock.hpp" />

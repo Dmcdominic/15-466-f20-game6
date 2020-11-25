@@ -13,8 +13,12 @@ Load< std::vector<Sound::Sample> > AudioManager::Samples(LoadTagDefault, []() ->
 		{
 			Sound::Sample(data_path("Audio/Deep Relaxation.wav")),
 			Sound::Sample(data_path("Audio/Error1.wav")),
-			Sound::Sample(data_path("Audio/footstep-grass.wav")),
-			Sound::Sample(data_path("Audio/rolling-metal-barrel.wav"))
+			//Sound::Sample(data_path("Audio/footstep-grass.wav")),
+			//Sound::Sample(data_path("Audio/footstep-gravel.wav")),
+			Sound::Sample(data_path("Audio/footstep-stone.wav")),
+			Sound::Sample(data_path("Audio/footstep-stone-short.wav")),
+			Sound::Sample(data_path("Audio/rolling-metal-barrel.wav")),
+			Sound::Sample(data_path("Audio/drag-stone.wav"))
 		});
 });
 

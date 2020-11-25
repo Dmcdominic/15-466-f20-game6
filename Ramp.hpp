@@ -4,10 +4,11 @@
 #include "Scene.hpp"
 
 
-struct Rock : FgObj {
+struct Ramp : FgObj {
 	// Constructors (inherited)
 	using FgObj::FgObj;
 
 	// Methods
-	std::optional<AudioManager::AudioClip> get_move_clip() override;
+	// TODO
+	void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
 };

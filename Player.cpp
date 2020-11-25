@@ -74,7 +74,11 @@ bool Player::on_input(const Input& input, Output* output) {
   }
 
   if (try_to_move_by(displ)) {
-    AudioManager::clips_to_play.push(AudioManager::AudioClip::FOOTSTEP);
+    if (rand() > RAND_MAX / 2) {
+      AudioManager::clips_to_play.push(AudioManager::AudioClip::FOOTSTEP);
+    } else {
+      AudioManager::clips_to_play.push(AudioManager::AudioClip::FOOTSTEP_SHORT);
+    }
     return true;
   }
   return false;
