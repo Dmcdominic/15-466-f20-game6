@@ -243,7 +243,8 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
                     river->position_models();
                     for(int i=0; i <num_rotations; i++) river->rotate_90();
 
-                    // TODO - why is this here instead of where we set FG objects?
+                    // Check if there's a railing here that we should load.
+                    // TODO - load bent railing?
                     if(obj_ids[packed_grid.data_start + packed_grid.width * packed_grid.height + x + y * packed_grid.width]==16){
                         scene->drawables.push_back(model_loader->create_model("Railing_Straight"));
                         Railing *railing = new Railing(&(scene->drawables.back()));
@@ -297,7 +298,8 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
     int tree_id = 0;
     for(unsigned int y = 0; y < packed_grid.height; y++) {
         for(unsigned int x = 0; x < packed_grid.width; x++) {
-            switch(obj_ids[packed_grid.data_start + packed_grid.width * packed_grid.height + x + y * packed_grid.width]) {
+            int obj_id = obj_ids[packed_grid.data_start + packed_grid.width * packed_grid.height + x + y * packed_grid.width];
+            switch(obj_id) {
                 case 1: 
                     scene->drawables.push_back(model_loader->create_model("Player")); 
                     grid->player = new Player(&(scene->drawables.back()),
@@ -339,14 +341,23 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
                     scene->drawables.push_back(model_loader->create_model("Animal")); 
                     grid->cells.at(x).at(y).set_fg_obj(new Rock(&(scene->drawables.back())));
                     break;
+                // 4 different colors for different ramp starting orientations
                 case 19:
-                  // TODO - do we need different colors for different ramp starting orientations?
-                  scene->drawables.push_back(model_loader->create_model("Ramp"));
-                  grid->cells.at(x).at(y).set_fg_obj(new Ramp(&(scene->drawables.back())));
-                  break;
+                case 20:
+                case 21:
+                case 22: {
+                    scene->drawables.push_back(model_loader->create_model("Ramp"));
+                    Ramp* ramp = new Ramp(&(scene->drawables.back()));
+                    for (int rotations = obj_id - 19; rotations > 0; rotations--) {
+                        ramp->rotate_90();
+                    }
+                    grid->cells.at(x).at(y).set_fg_obj(ramp);
+                    break;
+                }
             }
         }
     }
+
 
     //set the sky objects 
     for(unsigned int y = 0; y < packed_grid.height; y++) {

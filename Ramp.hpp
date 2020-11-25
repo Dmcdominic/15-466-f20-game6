@@ -5,10 +5,14 @@
 
 
 struct Ramp : FgObj {
+	// Fields
+	glm::ivec2 up_dir = glm::ivec2(0, 1);
+
 	// Constructors (inherited)
 	using FgObj::FgObj;
 
 	// Methods
-	// TODO
-	void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
+	void rotate_90() override;
+
+	bool should_slide_up(const glm::ivec2& displ);
 };

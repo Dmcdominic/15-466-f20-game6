@@ -84,7 +84,7 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 	AudioManager::ensure_background_is_playing();
 
 	// --- MODEL & GRID INITIALIZATION ---
-	model_loader = new ModelLoader; 
+	model_loader = new ModelLoader;
 	load_level(0);
 
 	// Manually throwing an object into the first grid, for testing
@@ -141,13 +141,12 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 			this->quit = true;
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_n) {
-			load_level((current_level + 1) % num_levels);
+			load_level(current_level + 1);
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_r) {
 			load_level(current_level);
 			return true;
 		}
-		std::cout << "\n" << current_grid->num_disposed << "/" << current_grid->goal; 
 	} else if (evt.type == SDL_KEYUP) {
 		if (evt.key.keysym.sym == SDLK_LEFT || evt.key.keysym.sym == SDLK_a) {
 			left_player.pressed = false;

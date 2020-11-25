@@ -87,7 +87,7 @@ bool MenuMode::handle_event(SDL_Event const& evt, glm::uvec2 const& window_size)
 				}
 			}
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_RETURN) {
+		} else if (evt.key.keysym.sym == SDLK_e || evt.key.keysym.sym == SDLK_SPACE || evt.key.keysym.sym == SDLK_RETURN) {
 			if (selected < items.size() && items[selected].on_select) {
 				Sound::play(*sound_clonk);
 				items[selected].on_select(items[selected]);

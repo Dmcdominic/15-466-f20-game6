@@ -5,8 +5,15 @@
 #include <glm/glm.hpp>
 
 
-extern std::vector<std::string> level_sequence;
-extern std::vector < glm::uvec2 > grid_sizes;
-extern std::vector < unsigned int > goals;
+struct level {
+  std::string name;
+  glm::uvec2 grid_size;
+  unsigned int goal;
+
+  level(std::string _name, glm::uvec2 _grid_size, unsigned int _goal) : name(_name), grid_size(_grid_size), goal(_goal) {};
+};
+
+
+extern std::vector<level> level_sequence;
 
 extern uint8_t num_levels;

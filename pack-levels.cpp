@@ -14,25 +14,27 @@
 
 int main(int argc, char **argv) {
     //prefix of files to read
-	std::string level_filename = "../levels/level";
+	const std::string level_filename = "../levels/level";
     
     std::vector< PackedGrid > grids; 
     std::vector< int > obj_ids; 
     std::vector< glm::u8vec4 > data; 
 
+    //assert(level_sequence.size() == grid_sizes.size() && grid_sizes.size() == goals.size());
+
     //load all level pngs
     for(int i = 0; i < num_levels; i++) {
-        std::string level_filename_full = level_filename + level_sequence[i];
+        std::string level_filename_full = level_filename + level_sequence[i].name;
 
         PackedGrid grid;
 
-        grid.width = grid_sizes[i].x; 
-        grid.height = grid_sizes[i].y; 
-        grid.goal = goals[i]; 
+        grid.width = level_sequence[i].grid_size.x;
+        grid.height = level_sequence[i].grid_size.y;
+        grid.goal = level_sequence[i].goal;
         grid.data_start = (unsigned int) obj_ids.size(); 
 
         //save bg 
-        load_png(data_path(level_filename_full + "_bg.png"), &grid_sizes[i], &data, LowerLeftOrigin);
+        load_png(data_path(level_filename_full + "_bg.png"), &level_sequence[i].grid_size, &data, LowerLeftOrigin);
 
         for(unsigned int y = 0; y < grid.height; y++) {
             for(unsigned int x = 0; x < grid.width; x++) {
@@ -43,7 +45,7 @@ int main(int argc, char **argv) {
         }
 
         //save fg
-        load_png(data_path(level_filename_full + "_fg.png"), &grid_sizes[i], &data, LowerLeftOrigin);
+        load_png(data_path(level_filename_full + "_fg.png"), &level_sequence[i].grid_size, &data, LowerLeftOrigin);
 
         for(unsigned int y = 0; y < grid.height; y++) {
             for(unsigned int x = 0; x < grid.width; x++) {
@@ -54,7 +56,7 @@ int main(int argc, char **argv) {
         }
 
         //save sky
-        load_png(data_path(level_filename_full + "_sky.png"), &grid_sizes[i], &data, LowerLeftOrigin);
+        load_png(data_path(level_filename_full + "_sky.png"), &level_sequence[i].grid_size, &data, LowerLeftOrigin);
 
         for(unsigned int y = 0; y < grid.height; y++) {
             for(unsigned int x = 0; x < grid.width; x++) {
