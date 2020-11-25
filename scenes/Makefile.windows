@@ -1,14 +1,23 @@
-
-BLENDER="E:\Program Files\Blender Foundation\Blender 2.90\blender.exe"
+BLENDER="C:\Program Files\Blender Foundation\Blender 2.90\blender.exe"
+BLENDER_E="E:\Program Files\Blender Foundation\Blender 2.90\blender.exe"
 DIST=../dist
 
+
 all : \
+    find_blender \
     $(DIST)/toxic-prefabs.pnct \
     $(DIST)/toxic-prefabs.scene \
 
+
+find_blender:
+!if !exists($(BLENDER)) 
+BLENDER=$(BLENDER_E)
+!endif
+    
 
 $(DIST)/toxic-prefabs.scene : toxic-prefabs.blend export-scene.py
     $(BLENDER) --background --python export-scene.py -- "toxic-prefabs.blend:Main" "$(DIST)/toxic-prefabs.scene"
 
 $(DIST)/toxic-prefabs.pnct : toxic-prefabs.blend export-meshes.py
-    $(BLENDER) --background --python export-meshes.py -- "toxic-prefabs.blend:Main" "$(DIST)/toxic-prefabs.pnct" 
+    $(BLENDER) --background --python export-meshes.py -- "toxic-prefabs.blend:Main" "$(DIST)/toxic-prefabs.pnct"
+ 
