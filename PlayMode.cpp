@@ -199,6 +199,21 @@ void PlayMode::update(float elapsed) {
 	// If the current grid isn't set, early-out.
 	if (current_grid == nullptr) return;
 
+	// player idle animation
+	current_grid->player->idle_counter++;
+	if (current_grid->player->idle_counter > current_grid->player->idle_num) {
+		current_grid->player->idle_counter = 0;
+		if (current_grid->player->player_state == 0) {
+			current_grid->player->idle0.transform = current_grid->player->drawable->transform;
+			*(current_grid->player->drawable) = current_grid->player->idle0;
+			current_grid->player->player_state = 1;
+		} else if (current_grid->player->player_state == 1) {
+			current_grid->player->idle1.transform = current_grid->player->drawable->transform;
+			*(current_grid->player->drawable) = current_grid->player->idle1;
+			current_grid->player->player_state = 0;
+		}
+	}
+
 	// Process input
 	while (!input_q.empty()) {
 		Output output = Output();
