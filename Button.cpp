@@ -2,9 +2,9 @@
 #include <iostream>
 
 Button::Button(Scene *scene, Bridge* _bridge) : bridge(_bridge),
-pressed(model_loader->create_model("Button")),
-unpressed(model_loader->create_model("Button_Pushed")) {
-    scene->drawables.push_back(this->pressed); 
+unpressed(model_loader->create_model("Button")),
+pressed(model_loader->create_model("Button_Pushed")) {
+    scene->drawables.push_back(this->unpressed); 
     this->drawable = &(scene->drawables.back());
     scene->drawables.push_back(model_loader->create_model("Grass")); 
     this->grass = &(scene->drawables.back());

@@ -31,7 +31,7 @@ struct OverworldPath : OverworldTile {
 
   // Methods
   void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
-  void position_models();
+  void position_models() override;
   void make_faded();
   bool accessible() override;
   //uint8_t find_max_adj_lvl(Grid* grid);
@@ -50,6 +50,6 @@ struct OverworldNode : OverworldTile {
   OverworldNode(Scene *scene); 
 
   // Methods
-  void position_models();
+  void position_models() override;
   bool accessible() override;
 };  

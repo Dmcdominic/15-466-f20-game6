@@ -25,7 +25,7 @@ struct River : BgTile {
 	bool can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
 	void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
 	void contaminated();
-	void position_models();
+    void position_models() override;
 	void on_post_tick() override;
 	void on_pre_tick() override;
 };

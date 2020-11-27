@@ -4,8 +4,8 @@
 
 
 Bridge::Bridge(Scene *scene) : River(scene, true, true, false, false),
-bridge(model_loader->create_model("Bridge")),
-unactivated(model_loader->create_model("Bridge_Unactivated")){
+unactivated(model_loader->create_model("Bridge_Unactivated")),
+bridge(model_loader->create_model("Bridge")){
     scene->drawables.push_back(model_loader->create_model("River_Straight")); 
     grass = &(scene->drawables.back());
     scene->drawables.push_back(unactivated); 

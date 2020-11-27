@@ -18,6 +18,6 @@ struct Bridge : River {
     void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
     void activate();
     void deactivate();
-    void position_models();
+    void position_models() override;
 
 };

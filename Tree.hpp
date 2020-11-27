@@ -13,10 +13,10 @@ struct Tree : FgObj {
 			FgObj(_drawable), tree1(_tree1), tree2(_tree2), tree3(_tree3), id(_id){};
 
 	// Fields
+	int id = 0;
 	Scene::Drawable tree1 = nullptr;
 	Scene::Drawable tree2 = nullptr;
 	Scene::Drawable tree3 = nullptr;
-	int id;
 
 
 	// Methods
