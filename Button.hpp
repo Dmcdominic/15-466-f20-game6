@@ -5,10 +5,10 @@
 
 
 struct Button : BgTile {
+    Bridge* bridge;
     Scene::Drawable unpressed = nullptr;
     Scene::Drawable pressed = nullptr;
     Scene::Drawable *grass = nullptr;
-    Bridge* bridge;
 
   	Button(Scene *_scene, Bridge* _bridge); 
     void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
