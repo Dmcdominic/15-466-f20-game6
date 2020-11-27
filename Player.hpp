@@ -4,6 +4,7 @@
 
 #include "Grid.hpp"
 #include "Scene.hpp"
+#include "ModelLoader.hpp"
 
 
 struct Player : FgObj {
@@ -12,6 +13,7 @@ struct Player : FgObj {
 
 	// Constructors (inherited)
 	using FgObj::FgObj;
+	Player(Scene *scene);
 
 	// Fields
 	Scene::Drawable idle0 = nullptr;

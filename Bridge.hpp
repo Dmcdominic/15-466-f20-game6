@@ -1,6 +1,7 @@
 #pragma once
 
 #include "River.hpp"
+#include "ModelLoader.hpp"
 #include "Scene.hpp"
 
 
@@ -11,11 +12,12 @@ struct Bridge : River {
     bool activated = false;
 
     // Methods
-    Bridge(Scene::Drawable* _unactivated, Scene::Drawable _bridge, std::list<Scene::Drawable>* _drawables);
+    Bridge(Scene *scene);
+
     bool can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
     void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
     void activate();
     void deactivate();
-    void position_models();
+    void position_models() override;
 
 };

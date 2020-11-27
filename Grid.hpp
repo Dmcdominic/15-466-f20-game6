@@ -99,6 +99,7 @@ struct CellItem {
 	Cell* cell = nullptr;
 
 	// Constructors
+	CellItem() {};
 	CellItem(Scene::Drawable* _drawable) : drawable(_drawable) {};
 	CellItem(Scene::Drawable* _drawable, Cell* _cell) : drawable(_drawable), cell(_cell) {};
 
@@ -114,6 +115,8 @@ struct CellItem {
 	virtual bool on_input(const Input& input, Output *output) = 0;
 	virtual void on_pre_tick() {};
 	virtual void on_post_tick() {};
+
+	virtual void position_models() {};
 
 	virtual void rotate_90();
 

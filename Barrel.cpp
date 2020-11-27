@@ -1,6 +1,10 @@
 #include "Barrel.hpp"
 #include <iostream>
 
+Barrel::Barrel(Scene *scene) {
+  scene->drawables.push_back(model_loader->create_model("Barrel")); 
+  this->drawable = &(scene->drawables.back());
+}
 
 // The barrel can only roll along its long axis.
 bool Barrel::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {

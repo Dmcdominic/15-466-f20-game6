@@ -5,11 +5,9 @@
 #include "ModelLoader.hpp"
 
 
-struct Rock : FgObj {
+struct Animal : FgObj {
 	// Constructors (inherited)
 	using FgObj::FgObj;
-  	Rock(Scene *scene); 
+  	Animal(Scene *scene); 
 
-	// Methods
-	std::optional<AudioManager::AudioClip> get_move_clip() override;
 };

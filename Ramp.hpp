@@ -2,6 +2,7 @@
 
 #include "Grid.hpp"
 #include "Scene.hpp"
+#include "ModelLoader.hpp"
 
 
 struct Ramp : FgObj {
@@ -10,6 +11,7 @@ struct Ramp : FgObj {
 
 	// Constructors (inherited)
 	using FgObj::FgObj;
+	Ramp(Scene *scene);
 
 	// Methods
 	void rotate_90() override;
