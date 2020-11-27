@@ -111,7 +111,7 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 
 	if (evt.type == SDL_KEYDOWN) {
 
-		if (evt.key.keysym.sym == SDLK_ESCAPE) {
+		if (evt.key.keysym.sym == SDLK_ESCAPE) { // TODO - PAUSE MENU
 			/*SDL_SetRelativeMouseMode(SDL_FALSE);
 			return true;*/
 		} else if (evt.key.keysym.sym == SDLK_LEFT || evt.key.keysym.sym == SDLK_a) {
@@ -134,17 +134,22 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 			down_player.pressed = true;
 			input_q.push(Input(InputType::DOWN));
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_e || evt.key.keysym.sym == SDLK_SPACE || evt.key.keysym.sym == SDLK_RETURN) {
+		} else if (evt.key.keysym.sym == SDLK_e ||
+		           evt.key.keysym.sym == SDLK_SPACE ||
+							 evt.key.keysym.sym == SDLK_RETURN) { // INTERACT
 			input_q.push(Input(InputType::INTERACT));
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_q) {  // QUIT
 			this->quit = true;
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_n) {
-			load_level(current_level + 1);
+		} else if (evt.key.keysym.sym == SDLK_r) { // RESET
+			input_q.push(Input(InputType::RESET));
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_r) {
-			load_level(current_level);
+		} else if (evt.key.keysym.sym == SDLK_z) { // UNDO
+			input_q.push(Input(InputType::UNDO));
+			return true;
+		} else if (evt.key.keysym.sym == SDLK_n) { // SKIP LEVEL. TODO - REMOVE THIS
+			input_q.push(Input(InputType::SKIP_LVL));
 			return true;
 		}
 	} else if (evt.type == SDL_KEYUP) {
@@ -216,8 +221,19 @@ void PlayMode::update(float elapsed) {
 	// Process input
 	while (!input_q.empty()) {
 		Output output = Output();
-		current_grid->on_input(Input(input_q.front()), &output);
+		Input input = input_q.front();
 		input_q.pop();
+		if (input.type == InputType::RESET) {
+			load_level(current_level);
+		} else if (input.type == InputType::SKIP_LVL) {
+			load_level(current_level + 1);
+		} else if (input.type == InputType::UNDO) {
+			undo_move();
+		} else {
+			undo_grids.push(GridLoader::create_undo_copy());
+			bool input_handled = current_grid->on_input(input, &output);
+			if (!input_handled) undo_grids.pop();
+		}
 
 		// Check if the output indicates a new level to load, e.g. they interacted with an overworld node.
 		if (output.level_to_load) {
@@ -385,6 +401,9 @@ void PlayMode::load_level(uint8_t level_index) {
 			current_grid->highest_level_node->cell->set_fg_obj(current_grid->player);
 		}
 	}
+	if (!resetting) {
+		clear_undo_stack();
+	}
 	if (!resetting || is_Overworld()) {
 		glm::vec3 offset = reset_cam_offset_from_player();
 		active_camera->transform->position = current_grid->player->drawable->transform->position + offset;
@@ -392,3 +411,32 @@ void PlayMode::load_level(uint8_t level_index) {
 	}
 }
 
+
+// Reverts the grid to its state before the player's last input.
+// Returns true iff a valid undo was executed.
+bool PlayMode::undo_move() {
+	if (undo_grids.empty()) {
+		AudioManager::clips_to_play.push(AudioManager::AudioClip::ERROR);
+		return false;
+	}
+	Grid* last_grid = undo_grids.top();
+	undo_grids.pop();
+	// TODO - properly clean up the current_grid
+	//        - Remove drawables from the drawables vector
+	//        - Delete each cell?
+	delete current_grid;
+	// TODO - properly load the new grid
+	//        - Load models and add the new drawables to the drawables vector
+	current_grid = last_grid;
+	// TODO - play a sound or something?
+	return true;
+}
+
+
+// Cleans up the whole stack of undo grids
+void PlayMode::clear_undo_stack() {
+	while (!undo_grids.empty()) {
+		// TODO - need to do any other cleanup for each grid?
+		undo_grids.pop();
+	}
+}

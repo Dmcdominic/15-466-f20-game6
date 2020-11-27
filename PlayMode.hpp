@@ -28,6 +28,8 @@ struct PlayMode : Mode {
   void update_pass_items(std::vector< MenuMode::Item > &items);
 
 	void load_level(uint8_t level_index);
+	bool undo_move();
+	void clear_undo_stack();
 
 
 	//----- game state -----

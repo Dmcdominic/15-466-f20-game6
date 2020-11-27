@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include <vector>
+#include <stack>
 
 #include "Scene.hpp"
 #include "Input.hpp"
@@ -20,6 +21,9 @@ struct OverworldNode;
 
 // The current grid
 extern Grid* current_grid;
+
+// The undo stack
+extern std::stack<Grid*> undo_grids;
 
 
 /* A grid of cells. */

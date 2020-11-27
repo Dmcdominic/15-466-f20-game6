@@ -8,6 +8,7 @@
 
 // Variable declarations
 Grid* current_grid = nullptr;
+std::stack<Grid*> undo_grids = std::stack<Grid*>();
 
 
 

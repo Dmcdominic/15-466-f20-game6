@@ -376,3 +376,10 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
     
     return grid; 
 }
+
+
+// Returns a copy of current_grid, to be pushed onto the undo_grids stack.
+Grid* GridLoader::create_undo_copy() {
+  // TODO
+  return nullptr;
+}
