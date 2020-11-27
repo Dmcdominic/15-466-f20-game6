@@ -26,7 +26,6 @@ struct OverworldPath : OverworldTile {
   bool faded = false;
 
   // Constructors
-  OverworldPath(Scene::Drawable* _drawable, Scene::Drawable *_grass) : OverworldTile(_drawable), grass(_grass) {};
   OverworldPath(Scene *scene); 
 
   // Methods
@@ -46,7 +45,6 @@ struct OverworldNode : OverworldTile {
   uint8_t level_index;
 
   // Constructors
-  OverworldNode(Scene::Drawable* _drawable, Scene::Drawable *_grass) : OverworldTile(_drawable), grass(_grass), level_index(0) {};
   OverworldNode(Scene *scene); 
 
   // Methods

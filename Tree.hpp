@@ -9,8 +9,6 @@ struct Tree : FgObj {
 	// Constructors (inherited)
 	using FgObj::FgObj;
   	Tree(Scene *scene, int _id); 
-	Tree(Scene::Drawable *_drawable, Scene::Drawable _tree1, Scene::Drawable _tree2, Scene::Drawable _tree3, int _id):
-			FgObj(_drawable), tree1(_tree1), tree2(_tree2), tree3(_tree3), id(_id){};
 
 	// Fields
 	int id = 0;

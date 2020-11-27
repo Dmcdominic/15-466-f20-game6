@@ -72,12 +72,16 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
                     break;
                 }
                 case 17: {
-                    grid->cells.at(x).at(y).set_bg_tile(new OverworldPath(scene));
-                  break;
+                    //TODO: shape path models
+                    OverworldPath* overworldPath = new OverworldPath(scene);
+                    grid->cells.at(x).at(y).set_bg_tile(overworldPath);
+                    break;
                 }
                 case 18: {
-                    grid->cells.at(x).at(y).set_bg_tile(new OverworldNode(scene));
-                  break;
+                    OverworldNode* overworldNode = new OverworldNode(scene);
+                    if (first_node == nullptr) first_node = overworldNode;
+                    grid->cells.at(x).at(y).set_bg_tile(overworldNode);
+                    break;
                 }
             }
         }

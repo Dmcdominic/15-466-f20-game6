@@ -28,6 +28,12 @@ void OverworldPath::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec
   }
 }
 
+OverworldPath::OverworldPath(Scene *scene) {
+  scene->drawables.push_back(model_loader->create_model("Path")); 
+  this->drawable = &(scene->drawables.back());
+  scene->drawables.push_back(model_loader->create_model("Grass")); 
+  this->grass = &(scene->drawables.back());
+}
 
 // Position the layered models
 void OverworldPath::position_models() {
@@ -38,7 +44,6 @@ void OverworldPath::position_models() {
 
 // Fade the path
 void OverworldPath::make_faded() {
-  std::cout << "fading";
   faded = true;
   Scene::Drawable path_faded = model_loader->create_model("Path_Faded");
   path_faded.transform->position = this->drawable->transform->position;
@@ -50,28 +55,23 @@ void OverworldPath::make_faded() {
 bool OverworldPath::accessible() {
   return PlayMode::completed_level >= max_adjacent_lvl - 1;
 }
-OverworldPath::OverworldPath(Scene *scene) {
-  scene->drawables.push_back(model_loader->create_model("Path")); 
-  this->drawable = &(scene->drawables.back());
-  scene->drawables.push_back(model_loader->create_model("Grass")); 
-  this->grass = &(scene->drawables.back());
-}
+
 
 
 
 // ----- OVERWORLD NODE -----
+OverworldNode::OverworldNode(Scene *scene) {
+  scene->drawables.push_back(model_loader->create_model("Node")); 
+  this->drawable = &(scene->drawables.back());
+  scene->drawables.push_back(model_loader->create_model("Grass")); 
+  this->grass = &(scene->drawables.back());
+}
 
 // Position the layered models
 void OverworldNode::position_models() {
   if (grass->transform) {
     grass->transform->position = this->drawable->transform->position;
   }
-}
-OverworldNode::OverworldNode(Scene *scene) {
-  scene->drawables.push_back(model_loader->create_model("Node")); 
-  this->drawable = &(scene->drawables.back());
-  scene->drawables.push_back(model_loader->create_model("Grass")); 
-  this->grass = &(scene->drawables.back());
 }
 
 // Returns true iff you should be able to path to this node.
