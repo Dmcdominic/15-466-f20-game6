@@ -2,13 +2,17 @@
 #include "Barrel.hpp"
 #include <iostream>
 
-Bridge::Bridge(Scene::Drawable* _unactivated, Scene::Drawable _bridge, std::list<Scene::Drawable>* _drawables):
-River( _unactivated, _drawables), unactivated(*_unactivated), bridge(_bridge){
-    drawables->push_back(model_loader->create_model("River_Straight"));
-    grass = &(drawables->back());
-    grass->transform->position = glm::ivec3(1, 1, 1); 
 
-};
+Bridge::Bridge(Scene *scene) : River(scene, true, true, false, false),
+bridge(model_loader->create_model("Bridge")),
+unactivated(model_loader->create_model("Bridge_Unactivated")){
+    scene->drawables.push_back(model_loader->create_model("River_Straight")); 
+    grass = &(scene->drawables.back());
+    scene->drawables.push_back(unactivated); 
+    this->drawable = &(scene->drawables.back());
+
+}
+
 
 void Bridge::position_models(){
     if(water->transform)

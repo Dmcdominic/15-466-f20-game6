@@ -377,6 +377,7 @@ void PlayMode::update_pass_items(std::vector< MenuMode::Item > &items){
 void PlayMode::load_level(uint8_t level_index) {
 	bool resetting = (level_index == current_level);
 	current_level = level_index % num_levels;
+	
 	current_grid = GridLoader::load_level(current_level, &scene);
 	if (is_Overworld() && current_grid->highest_level_node != nullptr) {
 		// Find the position of the node you should teleport the player to

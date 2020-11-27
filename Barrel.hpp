@@ -1,11 +1,13 @@
 #pragma once
 
 #include "Grid.hpp"
+#include "ModelLoader.hpp"
 
 
 struct Barrel : FgObj {
 	// Constructors (inherited)
 	using FgObj::FgObj;
+  	Barrel(Scene *scene); 
 
 	// Fields
 	bool rollable_up_down = true; // False = rollable left/right

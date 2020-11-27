@@ -123,8 +123,6 @@ GAME_NAMES =
 	Barrel
 	Rock
 	Tree
-	RottenTree
-	Protesters
 	River
 	Railing
 	Bridge
@@ -134,7 +132,10 @@ GAME_NAMES =
 	Pit
 	Ramp
 	Grid
+	Grass
 	PngView
+	Animal
+	Cloud
 	;
 
 COMMON_NAMES =

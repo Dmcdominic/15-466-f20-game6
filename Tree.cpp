@@ -1,6 +1,13 @@
 #include "Tree.hpp"
 #include <iostream>
 
+Tree::Tree(Scene *scene, int _id) : id(_id), 
+tree1(model_loader->create_model("Tree")), 
+tree2(model_loader->create_model("Tree_Flower1")), 
+tree3(model_loader->create_model("Tree_Flower2")) {
+	scene->drawables.push_back(tree1); 
+	this->drawable = &(scene->drawables.back());
+}
 
 // Fixed rock can't be displaced.
 bool Tree::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {

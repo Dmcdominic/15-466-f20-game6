@@ -7,12 +7,59 @@
 
 
 
-River::River(Scene::Drawable* _drawable, std::list<Scene::Drawable>* _drawables): BgTile(_drawable), drawables(_drawables){
-    drawables->push_back(model_loader->create_model("Water"));
-    water = &(drawables->back());
-    water->transform->position = glm::ivec3(1, 1, 1); 
-}
+River::River(Scene *scene, bool left, bool right, bool upper, bool lower) {
+    int num_rotations = 0;
 
+    if(!left && !right && !upper && !lower){
+        scene->drawables.push_back(model_loader->create_model("River_Single"));
+    }
+    else if(left && right && !upper && !lower){
+        scene->drawables.push_back(model_loader->create_model("River_Straight"));
+        num_rotations = 1; 
+    }
+    else if(!left && !right && upper && lower){
+        scene->drawables.push_back(model_loader->create_model("River_Straight"));
+    }
+    else if(!left && right && !upper && lower){
+        scene->drawables.push_back(model_loader->create_model("River_Bent"));
+    }                    
+    else if(!left && right && upper && !lower){
+        scene->drawables.push_back(model_loader->create_model("River_Bent"));
+        num_rotations = 3; 
+    }                   
+    else if(left && !right && upper && !lower){
+        scene->drawables.push_back(model_loader->create_model("River_Bent"));
+        num_rotations = 2; 
+    }
+    else if(left && !right && !upper && lower){
+        scene->drawables.push_back(model_loader->create_model("River_Bent"));
+        num_rotations = 1; 
+    }       
+    else if(!left && !right && upper && !lower){
+        scene->drawables.push_back(model_loader->create_model("River_End"));
+    }                    
+    else if(!left && right && !upper && !lower){
+        scene->drawables.push_back(model_loader->create_model("River_End"));
+        num_rotations = 1; 
+    }                   
+    else if(!left && !right && !upper && lower){
+        scene->drawables.push_back(model_loader->create_model("River_End"));
+        num_rotations = 2; 
+    }
+    else if(left && !right && !upper && !lower){
+        scene->drawables.push_back(model_loader->create_model("River_End"));
+        num_rotations = 3; 
+    }                  
+    else{
+        scene->drawables.push_back(model_loader->create_model("River_None"));
+    }
+    this->drawable = &(scene->drawables.back());
+
+    scene->drawables.push_back(model_loader->create_model("Water")); 
+    water = &(scene->drawables.back());
+    for(int i=0; i <num_rotations; i++) this->rotate_90();
+
+}
 void River::set_purple_amt(float amt) {
     this->water->pipeline.set_uniforms = [amt](){
         glUniform1f(lit_purple_color_texture_program->PURPLE_AMT_float, amt);

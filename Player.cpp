@@ -4,6 +4,12 @@
 
 #include <iostream>
 
+Player::Player(Scene *scene) : 
+idle0(model_loader->create_model("Player")), 
+idle1(model_loader->create_model("Player_idle0")) {
+  scene->drawables.push_back(model_loader->create_model("Player")); 
+  this->drawable = &(scene->drawables.back());
+}
 
 // For now, objects can't move into the player's cell
 bool Player::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {

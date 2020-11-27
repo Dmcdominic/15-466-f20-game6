@@ -3,6 +3,7 @@
 #include "read_write_chunk.hpp"
 
 #include <fstream>
+#include <iostream>
 
 #include "Tree.hpp"
 #include "Player.hpp"
@@ -10,18 +11,19 @@
 #include "Tree.hpp"
 #include "Railing.hpp"
 #include "Rock.hpp"
-#include "Protesters.hpp"
 #include "Bridge.hpp"
 #include "Button.hpp"
 #include "Disposal.hpp"
 #include "Pit.hpp"
 #include "Turnstile.hpp"
 #include "Overworld.hpp"
+#include "Grass.hpp"
 #include "Ramp.hpp"
+#include "Animal.hpp"
+#include "Cloud.hpp"
 
 
 Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
-
     //remove drawables from current grid 
     scene->drawables.clear(); 
 
@@ -49,59 +51,32 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
         for(unsigned int x = 0; x < packed_grid.width; x++) {
             switch(obj_ids[packed_grid.data_start + x + y * packed_grid.width]) {
                 case 7: {
-                    scene->drawables.push_back(model_loader->create_model("Turnstile")); 
-                    Scene::Drawable grass = model_loader->create_model("Grass"); 
-                    Turnstile *turnstile = new Turnstile(&(scene->drawables.back()), grass);
-                    grid->cells.at(x).at(y).set_bg_tile(turnstile);
-                    scene->drawables.push_back(grass);
-                    turnstile->position_models(); 
+                    grid->cells.at(x).at(y).set_bg_tile(new Turnstile(scene));
                     break;
                 }
                 case 8:
                     river_counter++;
                     break;
                 case 11: {
-                    scene->drawables.push_back(model_loader->create_model("Disposal")); 
-                    Scene::Drawable grass = model_loader->create_model("Grass"); 
-                    Disposal *disposal = new Disposal(&(scene->drawables.back()), grass, &scene->drawables); 
-                    grid->cells.at(x).at(y).set_bg_tile(disposal);
-                    scene->drawables.push_back(grass);
-                    disposal->position_models(); 
+                    grid->cells.at(x).at(y).set_bg_tile(new Disposal(scene));
                     break; 
                 }
                 case 13:
 	                  river_counter++;
 	                  break;
                 case 14: 
-                    scene->drawables.push_back(model_loader->create_model("Grass"));
-                    grid->cells.at(x).at(y).set_bg_tile(new BgTile(&(scene->drawables.back())));
+                    grid->cells.at(x).at(y).set_bg_tile(new Grass(scene));
                     break;
                 case 15: {
-                    scene->drawables.push_back(model_loader->create_model("Pit"));
-                    Scene::Drawable grass = model_loader->create_model("Grass"); 
-                    Pit *pit = new Pit(&(scene->drawables.back()), grass); 
-                    grid->cells.at(x).at(y).set_bg_tile(pit);
-                    scene->drawables.push_back(grass);
-                    pit->position_models(); 
+                    grid->cells.at(x).at(y).set_bg_tile(new Pit(scene));
                     break;
                 }
                 case 17: {
-                  scene->drawables.push_back(model_loader->create_model("Path"));
-                  Scene::Drawable grass = model_loader->create_model("Grass");
-                  OverworldPath* overworldPath = new OverworldPath(&(scene->drawables.back()), grass);
-                  grid->cells.at(x).at(y).set_bg_tile(overworldPath);
-                  scene->drawables.push_back(grass);
-                  overworldPath->position_models();
+                    grid->cells.at(x).at(y).set_bg_tile(new OverworldPath(scene));
                   break;
                 }
                 case 18: {
-                  scene->drawables.push_back(model_loader->create_model("Node"));
-                  Scene::Drawable grass = model_loader->create_model("Grass");
-                  OverworldNode* overworldNode = new OverworldNode(&(scene->drawables.back()), grass);
-                  if (first_node == nullptr) first_node = overworldNode;
-                  grid->cells.at(x).at(y).set_bg_tile(overworldNode);
-                  scene->drawables.push_back(grass);
-                  overworldNode->position_models();
+                    grid->cells.at(x).at(y).set_bg_tile(new OverworldNode(scene));
                   break;
                 }
             }
@@ -126,11 +101,7 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
         this_path->max_adjacent_lvl = level_index;
         // Set path to be faded if this isn't accessible
         if (!this_path->faded && !this_path->accessible()) {
-          this_path->faded = true;
-          Scene::Drawable path_faded = model_loader->create_model("Path_Faded");
-          path_faded.transform->position = this_path->drawable->transform->position;
-          delete this_path->drawable->transform;
-          *this_path->drawable = path_faded;
+          this_path->make_faded();
         }
       } else {
         throw std::runtime_error("OverworldTile was neither an OverworldNode nor an OverworldPath...");
@@ -159,18 +130,11 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
         for (unsigned int x = 0; x < packed_grid.width; x++) {
             switch(obj_ids[packed_grid.data_start + x + y * packed_grid.width]) {
                 case 8:{
-                    scene->drawables.push_back(model_loader->create_model("Bridge_Unactivated"));
-                    //Scene::Drawable water = model_loader->create_model("Water");
-                    Scene::Drawable grass = model_loader->create_model("Grass");
-                    bridge = new Bridge(&(scene->drawables.back()),
-                                        model_loader->create_model("Bridge"),
-                                        &scene->drawables);
-                    //scene->drawables.push_back(water);
-    
+                    bridge = new Bridge(scene);
+
                     (*river_tiles)[inserted] = bridge;
                     inserted++;
                     grid->cells.at(x).at(y).set_bg_tile(bridge);
-                    //bridge->set_position_model(&(scene->drawables.back()));
                     if (!prev_is_land) bridge->rotate_90();
                     bridge->position_models();
                     prev_is_land = false;
@@ -190,66 +154,18 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
                     bool left = (x >= 1)
                                 &&((obj_ids[packed_grid.data_start + (x-1) + y * packed_grid.width] == 13)
                                 || (obj_ids[packed_grid.data_start + (x-1) + y * packed_grid.width] == 8));
-                    int num_rotations = 0;
-                    if(!left && !right && !upper && !lower){
-                        scene->drawables.push_back(model_loader->create_model("River_Single"));
-                    }
-                    else if(left && right && !upper && !lower){
-                        scene->drawables.push_back(model_loader->create_model("River_Straight"));
-                        num_rotations = 1; 
-                    }
-                    else if(!left && !right && upper && lower){
-                        scene->drawables.push_back(model_loader->create_model("River_Straight"));
-                    }
-                    else if(!left && right && !upper && lower){
-                        scene->drawables.push_back(model_loader->create_model("River_Bent"));
-                    }                    
-                    else if(!left && right && upper && !lower){
-                        scene->drawables.push_back(model_loader->create_model("River_Bent"));
-                        num_rotations = 3; 
-                    }                   
-                    else if(left && !right && upper && !lower){
-                        scene->drawables.push_back(model_loader->create_model("River_Bent"));
-                        num_rotations = 2; 
-                    }
-                    else if(left && !right && !upper && lower){
-                        scene->drawables.push_back(model_loader->create_model("River_Bent"));
-                        num_rotations = 1; 
-                    }       
-                    else if(!left && !right && upper && !lower){
-                        scene->drawables.push_back(model_loader->create_model("River_End"));
-                    }                    
-                    else if(!left && right && !upper && !lower){
-                        scene->drawables.push_back(model_loader->create_model("River_End"));
-                        num_rotations = 1; 
-                    }                   
-                    else if(!left && !right && !upper && lower){
-                        scene->drawables.push_back(model_loader->create_model("River_End"));
-                        num_rotations = 2; 
-                    }
-                    else if(left && !right && !upper && !lower){
-                        scene->drawables.push_back(model_loader->create_model("River_End"));
-                        num_rotations = 3; 
-                    }                  
-                    else{
-                        scene->drawables.push_back(model_loader->create_model("River_None"));
-                    }
-                    River *river = new River(&(scene->drawables.back()),
-                                            &scene->drawables);
+                    River *river = new River(scene, left, right, upper, lower);
 
                     (*river_tiles)[inserted] = river;
                     inserted++;
                     grid->cells.at(x).at(y).set_bg_tile(river);
-                    river->position_models();
-                    for(int i=0; i <num_rotations; i++) river->rotate_90();
 
                     // Check if there's a railing here that we should load.
                     // TODO - load bent railing?
                     if(obj_ids[packed_grid.data_start + packed_grid.width * packed_grid.height + x + y * packed_grid.width]==16){
-                        scene->drawables.push_back(model_loader->create_model("Railing_Straight"));
-                        Railing *railing = new Railing(&(scene->drawables.back()));
+                        Railing *railing = new Railing(scene);
+                        railing->drawable->transform->rotation = river->drawable->transform->rotation;
                         grid->cells.at(x).at(y).set_fg_obj(railing);
-                        for(int i=0; i <num_rotations; i++) railing->rotate_90();
                     }
 
                     prev_is_land = false;
@@ -279,15 +195,7 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
         for (unsigned int x = 0; x < packed_grid.width; x++) {
             switch (obj_ids[packed_grid.data_start + x + y * packed_grid.width]) {
                 case 9:{
-                    scene->drawables.push_back(model_loader->create_model("Button"));
-                    Scene::Drawable grass = model_loader->create_model("Grass"); 
-                    Button *button = new Button(&(scene->drawables.back()),
-                                                model_loader->create_model("Button_Pushed"),
-                                                grass,
-                                                bridge);
-                    grid->cells.at(x).at(y).set_bg_tile(button);
-                    scene->drawables.push_back(grass);
-                    button->position_models(); 
+                    grid->cells.at(x).at(y).set_bg_tile(new Button(scene, bridge));
                     break;
                 }
             }
@@ -301,53 +209,33 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
             int obj_id = obj_ids[packed_grid.data_start + packed_grid.width * packed_grid.height + x + y * packed_grid.width];
             switch(obj_id) {
                 case 1: 
-                    scene->drawables.push_back(model_loader->create_model("Player")); 
-                    grid->player = new Player(&(scene->drawables.back()),
-                    		model_loader->create_model("Player"),
-                    		model_loader->create_model("Player_idle0"));
+                    grid->player = new Player(scene);
                     grid->cells.at(x).at(y).set_fg_obj(grid->player);
                     break; 
                 case 2:  
-                    scene->drawables.push_back(model_loader->create_model("Barrel")); 
-                    grid->cells.at(x).at(y).set_fg_obj(new Barrel(&(scene->drawables.back())));
+                    grid->cells.at(x).at(y).set_fg_obj(new Barrel(scene));
                     break; 
                 case 3:
-                    scene->drawables.push_back(model_loader->create_model("Barrel")); 
-                    grid->cells.at(x).at(y).set_fg_obj(new Barrel(&(scene->drawables.back())));
+                    grid->cells.at(x).at(y).set_fg_obj(new Barrel(scene));
                     grid->cells.at(x).at(y).fgObj->rotate_90();
                     break; 
                 case 4:  
-                    scene->drawables.push_back(model_loader->create_model("Rock")); 
-                    grid->cells.at(x).at(y).set_fg_obj(new Rock(&(scene->drawables.back())));
+                    grid->cells.at(x).at(y).set_fg_obj(new Rock(scene));
                     break;
                 case 5:
-                    scene->drawables.push_back(model_loader->create_model("Tree"));
 		            tree_id++;
-                    grid->cells.at(x).at(y).set_fg_obj(new Tree(&(scene->drawables.back()),
-                    		model_loader->create_model("Tree"),
-                    		model_loader->create_model("Tree_Flower1"), model_loader->create_model("Tree_Flower2"), tree_id));
+                    grid->cells.at(x).at(y).set_fg_obj(new Tree(scene, tree_id));
                     grid->tree_flower_states.push_back(0);
                     break;
-                case 6:
-                    scene->drawables.push_back(model_loader->create_model("Protesters"));
-                    grid->cells.at(x).at(y).set_fg_obj(new Protesters(&(scene->drawables.back()),
-                                                                model_loader->create_model("Protesters_Contaminated"), &scene->drawables));
-                    break;
-                case 11:
-                    scene->drawables.push_back(model_loader->create_model("Disposal")); 
-                    grid->cells.at(x).at(y).set_fg_obj(new Tree(&(scene->drawables.back())));
-                    break; 
                 case 12:
-                    scene->drawables.push_back(model_loader->create_model("Animal")); 
-                    grid->cells.at(x).at(y).set_fg_obj(new Rock(&(scene->drawables.back())));
+                    grid->cells.at(x).at(y).set_fg_obj(new Animal(scene));
                     break;
                 // 4 different colors for different ramp starting orientations
                 case 19:
                 case 20:
                 case 21:
                 case 22: {
-                    scene->drawables.push_back(model_loader->create_model("Ramp"));
-                    Ramp* ramp = new Ramp(&(scene->drawables.back()));
+                    Ramp* ramp = new Ramp(scene);
                     for (int rotations = obj_id - 19; rotations > 0; rotations--) {
                         ramp->rotate_90();
                     }
@@ -365,8 +253,7 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
             switch(obj_ids[packed_grid.data_start + 2 * packed_grid.width * packed_grid.height + x + y * packed_grid.width]) {
                 case 10: 
                     //TODO: cloud path 
-                    scene->drawables.push_back(model_loader->create_model("Cloud")); 
-                    grid->cells.at(x).at(y).set_sky_obj(new SkyObj(&(scene->drawables.back())));
+                    grid->cells.at(x).at(y).set_sky_obj(new Cloud(scene));
                     break; 
             }
         }
