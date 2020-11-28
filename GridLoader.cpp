@@ -37,9 +37,7 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
 
     //we are loading grid 0 
     PackedGrid packed_grid = packed_grids[grid_id]; 
-    Grid *grid = new Grid(packed_grid.width, packed_grid.height);
-    grid->goal = packed_grid.goal;
-    grid->num_disposed = 0;
+    Grid *grid = new Grid(packed_grid.width, packed_grid.height, packed_grid.goal, 0);
 
     int river_counter = 0;
     OverworldNode* first_node = nullptr;
@@ -207,7 +205,6 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
     }
 
     //set the FG objects
-    int tree_id = 0;
     for(unsigned int y = 0; y < packed_grid.height; y++) {
         for(unsigned int x = 0; x < packed_grid.width; x++) {
             int obj_id = obj_ids[packed_grid.data_start + packed_grid.width * packed_grid.height + x + y * packed_grid.width];
@@ -227,9 +224,7 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
                     grid->cells.at(x).at(y).set_fg_obj(new Rock(scene));
                     break;
                 case 5:
-		            tree_id++;
-                    grid->cells.at(x).at(y).set_fg_obj(new Tree(scene, tree_id));
-                    grid->tree_flower_states.push_back(0);
+                    grid->cells.at(x).at(y).set_fg_obj(new Tree(scene));
                     break;
                 case 12:
                     grid->cells.at(x).at(y).set_fg_obj(new Animal(scene));
@@ -269,8 +264,19 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
 }
 
 
-// Returns a copy of current_grid, to be pushed onto the undo_grids stack.
-Grid* GridLoader::create_undo_copy() {
+// Returns a copy of src Grid, presumably current_grid, to be pushed onto the undo_grids stack.
+Grid* GridLoader::create_undo_copy(Grid* src) {
+  Grid* grid_cpy = new Grid(src->width, src->height, src->goal, src->num_disposed);
+  
   // TODO
   return nullptr;
+}
+
+
+// Takes in an undo copy and fully loads it into the current_grid.
+// FIRST properly delete and clean up the current_grid.
+void GridLoader::load_undo_copy(Grid* undo_copy) {
+  // TODO - properly load the new grid
+  //        - Load models and add the new drawables to the drawables vector
+  current_grid = new Grid(*undo_copy);
 }

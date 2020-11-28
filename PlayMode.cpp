@@ -230,7 +230,7 @@ void PlayMode::update(float elapsed) {
 		} else if (input.type == InputType::UNDO) {
 			undo_move();
 		} else {
-			undo_grids.push(GridLoader::create_undo_copy());
+			undo_grids.push(GridLoader::create_undo_copy(current_grid));
 			bool input_handled = current_grid->on_input(input, &output);
 			if (!input_handled) undo_grids.pop();
 		}
@@ -426,9 +426,8 @@ bool PlayMode::undo_move() {
 	//        - Remove drawables from the drawables vector
 	//        - Delete each cell?
 	delete current_grid;
-	// TODO - properly load the new grid
-	//        - Load models and add the new drawables to the drawables vector
-	current_grid = last_grid;
+	// Load the undo copy grid
+	GridLoader::load_undo_copy(last_grid);
 	// TODO - play a sound or something?
 	return true;
 }

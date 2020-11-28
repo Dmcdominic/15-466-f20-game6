@@ -16,7 +16,7 @@ std::stack<Grid*> undo_grids = std::stack<Grid*>();
 /* ----- Grid ----- */
 
 // Grid constructor
-Grid::Grid(size_t _width, size_t _height) : width(_width), height(_height) {
+Grid::Grid(size_t _width, size_t _height, unsigned int _goal, unsigned int _num_disposed = 0) : width(_width), height(_height), goal(_goal), num_disposed(_num_disposed) {
   cells = std::vector<std::vector<Cell>>(width, std::vector<Cell>(height, Cell(glm::ivec2(0))));
   for (size_t x = 0; x < width; x++) {
     for (size_t y = 0; y < height; y++) {
@@ -72,14 +72,6 @@ bool Grid::on_input(const Input& input, Output* output) {
   if (!input_handled) {
     AudioManager::clips_to_play.push(AudioManager::AudioClip::ERROR);
     return false;
-  }
-
-  // animate trees
-  for (size_t i = 0; i < current_grid->tree_flower_states.size(); i++) {
-  	if (rand() % 100 < tree_prob[current_grid->tree_flower_states[i]]) {
-  		current_grid->tree_flower_states[i]++;
-  		current_grid->tree_flower_states[i] %= tree_num_states;
-  	}
   }
 
   // post_tick()
@@ -317,6 +309,13 @@ bool BgTile::on_input(const Input& input, Output* output){
 }
 
 
+// TODO - delete this and make it pure virtual
+BgTile* BgTile::clone_lightweight()
+{
+  return nullptr;
+}
+
+
 
 /* ----- Foreground Objects ----- */
 
@@ -376,6 +375,13 @@ bool FgObj::on_input(const Input& input, Output* output){
 }
 
 
+// TODO - delete this and make it pure virtual
+FgObj* FgObj::clone_lightweight()
+{
+  return nullptr;
+}
+
+
 
 /* ----- Sky Objects ----- */
 
@@ -431,4 +437,11 @@ void SkyObj::when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& di
 // Returns true iff the input is handled somehow.
 bool SkyObj::on_input(const Input& input, Output* output) {
   return false;
+}
+
+
+// TODO - delete this and make it pure virtual
+SkyObj* SkyObj::clone_lightweight()
+{
+  return nullptr;
 }

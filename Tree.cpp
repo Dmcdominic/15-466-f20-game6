@@ -1,7 +1,7 @@
 #include "Tree.hpp"
 #include <iostream>
 
-Tree::Tree(Scene *scene, int _id) : id(_id), 
+Tree::Tree(Scene *scene) : 
 tree1(model_loader->create_model("Tree")), 
 tree2(model_loader->create_model("Tree_Flower1")), 
 tree3(model_loader->create_model("Tree_Flower2")) {
@@ -9,13 +9,21 @@ tree3(model_loader->create_model("Tree_Flower2")) {
 	this->drawable = &(scene->drawables.back());
 }
 
-// Fixed rock can't be displaced.
+
+// Tree can't be displaced.
 bool Tree::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
   return false;
 }
 
+
+// Called after input is handled. Cycles the tree animation
 void Tree::on_post_tick() {
-	int flower_state = current_grid->tree_flower_states[id];
+	// Odds to progress the flower state
+	if (rand() % 100 < flower_prob[flower_state]) {
+		flower_state = (flower_state + 1) % flower_prob.size();
+	}
+
+	// Update drawable
 	if (flower_state == 0) {
 		this->tree1.transform = this->drawable->transform;
 		*(this->drawable) = this->tree1;

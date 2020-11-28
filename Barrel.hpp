@@ -7,7 +7,7 @@
 struct Barrel : FgObj {
 	// Constructors (inherited)
 	using FgObj::FgObj;
-  	Barrel(Scene *scene); 
+  Barrel(Scene *scene); 
 
 	// Fields
 	bool rollable_up_down = true; // False = rollable left/right
@@ -18,4 +18,6 @@ struct Barrel : FgObj {
 	void rotate_90() override;
 
 	std::optional<AudioManager::AudioClip> get_move_clip() override;
+
+	Barrel* clone_lightweight() override;
 };
