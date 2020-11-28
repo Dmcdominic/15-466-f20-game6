@@ -35,7 +35,7 @@ struct Grid {
 	unsigned int num_disposed;
 	std::vector<std::vector<Cell>> cells;
 
-	int environment_score = 100;
+	int grid_environment_score = 0;
 
 	Player *player = nullptr;
 	OverworldNode *highest_level_node = nullptr;

@@ -243,18 +243,19 @@ void PlayMode::update(float elapsed) {
 
 		// Check if we should advance levels.
 		if (current_grid->num_disposed >= current_grid->goal) {
+			environment_score += current_grid->grid_environment_score;
 			completed_level = std::max(completed_level, current_level);
-      std::vector< MenuMode::Item > items;
-      if (current_level + 1 == num_levels) {
-        update_congrats_items(items);
-      } else {
-        update_pass_items(items);
-      }
-			game_menu->update_items(items);
-      Mode::switch_to_menu();
-			// load the Overworld
-      load_level(0);
-			break;
+            std::vector< MenuMode::Item > items;
+            if (current_level + 1 == num_levels) {
+	            update_congrats_items(items);
+	        } else {
+	            update_pass_items(items);
+	        }
+	        game_menu->update_items(items);
+	        Mode::switch_to_menu();
+	        // load the Overworld
+	        load_level(0);
+	        break;
 		}
 	}
 
@@ -301,6 +302,18 @@ void PlayMode::update(float elapsed) {
 	right_player.downs = 0;
 	up_player.downs = 0;
 	down_player.downs = 0;
+
+	if (environment_score >= 87) {
+		png_meter = png_meter100;
+	} else if (environment_score >= 62) {
+		png_meter = png_meter75;
+	} else if (environment_score >= 37) {
+		png_meter = png_meter50;
+	} else if (environment_score >= 12) {
+		png_meter = png_meter25;
+	} else {
+		png_meter = png_meter0;
+	}
 }
 
 
@@ -326,7 +339,7 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	scene.draw(*active_camera);
 
 	//draw environment meter png
-	meter_png.draw();
+	png_meter->draw();
 
 	{ //use DrawLines to overlay some text:
 		glDisable(GL_DEPTH_TEST);
@@ -348,9 +361,9 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 			glm::vec3(-aspect + 0.1f * H + ofs, -1.0 + + 0.1f * H + ofs, 0.0),
 			glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
 			glm::u8vec4(0xff, 0xff, 0xff, 0x00));
-		lines.draw_text("environment score: " + std::to_string(current_grid->environment_score),
-			glm::vec3(-aspect + 0.1f * H, -0.5 + 0.1f * H, 0.0),
-			glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
+		lines.draw_text(std::to_string(environment_score),
+			glm::vec3(-aspect + 0.275 + 0.1f * H, -0.85 + 0.1f * H, 0.0),
+			glm::vec3(0.7 * H, 0.0f, 0.0f), glm::vec3(0.0f, 0.7 * H, 0.0f),
 		    glm::u8vec4(0xff, 0xff, 0xff, 0xff));
         lines.draw_text("              remaining: " + std::to_string(current_grid->goal),
                         glm::vec3(-aspect + 0.1f * H, 0.8 + 0.1f * H, 0.0),
@@ -375,10 +388,10 @@ void PlayMode::update_congrats_items(std::vector< MenuMode::Item > &items){
 
 
 void PlayMode::update_pass_items(std::vector< MenuMode::Item > &items){
-    if (current_grid->environment_score==100)
+    if (current_grid->grid_environment_score==100)
         items.emplace_back("You nailed it! Your environmental score for this level is 100");
     else
-        items.emplace_back("Try harder! Your environmental score for this level is"+std::to_string(current_grid->environment_score));
+        items.emplace_back("Try harder! Your environmental score for this level is"+std::to_string(current_grid->grid_environment_score));
     items.emplace_back("Go to Level "+ std::to_string(current_level+1));
     items.back().on_select = [](MenuMode::Item const &) {
         Mode::switch_to_play();

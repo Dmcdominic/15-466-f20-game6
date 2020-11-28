@@ -8,7 +8,8 @@
 #include <vector>
 
 
-PngView::PngView() {
+PngView::PngView(std::string meter_filename) {
+
 	// vertex attributes for the "quad"
 	float quad_vertices[] = {
 			// positions vec4         // colors vec4          // texCoords vec2
