@@ -18,4 +18,6 @@ struct Barrel : FgObj {
 	void rotate_90() override;
 
 	std::optional<AudioManager::AudioClip> get_move_clip() override;
+
+	Barrel* clone_lightweight() override;
 };

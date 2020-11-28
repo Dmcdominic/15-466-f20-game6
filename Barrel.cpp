@@ -29,3 +29,11 @@ void Barrel::rotate_90() {
 std::optional<AudioManager::AudioClip> Barrel::get_move_clip() {
   return std::optional(AudioManager::AudioClip::ROLL_BARREL);
 }
+
+
+// 
+Barrel* Barrel::clone_lightweight() {
+  // TODO
+  return nullptr;
+}
+

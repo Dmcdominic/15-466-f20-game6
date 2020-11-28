@@ -309,6 +309,13 @@ bool BgTile::on_input(const Input& input, Output* output){
 }
 
 
+// TODO - delete this and make it pure virtual
+BgTile* BgTile::clone_lightweight()
+{
+  return nullptr;
+}
+
+
 
 /* ----- Foreground Objects ----- */
 
@@ -368,6 +375,13 @@ bool FgObj::on_input(const Input& input, Output* output){
 }
 
 
+// TODO - delete this and make it pure virtual
+FgObj* FgObj::clone_lightweight()
+{
+  return nullptr;
+}
+
+
 
 /* ----- Sky Objects ----- */
 
@@ -423,4 +437,11 @@ void SkyObj::when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& di
 // Returns true iff the input is handled somehow.
 bool SkyObj::on_input(const Input& input, Output* output) {
   return false;
+}
+
+
+// TODO - delete this and make it pure virtual
+SkyObj* SkyObj::clone_lightweight()
+{
+  return nullptr;
 }
