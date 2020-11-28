@@ -66,7 +66,7 @@ void River::set_purple_amt(float amt) {
     };
 }
 void River::contaminated() {
-    current_grid->environment_score -= 5;
+    current_grid->grid_environment_score -= 5;
     iscontaminated += 1;
     willbecontaminated = false;
     // delete this->water->transform;
@@ -85,7 +85,7 @@ void River::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ
 	if(!sunk_object) {
 		if(dynamic_cast<Barrel*>(&objBeingMoved) != nullptr) {
 			iscontaminated = 2;
-			current_grid->environment_score -= 5;
+			current_grid->grid_environment_score -= 5;
             // delete this->water->transform;
             // *water = (model_loader->create_model("Water_Toxic"));
             // water->transform->position = this->drawable->transform->position;

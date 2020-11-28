@@ -7,7 +7,7 @@
 
 class PngView {
 public:
-	PngView();
+	PngView(std::string meter_filename);
 	~PngView();
 
 	// copy semantics is disallowed
@@ -15,7 +15,7 @@ public:
 	PngView(const PngView &) = delete;
 	PngView& operator=(const PngView &) = delete;
 
-	std::string meter_filename = "pingu.png";
+//	std::string meter_filename = "meter100.png";
 
 	void draw();
 private:

@@ -46,7 +46,7 @@ void Bridge::deactivate() {
     //sink object if it is on top
     if(dynamic_cast<Barrel*>(this->cell->fgObj) != nullptr) {
         iscontaminated = true;
-        current_grid->environment_score -= 5;
+        current_grid->grid_environment_score -= 5;
 
         // delete this->water->transform;
         // *water = (model_loader->create_model("Water_Toxic"));

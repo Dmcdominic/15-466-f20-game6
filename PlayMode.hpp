@@ -77,5 +77,11 @@ struct PlayMode : Mode {
 		return camera_offset_from_player + randomized_offset_range * rand_scale;
 	}
 
-	PngView meter_png{};
+	int environment_score = 100;
+	PngView *png_meter100 = new PngView("meter100.png");
+	PngView *png_meter75 = new PngView("meter75.png");
+	PngView *png_meter50 = new PngView("meter50.png");
+	PngView *png_meter25 = new PngView("meter25.png");
+	PngView *png_meter0 = new PngView("meter0.png");
+	PngView *png_meter = png_meter100;
 };
