@@ -15,7 +15,7 @@ public:
 	PngView(const PngView &) = delete;
 	PngView& operator=(const PngView &) = delete;
 
-	std::string meter_filename = "pingu.png";
+	std::string meter_filename = "meter0.png";
 
 	void draw();
 private:

@@ -1,5 +1,3 @@
-// written by Xiaoqiao Xu.
-
 #include "PngView.hpp"
 #include "ColorTextureProgram.hpp"
 #include "data_path.hpp"
@@ -13,11 +11,14 @@
 PngView::PngView() {
 	// vertex attributes for the "quad"
 	float quad_vertices[] = {
-			// positions          // colors           // texture coords
-			0.5f,  0.5f, 0.0f, 1.0f,   1.0f, 0.0f, 0.0f, 1.0f,  1.0f, 1.0f,   // top right
-			0.5f, -0.5f, 0.0f, 1.0f,   0.0f, 1.0f, 0.0f, 1.0f,  1.0f, 0.0f,   // bottom right
-			-0.5f, -0.5f, 0.0f, 1.0f,   0.0f, 0.0f, 1.0f, 1.0f,  0.0f, 0.0f,   // bottom left
-			-0.5f,  0.5f, 0.0f, 1.0f,  1.0f, 1.0f, 0.0f, 1.0f,  0.0f, 1.0f    // top left
+			// positions vec4         // colors vec4          // texCoords vec2
+			-1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+			-1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+			1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+
+			-1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+			1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+			1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f
 	};
 	glGenBuffers(1, &vbo_);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_);
@@ -28,19 +29,19 @@ PngView::PngView() {
 	glBufferData(GL_ARRAY_BUFFER, sizeof(quad_vertices), quad_vertices, GL_STATIC_DRAW);
 	glGenVertexArrays(1, &vao_);
 	glBindVertexArray(vao_);
-	glEnableVertexAttribArray(color_texture_program->Position_vec4);
-	glVertexAttribPointer(color_texture_program->Position_vec4, 4, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void *) 0);
-	glEnableVertexAttribArray(color_texture_program->Color_vec4);
-	glVertexAttribPointer(color_texture_program->Color_vec4, 4, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void *) (4 * sizeof(float)));
-	glEnableVertexAttribArray(color_texture_program->TexCoord_vec2);
-	glVertexAttribPointer(color_texture_program->TexCoord_vec2, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void *) (8 * sizeof(float)));
+	glEnableVertexAttribArray(color_texture_program->Position_vec4_2);
+	glVertexAttribPointer(color_texture_program->Position_vec4_2, 4, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void *) 0);
+	glEnableVertexAttribArray(color_texture_program->Color_vec4_2);
+	glVertexAttribPointer(color_texture_program->Color_vec4_2, 4, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void *) (4 * sizeof(float)));
+	glEnableVertexAttribArray(color_texture_program->TexCoord_vec2_2);
+	glVertexAttribPointer(color_texture_program->TexCoord_vec2_2, 2, GL_FLOAT, GL_FALSE, 10 * sizeof(float), (void *) (8 * sizeof(float)));
 
 	glGenTextures(1, &texture_);
 	glBindTexture(GL_TEXTURE_2D, texture_);
 
 	glm::uvec2 png_size;
 	std::vector<glm::u8vec4> data;
-	load_png(data_path("aru.png"), &png_size, &data, LowerLeftOrigin);
+	load_png(data_path(meter_filename), &png_size, &data, LowerLeftOrigin);
 	glTexImage2D(GL_TEXTURE_2D,
 	             0, GL_RGBA, png_size.x, png_size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data()
 	);
@@ -59,7 +60,7 @@ PngView::~PngView() {
 	glDeleteBuffers(1, &vbo_);
 	glDeleteVertexArrays(1, &vao_);
 	glDeleteTextures(1, &texture_);
-//	GL_ERRORS();
+	GL_ERRORS();
 }
 
 void PngView::draw() {
@@ -69,17 +70,16 @@ void PngView::draw() {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glUseProgram(color_texture_program->program);
+	glUseProgram(color_texture_program->program2);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture_);
 	glBindVertexArray(vao_);
 
-	glUniformMatrix4fv(color_texture_program->OBJECT_TO_CLIP_mat4, 1, GL_FALSE, glm::value_ptr(identity_matrix));
+	glUniformMatrix4fv(color_texture_program->OBJECT_TO_CLIP_mat4_2, 1, GL_FALSE, glm::value_ptr(identity_matrix));
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	glUseProgram(0);
 
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_BLEND);
