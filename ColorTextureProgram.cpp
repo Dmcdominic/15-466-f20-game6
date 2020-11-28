@@ -6,6 +6,30 @@
 Load< ColorTextureProgram > color_texture_program(LoadTagEarly);
 
 ColorTextureProgram::ColorTextureProgram() {
+	//Compile vertex and fragment shaders using the convenient 'gl_compile_program' helper function:
+    program = gl_compile_program(
+            //vertex shader:
+            "#version 330\n"
+            "uniform mat4 OBJECT_TO_CLIP;\n"
+            "in vec4 Position;\n"
+            "out vec2 texCoord;\n"
+            "void main() {\n"
+            "	gl_Position = OBJECT_TO_CLIP * vec4(Position.xy, 0.0, 1.0);\n"
+	        "   texCoord = Position.zw;\n"
+            "}\n"
+            ,
+            //fragment shader (note the changees):
+            "#version 330\n"
+            "uniform sampler2D TEX;\n"
+            "uniform vec3 textColor;\n"
+            "in vec2 texCoord;\n"
+            "out vec4 fragColor;\n"
+            "void main() {\n"
+            "	vec4 sampled = vec4(1.0, 1.0, 1.0, texture(TEX, texCoord).r);\n"
+            "	fragColor = sampled * vec4(textColor, 1.0);\n"
+            "}\n"
+    );
+    // a second shader program for png's
 	program2 = gl_compile_program(
 			//vertex shader:
 			"#version 330\n"
@@ -17,7 +41,7 @@ ColorTextureProgram::ColorTextureProgram() {
 			"out vec2 texCoord;\n"
 			"void main() {\n"
 			"	gl_Position = OBJECT_TO_CLIP * vec4(Position.xy, 0.0, 1.0);\n"
-            "	color = Color;\n"
+			"	color = Color;\n"
 			"	texCoord = TexCoord;\n"
 			"}\n"
 			,
@@ -32,33 +56,6 @@ ColorTextureProgram::ColorTextureProgram() {
 			"	fragColor = texture(TEX, texCoord) * color;\n"
 			"}\n"
 	);
-	//Compile vertex and fragment shaders using the convenient 'gl_compile_program' helper function:
-    program = gl_compile_program(
-            //vertex shader:
-            "#version 330\n"
-            "uniform mat4 OBJECT_TO_CLIP;\n"
-            "in vec4 Position;\n"
-            "in vec4 Color;\n"
-            "in vec2 TexCoord;\n"
-            "out vec4 color;\n"
-            "out vec2 texCoord;\n"
-            "void main() {\n"
-            "	gl_Position = OBJECT_TO_CLIP * vec4(Position.xy, 0.0, 1.0);\n"
-	        "   texCoord = Position.zw;\n"
-            "}\n"
-            ,
-            //fragment shader (note the changees):
-            "#version 330\n"
-            "uniform sampler2D TEX;\n"
-            "uniform vec3 textColor;\n"
-            "in vec4 color;\n"
-            "in vec2 texCoord;\n"
-            "out vec4 fragColor;\n"
-            "void main() {\n"
-            "	vec4 sampled = vec4(1.0, 1.0, 1.0, texture(TEX, texCoord).r);\n"
-            "	fragColor = sampled * vec4(textColor, 1.0);\n"
-            "}\n"
-    );
 	//As you can see above, adjacent strings in C/C++ are concatenated.
 	// this is very useful for writing long shader programs inline.
 
@@ -66,6 +63,7 @@ ColorTextureProgram::ColorTextureProgram() {
 	Position_vec4 = glGetAttribLocation(program, "Position");
 	Color_vec4 = glGetAttribLocation(program, "Color");
 	TexCoord_vec2 = glGetAttribLocation(program, "TexCoord");
+
 	Position_vec4_2 = glGetAttribLocation(program2, "Position");
 	Color_vec4_2 = glGetAttribLocation(program2, "Color");
 	TexCoord_vec2_2 = glGetAttribLocation(program2, "TexCoord");
@@ -73,6 +71,7 @@ ColorTextureProgram::ColorTextureProgram() {
 	//look up the locations of uniforms:
 	OBJECT_TO_CLIP_mat4 = glGetUniformLocation(program, "OBJECT_TO_CLIP");
 	GLuint TEX_sampler2D = glGetUniformLocation(program, "TEX");
+
 	OBJECT_TO_CLIP_mat4_2 = glGetUniformLocation(program2, "OBJECT_TO_CLIP");
 
 	//set TEX to always refer to texture binding zero:
