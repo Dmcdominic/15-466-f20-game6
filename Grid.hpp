@@ -116,8 +116,6 @@ struct CellItem {
 
 	virtual void rotate_90();
 
-	virtual CellItem* clone_lightweight() = 0; // Create a copy with no drawables
-
 	virtual std::optional<AudioManager::AudioClip> get_move_clip();
 	void push_move_clip();
 };
@@ -141,8 +139,6 @@ struct BgTile : CellItem {
 	virtual void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) override;
 
 	virtual bool on_input(const Input& input, Output* output) override;
-
-	virtual BgTile* clone_lightweight() override; // Create a copy with no drawables
 };
 
 
@@ -164,8 +160,6 @@ struct FgObj : CellItem {
 	virtual void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) override;
 
 	virtual bool on_input(const Input& input, Output* output) override;
-
-	virtual FgObj* clone_lightweight() override; // Create a copy with no drawables
 };
 
 
@@ -187,6 +181,4 @@ struct SkyObj : CellItem {
 	virtual void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) override;
 
 	virtual bool on_input(const Input& input, Output* output) override;
-
-	virtual SkyObj* clone_lightweight() override; // Create a copy with no drawables
 };
