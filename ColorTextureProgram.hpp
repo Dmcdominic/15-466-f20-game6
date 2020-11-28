@@ -27,7 +27,7 @@ struct ColorTextureProgram {
 
 	//Textures:
 	//TEXTURE0 - texture that is accessed by TexCoord
-	
+
 };
 
 extern Load< ColorTextureProgram > color_texture_program;

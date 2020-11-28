@@ -352,7 +352,7 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 			glm::vec3(-aspect + 0.1f * H, -0.5 + 0.1f * H, 0.0),
 			glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
 		    glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-        lines.draw_text("Min Number of Barrels to Dispose: " + std::to_string(current_grid->goal),
+        lines.draw_text("              remaining: " + std::to_string(current_grid->goal),
                         glm::vec3(-aspect + 0.1f * H, 0.8 + 0.1f * H, 0.0),
                         glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
                         glm::u8vec4(0xff, 0xff, 0xff, 0xff));
