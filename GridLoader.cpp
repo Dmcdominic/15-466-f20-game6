@@ -269,7 +269,7 @@ Grid* GridLoader::create_undo_copy(Grid* src) {
   Grid* grid_cpy = new Grid(src->width, src->height, src->goal, src->num_disposed);
   
   // TODO
-  return nullptr;
+  return grid_cpy;
 }
 
 
