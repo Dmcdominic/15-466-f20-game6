@@ -126,7 +126,6 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
     // Instantiate and shape the river/bridges
     std::vector< River* > *river_tiles = new std::vector< River* >(river_counter);
     int inserted = 0;
-
     bool prev_is_land = true; // Used for orienting bridge tiles
     for(unsigned int y = 0; y < packed_grid.height; y++) {
         for (unsigned int x = 0; x < packed_grid.width; x++) {
@@ -163,9 +162,8 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
                     grid->cells.at(x).at(y).set_bg_tile(river);
 
                     // Check if there's a railing here that we should load.
-                    // TODO - load bent railing?
                     if(obj_ids[packed_grid.data_start + packed_grid.width * packed_grid.height + x + y * packed_grid.width]==16){
-                        Railing *railing = new Railing(scene);
+                        Railing *railing = new Railing(scene, left, right, upper, lower);
                         railing->drawable->transform->rotation = river->drawable->transform->rotation;
                         grid->cells.at(x).at(y).set_fg_obj(railing);
                     }
