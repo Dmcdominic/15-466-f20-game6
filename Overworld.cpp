@@ -8,6 +8,27 @@
 
 // ----- OVERWORLD PATH -----
 
+
+// Load any drawables
+void OverworldPath::load_models(Scene* scene) {
+  scene->drawables.push_back(model_loader->create_model("Path"));
+  this->drawable = &(scene->drawables.back());
+
+  scene->drawables.push_back(model_loader->create_model("Grass"));
+  this->extra_drawables.push_back(&scene->drawables.back());
+}
+
+
+// Create a copy with no drawables
+OverworldPath* OverworldPath::clone_lightweight(Cell* new_cell) {
+  OverworldPath* new_path = new OverworldPath(*this);
+  new_path->cell = new_cell;
+  new_path->drawable = nullptr;
+  new_path->extra_drawables.clear();
+  return new_path;
+}
+
+
 // When a player moves into a path tile, it should find the next path tile (or node) and send the player along.
 void OverworldPath::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
   BgTile::when_fg_obj_moved_into(objBeingMoved, displ);
@@ -28,19 +49,6 @@ void OverworldPath::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec
   }
 }
 
-OverworldPath::OverworldPath(Scene *scene) {
-  scene->drawables.push_back(model_loader->create_model("Path")); 
-  this->drawable = &(scene->drawables.back());
-  scene->drawables.push_back(model_loader->create_model("Grass")); 
-  this->grass = &(scene->drawables.back());
-}
-
-// Position the layered models
-void OverworldPath::position_models() {
-  if (grass->transform) {
-    grass->transform->position = this->drawable->transform->position;
-  }
-}
 
 // Fade the path
 void OverworldPath::make_faded() {
@@ -51,6 +59,7 @@ void OverworldPath::make_faded() {
   *(this->drawable) = path_faded;
 }
 
+
 // Returns true iff you should be able to path to this node.
 bool OverworldPath::accessible() {
   return PlayMode::completed_level >= max_adjacent_lvl - 1;
@@ -60,19 +69,26 @@ bool OverworldPath::accessible() {
 
 
 // ----- OVERWORLD NODE -----
-OverworldNode::OverworldNode(Scene *scene) {
-  scene->drawables.push_back(model_loader->create_model("Node")); 
+
+// Load any drawables
+void OverworldNode::load_models(Scene* scene) {
+  scene->drawables.push_back(model_loader->create_model("Node"));
   this->drawable = &(scene->drawables.back());
-  scene->drawables.push_back(model_loader->create_model("Grass")); 
-  this->grass = &(scene->drawables.back());
+
+  scene->drawables.push_back(model_loader->create_model("Grass"));
+  this->extra_drawables.push_back(&scene->drawables.back());
 }
 
-// Position the layered models
-void OverworldNode::position_models() {
-  if (grass->transform) {
-    grass->transform->position = this->drawable->transform->position;
-  }
+
+// Create a copy with no drawables
+OverworldNode* OverworldNode::clone_lightweight(Cell* new_cell) {
+  OverworldNode* new_node = new OverworldNode(*this);
+  new_node->cell = new_cell;
+  new_node->drawable = nullptr;
+  new_node->extra_drawables.clear();
+  return new_node;
 }
+
 
 // Returns true iff you should be able to path to this node.
 bool OverworldNode::accessible() {

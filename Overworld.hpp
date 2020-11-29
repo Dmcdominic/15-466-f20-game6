@@ -20,20 +20,19 @@ struct OverworldTile : BgTile {
 // The tiles for paths between nodes for levels in the overworld
 struct OverworldPath : OverworldTile {
   // Fields
-  Scene::Drawable *grass;
-
   uint8_t max_adjacent_lvl = 0;
   bool faded = false;
 
-  // Constructors
-  OverworldPath(Scene *scene); 
+  // Constructors (inherited)
+  using OverworldTile::OverworldTile;
 
   // Methods
+  void load_models(Scene* scene) override;
+  OverworldPath* clone_lightweight(Cell* new_cell) override;
+
   void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
-  void position_models() override;
   void make_faded();
   bool accessible() override;
-  //uint8_t find_max_adj_lvl(Grid* grid);
 };
 
 
@@ -41,13 +40,14 @@ struct OverworldPath : OverworldTile {
 // The node for each level in the overworld
 struct OverworldNode : OverworldTile {
   // Fields
-  Scene::Drawable *grass;
   uint8_t level_index;
 
-  // Constructors
-  OverworldNode(Scene *scene); 
+  // Constructors (inherited)
+  using OverworldTile::OverworldTile;
 
   // Methods
-  void position_models() override;
+  void load_models(Scene* scene) override;
+  OverworldNode* clone_lightweight(Cell* new_cell) override;
+
   bool accessible() override;
 };  

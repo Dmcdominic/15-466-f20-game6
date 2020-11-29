@@ -25,7 +25,7 @@
 
 Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
     //remove drawables from current grid 
-    scene->drawables.clear(); 
+    scene->drawables.clear();
 
     std::vector< int > obj_ids; 
     std::vector< PackedGrid > packed_grids; 
@@ -47,41 +47,44 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
     //set the BG objects 
     for(unsigned int y = 0; y < packed_grid.height; y++) {
         for(unsigned int x = 0; x < packed_grid.width; x++) {
-            switch(obj_ids[packed_grid.data_start + x + y * packed_grid.width]) {
+            Cell &cell = grid->cells.at(x).at(y);
+            int obj_id = obj_ids[packed_grid.data_start + x + y * packed_grid.width];
+            switch(obj_id) {
                 case 7: {
-                    grid->cells.at(x).at(y).set_bg_tile(new Turnstile(scene));
+                    cell.set_bg_tile(new Turnstile(scene));
                     break;
                 }
                 case 8:
                     river_counter++;
                     break;
                 case 11: {
-                    grid->cells.at(x).at(y).set_bg_tile(new Disposal(scene));
+                    cell.set_bg_tile(new Disposal(scene));
                     break; 
                 }
                 case 13:
 	                  river_counter++;
 	                  break;
                 case 14: 
-                    grid->cells.at(x).at(y).set_bg_tile(new Grass(scene));
+                    cell.set_bg_tile(new Grass(scene));
                     break;
                 case 15: {
-                    grid->cells.at(x).at(y).set_bg_tile(new Pit(scene));
+                    cell.set_bg_tile(new Pit(scene));
                     break;
                 }
                 case 17: {
                     //TODO: shape path models
                     OverworldPath* overworldPath = new OverworldPath(scene);
-                    grid->cells.at(x).at(y).set_bg_tile(overworldPath);
+                    cell.set_bg_tile(overworldPath);
                     break;
                 }
                 case 18: {
                     OverworldNode* overworldNode = new OverworldNode(scene);
                     if (first_node == nullptr) first_node = overworldNode;
-                    grid->cells.at(x).at(y).set_bg_tile(overworldNode);
+                    cell.set_bg_tile(overworldNode);
                     break;
                 }
             }
+            if (cell.bgTile != nullptr) cell.bgTile->load_and_reposition_models(scene);
         }
     }
 
@@ -132,13 +135,12 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
         for (unsigned int x = 0; x < packed_grid.width; x++) {
             switch(obj_ids[packed_grid.data_start + x + y * packed_grid.width]) {
                 case 8:{
-                    bridge = new Bridge(scene);
+                    bridge = new Bridge(scene, !prev_is_land);
 
                     (*river_tiles)[inserted] = bridge;
                     inserted++;
                     grid->cells.at(x).at(y).set_bg_tile(bridge);
-                    if (!prev_is_land) bridge->rotate_90();
-                    bridge->position_models();
+                    bridge->load_and_reposition_models(scene);
                     prev_is_land = false;
                     break;
                 }
@@ -161,6 +163,7 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
                     (*river_tiles)[inserted] = river;
                     inserted++;
                     grid->cells.at(x).at(y).set_bg_tile(river);
+                    river->load_and_reposition_models(scene);
 
                     // Check if there's a railing here that we should load.
                     // TODO - load bent railing?
@@ -168,6 +171,7 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
                         Railing *railing = new Railing(scene);
                         railing->drawable->transform->rotation = river->drawable->transform->rotation;
                         grid->cells.at(x).at(y).set_fg_obj(railing);
+                        railing->load_and_reposition_models(scene);
                     }
 
                     prev_is_land = false;
@@ -197,7 +201,9 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
         for (unsigned int x = 0; x < packed_grid.width; x++) {
             switch (obj_ids[packed_grid.data_start + x + y * packed_grid.width]) {
                 case 9:{
-                    grid->cells.at(x).at(y).set_bg_tile(new Button(scene, bridge));
+                    Button *button = new Button(scene, bridge->cell->pos);
+                    grid->cells.at(x).at(y).set_bg_tile(button);
+                    button->load_and_reposition_models(scene);
                     break;
                 }
             }
@@ -207,44 +213,42 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
     //set the FG objects
     for(unsigned int y = 0; y < packed_grid.height; y++) {
         for(unsigned int x = 0; x < packed_grid.width; x++) {
+            Cell& cell = grid->cells.at(x).at(y);
             int obj_id = obj_ids[packed_grid.data_start + packed_grid.width * packed_grid.height + x + y * packed_grid.width];
             switch(obj_id) {
                 case 1: 
                     grid->player = new Player(scene);
-                    grid->cells.at(x).at(y).set_fg_obj(grid->player);
+                    cell.set_fg_obj(grid->player);
                     break; 
                 case 2:  
-                    grid->cells.at(x).at(y).set_fg_obj(new Barrel(scene));
+                    cell.set_fg_obj(new Barrel(scene, 0));
                     break; 
                 case 3:
-                    grid->cells.at(x).at(y).set_fg_obj(new Barrel(scene));
-                    grid->cells.at(x).at(y).fgObj->rotate_90();
+                    cell.set_fg_obj(new Barrel(scene, 1));
                     break; 
                 case 4:  
-                    grid->cells.at(x).at(y).set_fg_obj(new Rock(scene));
+                    cell.set_fg_obj(new Rock(scene));
                     break;
                 case 5:
-                    grid->cells.at(x).at(y).set_fg_obj(new Tree(scene));
+                    cell.set_fg_obj(new Tree(scene));
                     break;
                 case 12:
-                    grid->cells.at(x).at(y).set_fg_obj(new Animal(scene));
+                    cell.set_fg_obj(new Animal(scene));
                     break;
                 // 4 different colors for different ramp starting orientations
                 case 19:
                 case 20:
                 case 21:
                 case 22: {
-                    Ramp* ramp = new Ramp(scene);
-                    for (int rotations = obj_id - 19; rotations > 0; rotations--) {
-                        ramp->rotate_90();
-                    }
+                    int rotations = obj_id - 19;
+                    Ramp* ramp = new Ramp(scene, rotations);
                     grid->cells.at(x).at(y).set_fg_obj(ramp);
                     break;
                 }
             }
+            if (cell.fgObj != nullptr) cell.fgObj->load_and_reposition_models(scene);
         }
     }
-
 
     //set the sky objects 
     for(unsigned int y = 0; y < packed_grid.height; y++) {
@@ -252,12 +256,13 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
             switch(obj_ids[packed_grid.data_start + 2 * packed_grid.width * packed_grid.height + x + y * packed_grid.width]) {
                 case 10: 
                     //TODO: cloud path 
+                    Cloud *cloud = new Cloud(scene);
                     grid->cells.at(x).at(y).set_sky_obj(new Cloud(scene));
-                    break; 
+                    cloud->load_and_reposition_models(scene);
+                    break;
             }
         }
     }
-
 
     
     return grid; 
@@ -267,16 +272,53 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
 // Returns a copy of src Grid, presumably current_grid, to be pushed onto the undo_grids stack.
 Grid* GridLoader::create_undo_copy(Grid* src) {
   Grid* grid_cpy = new Grid(src->width, src->height, src->goal, src->num_disposed);
+
+  for (size_t y = 0; y < grid_cpy->height; y++) {
+    for (size_t x = 0; x < grid_cpy->width; x++) {
+      glm::ivec2 pos = glm::ivec2(x, y);
+      Cell* cell = grid_cpy->cell_at(pos);
+      Cell* src_cell = src->cell_at(pos);
+      // BgTile
+      if (src_cell->bgTile != nullptr) {
+        cell->bgTile = src_cell->bgTile->clone_lightweight(cell);
+      }
+      // FgObj
+      if (src_cell->fgObj != nullptr) {
+        cell->fgObj = src_cell->fgObj->clone_lightweight(cell);
+      }
+      // SkyObj
+      if (src_cell->skyObj != nullptr) {
+        cell->skyObj = src_cell->skyObj->clone_lightweight(cell);
+      }
+    }
+  }
   
-  // TODO
   return grid_cpy;
 }
 
 
 // Takes in an undo copy and fully loads it into the current_grid.
 // FIRST properly delete and clean up the current_grid.
-void GridLoader::load_undo_copy(Grid* undo_copy) {
-  // TODO - properly load the new grid
-  //        - Load models and add the new drawables to the drawables vector
-  current_grid = new Grid(*undo_copy);
+void GridLoader::load_undo_copy(Grid* undo_copy, Scene* scene) {
+  if (current_grid != nullptr) throw std::runtime_error("Please delete current_grid before calling load_undo_copy()");
+  current_grid = undo_copy;
+
+  for (size_t y = 0; y < current_grid->height; y++) {
+    for (size_t x = 0; x < current_grid->width; x++) {
+      glm::ivec2 pos = glm::ivec2(x, y);
+      Cell* cell = current_grid->cell_at(pos);
+      // BgTile
+      if (cell->bgTile != nullptr) {
+        cell->bgTile->load_and_reposition_models(scene);
+      }
+      // FgObj
+      if (cell->fgObj != nullptr) {
+        cell->fgObj->load_and_reposition_models(scene);
+      }
+      // SkyObj
+      if (cell->skyObj != nullptr) {
+        cell->skyObj->load_and_reposition_models(scene);
+      }
+    }
+  }
 }

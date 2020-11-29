@@ -122,7 +122,7 @@ Cell::~Cell() {
 
 // See above
 void Cell::set_bg_tile(BgTile* _bgTile) {
-//  if (this->bgTile != nullptr && _bgTile != nullptr) throw std::runtime_error("Setting the bgTile of a cell that already has one.");
+  if (this->bgTile != nullptr && _bgTile != nullptr) throw std::runtime_error("Setting the bgTile of a cell that already has one.");
   this->bgTile = _bgTile;
   if (_bgTile == nullptr) return;
 
@@ -130,10 +130,10 @@ void Cell::set_bg_tile(BgTile* _bgTile) {
     _bgTile->cell->bgTile = nullptr;
   }
   this->bgTile->cell = this;
+  if (this->bgTile->drawable == nullptr) return;
   // TODO - smoothly move/animate this object?
   if (!this->bgTile->drawable->transform) throw std::runtime_error("No transform on a BgTile that's trying to move");
-  this->bgTile->drawable->transform->position = glm::vec3(this->pos.x, this->pos.y, 0.0f);
-  this->bgTile->position_models(); 
+  this->bgTile->position_models();
 }
 
 
@@ -147,9 +147,10 @@ void Cell::set_fg_obj(FgObj* _fgObj) {
     _fgObj->cell->fgObj = nullptr;
   }
   this->fgObj->cell = this;
+  if (this->fgObj->drawable == nullptr) return;
   // TODO - smoothly move/animate this object?
   if (!this->fgObj->drawable->transform) throw std::runtime_error("No transform on a FgObj that's trying to move");
-  this->fgObj->drawable->transform->position = glm::vec3(this->pos.x, this->pos.y, 0);
+  this->fgObj->position_models();
 }
 
 
@@ -163,9 +164,10 @@ void Cell::set_sky_obj(SkyObj* _skyObj) {
     _skyObj->cell->skyObj = nullptr;
   }
   this->skyObj->cell = this;
+  if (this->skyObj->drawable == nullptr) return;
   // TODO - smoothly move/animate this object?
   if (!this->skyObj->drawable->transform) throw std::runtime_error("No transform on a SkyObj that's trying to move");
-  this->skyObj->drawable->transform->position = glm::vec3(this->pos.x, this->pos.y, 0);
+  this->skyObj->position_models();
 }
 
 
@@ -243,11 +245,39 @@ void Cell::on_post_tick() {
 
 /* ----- Cell Items ----- */
 
+// Constructors
+CellItem::CellItem(Scene* scene, int _rotations) : rotations(_rotations) {
+ //load_and_reposition_models(scene);
+}
+
+
+// Load the models, position them, and rotate an appropriate number of times.
+void CellItem::load_and_reposition_models(Scene* scene) {
+  load_models(scene);
+  position_models();
+  for (int i = 0; i < rotations; i++) {
+    rotate_90(true);
+  }
+}
+
+
+// Set the transforms of all drawables appropriately
+void CellItem::position_models() {
+  this->drawable->transform->position = glm::vec3(this->cell->pos.x, this->cell->pos.y, 0.0f);
+  for (auto drawable_iter = extra_drawables.begin(); drawable_iter != extra_drawables.end(); drawable_iter++) {
+    (*drawable_iter)->transform->position = this->drawable->transform->position;
+    (*drawable_iter)->transform->rotation = this->drawable->transform->rotation;
+  }
+}
+
+
 // Rotates the tile/object 90 degrees (clockwise for now)
-void CellItem::rotate_90() {
-  float roll = glm::roll(this->drawable->transform->rotation);
-  roll -= glm::half_pi<float>();
-  this->drawable->transform->rotation = glm::angleAxis(roll, glm::vec3(0.0f, 0.0f, 1.0f));
+void CellItem::rotate_90(bool skip_incr) {
+  if (!skip_incr) rotations = (rotations + 1) % 4;
+  this->drawable->transform->rotate_90();
+  for (auto drawable_iter = extra_drawables.begin(); drawable_iter != extra_drawables.end(); drawable_iter++) {
+    (*drawable_iter)->transform->rotate_90();
+  }
 }
 
 
@@ -306,13 +336,6 @@ void BgTile::when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& di
 bool BgTile::on_input(const Input& input, Output* output){
   // By default, don't handle any input
   return false;
-}
-
-
-// TODO - delete this and make it pure virtual
-BgTile* BgTile::clone_lightweight()
-{
-  return nullptr;
 }
 
 
@@ -375,13 +398,6 @@ bool FgObj::on_input(const Input& input, Output* output){
 }
 
 
-// TODO - delete this and make it pure virtual
-FgObj* FgObj::clone_lightweight()
-{
-  return nullptr;
-}
-
-
 
 /* ----- Sky Objects ----- */
 
@@ -437,11 +453,4 @@ void SkyObj::when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& di
 // Returns true iff the input is handled somehow.
 bool SkyObj::on_input(const Input& input, Output* output) {
   return false;
-}
-
-
-// TODO - delete this and make it pure virtual
-SkyObj* SkyObj::clone_lightweight()
-{
-  return nullptr;
 }

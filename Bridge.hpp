@@ -6,18 +6,23 @@
 
 
 struct Bridge : River {
-    Scene::Drawable unactivated;
-    Scene::Drawable bridge;
-    Scene::Drawable *grass; 
+    // Fields
+    Scene::Drawable* unactivated = nullptr;
+    Scene::Drawable* bridge = nullptr;
     bool activated = false;
 
+    // Constructors
+    Bridge(Scene* scene, bool vertical);
+
     // Methods
-    Bridge(Scene *scene);
+    void load_models(Scene* scene) override;
+    void position_models() override;
+    Bridge* clone_lightweight(Cell* new_cell) override;
 
     bool can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
     void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
     void activate();
     void deactivate();
-    void position_models() override;
 
+    void rotate_90(bool skip_incr = false) override;
 };

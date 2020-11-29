@@ -8,8 +8,10 @@
 struct Rock : FgObj {
 	// Constructors (inherited)
 	using FgObj::FgObj;
-  	Rock(Scene *scene); 
 
 	// Methods
+	void load_models(Scene* scene) override;
+	Rock* clone_lightweight(Cell* new_cell) override;
+
 	std::optional<AudioManager::AudioClip> get_move_clip() override;
 };

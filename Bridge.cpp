@@ -3,60 +3,73 @@
 #include <iostream>
 
 
-Bridge::Bridge(Scene *scene) : River(scene, true, true, false, false),
-unactivated(model_loader->create_model("Bridge_Unactivated")),
-bridge(model_loader->create_model("Bridge")){
-    scene->drawables.push_back(model_loader->create_model("River_Straight")); 
-    grass = &(scene->drawables.back());
-    scene->drawables.push_back(unactivated); 
-    this->drawable = &(scene->drawables.back());
+// Constructor
+Bridge::Bridge(Scene* scene, bool vertical) : River(scene, vertical, vertical, !vertical, !vertical) {}
 
+
+// Load any drawables
+void Bridge::load_models(Scene* scene) {
+  River::load_models(scene);
+
+  scene->drawables.push_back(model_loader->create_model("Bridge_Unactivated"));
+  unactivated = &(scene->drawables.back());
+  extra_drawables.push_back(unactivated);
+
+  scene->drawables.push_back(model_loader->create_model("Bridge"));
+  bridge = &(scene->drawables.back());
+  bridge->disabled = true;
+  extra_drawables.push_back(bridge);
 }
 
 
 void Bridge::position_models(){
-    if(water->transform)
-		water->transform->position = this->drawable->transform->position;
-    if(grass->transform){
-		grass->transform->position = this->drawable->transform->position;
-		grass->transform->rotation = this->drawable->transform->rotation;
-    }
+    River::position_models();
 }
+
+
+// Create a copy with no drawables
+Bridge* Bridge::clone_lightweight(Cell* new_cell) {
+  Bridge* new_bridge = new Bridge(*this);
+  new_bridge->cell = new_cell;
+  // TODO - maybe call some River helper function cuz it's doing similar stuff?
+  new_bridge->drawable = nullptr;
+  new_bridge->water = nullptr;
+  new_bridge->sunk_object = nullptr;
+  new_bridge->tiles->clear();
+  new_bridge->unactivated = nullptr;
+  new_bridge->bridge = nullptr;
+  new_bridge->extra_drawables.clear();
+  return new_bridge;
+}
+
 
 bool Bridge::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ){
     if (activated) return true;
     return River::can_fg_obj_move_into(objBeingMoved, displ);
 }
 
+
 void Bridge::activate() {
     activated = true;
-    this->bridge.transform->position = this->drawable->transform->position;
-    this->bridge.transform->rotation = this->drawable->transform->rotation;
-//    delete this->drawable->transform;
-    *(this->drawable) = this->bridge;
+    unactivated->disabled = true;
+    bridge->disabled = false;
 }
+
 
 void Bridge::deactivate() {
     activated = false;
-    this->bridge.transform->position = this->drawable->transform->position;
-    this->bridge.transform->rotation = this->drawable->transform->rotation;
-//    delete this->drawable->transform;
-    *(this->drawable) = this->unactivated;
+    unactivated->disabled = false;
+    bridge->disabled = true;
     
     //sink object if it is on top
-    if(dynamic_cast<Barrel*>(this->cell->fgObj) != nullptr) {
-        iscontaminated = true;
-        current_grid->grid_environment_score -= 5;
-
-        // delete this->water->transform;
-        // *water = (model_loader->create_model("Water_Toxic"));
-        // water->transform->position = this->drawable->transform->position;
-        set_purple_amt(0.5); 
-
-    }
-
-    if(this->cell->fgObj) just_sunk = true; 
+    try_to_sink(*this->cell->fgObj);
 }
+
+
+void Bridge::rotate_90(bool skip_incr) {
+  CellItem::rotate_90(skip_incr);
+}
+
 
 void Bridge::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ){
     if (!activated){

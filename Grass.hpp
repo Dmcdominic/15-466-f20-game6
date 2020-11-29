@@ -6,7 +6,10 @@
 
 
 struct Grass : BgTile {
+  // Constructors (inherited)
+  using BgTile::BgTile;
 
-  Grass(Scene *scene); 
-  
+  // Methods
+  void load_models(Scene* scene) override;
+  Grass* clone_lightweight(Cell* new_cell) override;
 };

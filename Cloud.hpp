@@ -10,4 +10,7 @@ struct Cloud : SkyObj {
 	using SkyObj::SkyObj;
   	Cloud(Scene *scene); 
 
+		// Methods
+		void load_models(Scene* scene) override;
+		Cloud* clone_lightweight(Cell* new_cell) override;
 };

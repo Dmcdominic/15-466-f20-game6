@@ -86,21 +86,6 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 	// --- MODEL & GRID INITIALIZATION ---
 	model_loader = new ModelLoader;
 	load_level(0);
-
-	// Manually throwing an object into the first grid, for testing
-	/*scene.drawables.push_back(loader.create_model("Barrel"));
-	current_grid->cells.at(4).at(1).set_fg_obj(new Barrel(&(scene.drawables.back())));
-
-	BgTile *bgTileToRemove = current_grid->cells.at(4).at(1).bgTile;
-	scene.drawables.remove(*bgTileToRemove->drawable);
-	current_grid->cells.at(4).at(1).bgTile = nullptr;
-	delete bgTileToRemove->drawable->transform;
-
-	scene.drawables.push_back(loader.create_model("Turnstile"));
-	current_grid->cells.at(4).at(1).set_bg_tile(new Turnstile(&(scene.drawables.back())));*/
-
-	/*scene.drawables.push_back(loader.create_model("Pit"));
-	current_grid->cells.at(4).at(2).set_bg_tile(new Pit(&(scene.drawables.back())));*/
 }
 
 PlayMode::~PlayMode() {
@@ -203,20 +188,8 @@ void PlayMode::update(float elapsed) {
 	// If the current grid isn't set, early-out.
 	if (current_grid == nullptr) return;
 
-	// player idle animation
-	current_grid->player->idle_counter++;
-	if (current_grid->player->idle_counter > current_grid->player->idle_num) {
-		current_grid->player->idle_counter = 0;
-		if (current_grid->player->player_state == 0) {
-			current_grid->player->idle0.transform = current_grid->player->drawable->transform;
-			*(current_grid->player->drawable) = current_grid->player->idle0;
-			current_grid->player->player_state = 1;
-		} else if (current_grid->player->player_state == 1) {
-			current_grid->player->idle1.transform = current_grid->player->drawable->transform;
-			*(current_grid->player->drawable) = current_grid->player->idle1;
-			current_grid->player->player_state = 0;
-		}
-	}
+	// Player animation
+	current_grid->player->on_update();
 
 	// Process input
 	while (!input_q.empty()) {
@@ -230,9 +203,11 @@ void PlayMode::update(float elapsed) {
 		} else if (input.type == InputType::UNDO) {
 			undo_move();
 		} else {
-			undo_grids.push(GridLoader::create_undo_copy(current_grid));
+			if (!is_Overworld()) { // Push an undo copy (Overworld excluded)
+				undo_grids.push(GridLoader::create_undo_copy(current_grid));
+			}
 			bool input_handled = current_grid->on_input(input, &output);
-			if (!input_handled) undo_grids.pop();
+			if (!input_handled && !is_Overworld()) undo_grids.pop(); // TODO - need to delete/clean this up?
 		}
 
 		// Check if the output indicates a new level to load, e.g. they interacted with an overworld node.
@@ -438,8 +413,9 @@ bool PlayMode::undo_move() {
 	//        - Remove drawables from the drawables vector
 	//        - Delete each cell?
 	delete current_grid;
+	current_grid = nullptr;
 	// Load the undo copy grid
-	GridLoader::load_undo_copy(last_grid);
+	GridLoader::load_undo_copy(last_grid, &scene);
 	// TODO - play a sound or something?
 	return true;
 }

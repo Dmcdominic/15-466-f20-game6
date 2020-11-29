@@ -8,8 +8,10 @@
 struct Railing : FgObj {
     // Constructors (inherited)
     using FgObj::FgObj;
-	Railing(Scene *scene);
 
     // Methods
+    void load_models(Scene* scene) override;
+    Railing* clone_lightweight(Cell* new_cell) override;
+
     bool can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
 };

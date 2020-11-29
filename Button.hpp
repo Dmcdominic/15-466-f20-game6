@@ -5,13 +5,23 @@
 
 
 struct Button : BgTile {
-    Bridge* bridge;
-    Scene::Drawable unpressed = nullptr;
-    Scene::Drawable pressed = nullptr;
-    Scene::Drawable *grass = nullptr;
+    // Fields
+    glm::ivec2 bridge_pos;
+    Scene::Drawable* pressed = nullptr;
+    Scene::Drawable* grass = nullptr;
 
-  	Button(Scene *_scene, Bridge* _bridge); 
+    // Constructor
+  	Button(Scene *_scene, glm::ivec2 _bridge_pos);
+
+    // Methods
+    void load_models(Scene* scene) override;
+    Button* clone_lightweight(Cell* new_cell) override;
+
     void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
     void on_post_tick() override;
-    void position_models() override;
+
+    Bridge *get_bridge();
+
+    private:
+      Bridge* cached_bridge = nullptr;
 };

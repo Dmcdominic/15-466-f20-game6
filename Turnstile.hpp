@@ -7,11 +7,11 @@
 
 struct Turnstile : BgTile {
   // Constructors (inherited)
-  //using BgTile::BgTile;
-  Scene::Drawable *grass = nullptr;
-  Turnstile(Scene *scene); 
+  using BgTile::BgTile;
   
   // Methods
+  void load_models(Scene* scene) override;
+  Turnstile* clone_lightweight(Cell* new_cell) override;
+
   void on_post_tick() override;
-  void position_models() override;
 };

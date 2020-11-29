@@ -91,15 +91,22 @@ struct Cell {
 /* Cell Items (parent class of BgTile, FgObj, SkyObj, etc.) */
 struct CellItem {
 	// Fields
-    Scene::Drawable* drawable = nullptr;
+	Scene::Drawable* drawable = nullptr;
+	std::vector<Scene::Drawable*> extra_drawables = std::vector<Scene::Drawable*>();
 	Cell* cell = nullptr;
+	int rotations = 0;
 
 	// Constructors
 	CellItem() {};
-	CellItem(Scene::Drawable* _drawable) : drawable(_drawable) {};
-	CellItem(Scene::Drawable* _drawable, Cell* _cell) : drawable(_drawable), cell(_cell) {};
+	CellItem(Scene *scene, int _rotations = 0);
 
-	// Pure virtual methods
+	// Methods
+	void load_and_reposition_models(Scene *scene);
+
+	virtual void load_models(Scene* scene) = 0;
+	virtual void position_models();
+	virtual CellItem* clone_lightweight(Cell* new_cell) = 0; // Create a copy with no drawables
+
 	virtual bool try_to_move_by(const glm::ivec2& displ) = 0;
 
 	virtual bool can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) = 0;
@@ -112,11 +119,7 @@ struct CellItem {
 	virtual void on_pre_tick() {};
 	virtual void on_post_tick() {};
 
-	virtual void position_models() {};
-
-	virtual void rotate_90();
-
-	virtual CellItem* clone_lightweight() = 0; // Create a copy with no drawables
+	virtual void rotate_90(bool skip_incr = false);
 
 	virtual std::optional<AudioManager::AudioClip> get_move_clip();
 	void push_move_clip();
@@ -132,6 +135,8 @@ struct BgTile : CellItem {
 	virtual ~BgTile() {};
 
 	// Methods
+	virtual BgTile* clone_lightweight(Cell* new_cell) override = 0;
+
 	bool try_to_move_by(const glm::ivec2& displ) override;
 
 	virtual bool can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
@@ -141,8 +146,6 @@ struct BgTile : CellItem {
 	virtual void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) override;
 
 	virtual bool on_input(const Input& input, Output* output) override;
-
-	virtual BgTile* clone_lightweight() override; // Create a copy with no drawables
 };
 
 
@@ -155,6 +158,8 @@ struct FgObj : CellItem {
 	virtual ~FgObj() {};
 
 	// Methods
+	virtual FgObj* clone_lightweight(Cell* new_cell) override = 0;
+
 	bool try_to_move_by(const glm::ivec2& displ) override;
 
 	virtual bool can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
@@ -164,8 +169,6 @@ struct FgObj : CellItem {
 	virtual void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) override;
 
 	virtual bool on_input(const Input& input, Output* output) override;
-
-	virtual FgObj* clone_lightweight() override; // Create a copy with no drawables
 };
 
 
@@ -178,6 +181,8 @@ struct SkyObj : CellItem {
 	virtual ~SkyObj() {};
 
 	// Methods
+	virtual SkyObj* clone_lightweight(Cell* new_cell) override = 0;
+
 	bool try_to_move_by(const glm::ivec2& displ) override;
 
 	virtual bool can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
@@ -187,6 +192,4 @@ struct SkyObj : CellItem {
 	virtual void when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) override;
 
 	virtual bool on_input(const Input& input, Output* output) override;
-
-	virtual SkyObj* clone_lightweight() override; // Create a copy with no drawables
 };

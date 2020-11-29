@@ -6,15 +6,12 @@
 
 
 struct Ramp : FgObj {
-	// Fields
-	glm::ivec2 up_dir = glm::ivec2(0, 1);
-
 	// Constructors (inherited)
 	using FgObj::FgObj;
-	Ramp(Scene *scene);
 
 	// Methods
-	void rotate_90() override;
+	void load_models(Scene* scene) override;
+	Ramp* clone_lightweight(Cell* new_cell) override;
 
 	bool should_slide_up(const glm::ivec2& displ);
 };

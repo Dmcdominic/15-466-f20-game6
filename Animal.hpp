@@ -8,6 +8,8 @@
 struct Animal : FgObj {
 	// Constructors (inherited)
 	using FgObj::FgObj;
-  	Animal(Scene *scene); 
 
+	// Methods
+	void load_models(Scene* scene) override;
+	Animal* clone_lightweight(Cell* new_cell) override;
 };

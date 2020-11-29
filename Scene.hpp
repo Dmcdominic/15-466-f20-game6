@@ -43,6 +43,18 @@ struct Scene {
 		glm::mat4x3 make_local_to_world() const;
 		glm::mat4x3 make_world_to_local() const;
 
+		// Helper functions for setting rotation by roll
+		void set_roll(float roll) {
+			rotation = glm::angleAxis(roll, glm::vec3(0.0f, 0.0f, 1.0f));
+		}
+
+		// Rotates 90 degrees clockwise
+		void rotate_90() {
+			float roll = glm::roll(rotation);
+			roll -= glm::half_pi<float>();
+			set_roll(roll);
+		}
+
 		//since hierarchy is tracked through pointers, copy-constructing a transform  is not advised:
 		Transform(Transform const &) = delete;
 		//if we delete some constructors, we need to let the compiler know that the default constructor is still okay:
@@ -53,6 +65,7 @@ struct Scene {
 		//a 'Drawable' attaches attribute data to a transform:
 		Drawable(Transform *transform_) : transform(transform_) { assert(transform); }
 		Transform * transform;
+		bool disabled = false;
 
 		//Contains all the data needed to run the OpenGL pipeline:
 		struct Pipeline {

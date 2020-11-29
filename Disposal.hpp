@@ -3,17 +3,16 @@
 #include "ModelLoader.hpp"
 
 struct Disposal : BgTile {
-	// Constructors (inherited)
+	// Constructor
+	Disposal(Scene* _scene);
 
 	// Fields
-	Scene::Drawable *grass;
-	Scene* scene = nullptr;
+	Scene::Drawable *grass = nullptr;
 
 	// Methods
-	Disposal(Scene *_scene); 
+	void load_models(Scene* scene) override;
+	Disposal* clone_lightweight(Cell* new_cell) override;
 
 	bool can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
 	void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
-	void position_models() override;
-
 };
