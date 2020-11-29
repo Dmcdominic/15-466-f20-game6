@@ -197,6 +197,9 @@ void PlayMode::update(float elapsed) {
 		Input input = input_q.front();
 		input_q.pop();
 		if (input.type == InputType::RESET) {
+			if (!is_Overworld()) { // Push an undo copy (Overworld excluded)
+				undo_grids.push(GridLoader::create_undo_copy(current_grid));
+			}
 			load_level(current_level);
 		} else if (input.type == InputType::SKIP_LVL) {
 			load_level(current_level + 1);
@@ -207,7 +210,10 @@ void PlayMode::update(float elapsed) {
 				undo_grids.push(GridLoader::create_undo_copy(current_grid));
 			}
 			bool input_handled = current_grid->on_input(input, &output);
-			if (!input_handled && !is_Overworld()) undo_grids.pop(); // TODO - need to delete/clean this up?
+			if (!input_handled && !is_Overworld()) {
+				delete undo_grids.top();
+				undo_grids.pop();
+			}
 		}
 
 		// Check if the output indicates a new level to load, e.g. they interacted with an overworld node.
@@ -409,11 +415,7 @@ bool PlayMode::undo_move() {
 	}
 	Grid* last_grid = undo_grids.top();
 	undo_grids.pop();
-	// TODO - properly clean up the current_grid
-	//        - Remove drawables from the drawables vector
-	//        - Delete each cell?
-	delete current_grid;
-	current_grid = nullptr;
+	GridLoader::unload_current_grid(&scene);
 	// Load the undo copy grid
 	GridLoader::load_undo_copy(last_grid, &scene);
 	// TODO - play a sound or something?
@@ -424,7 +426,7 @@ bool PlayMode::undo_move() {
 // Cleans up the whole stack of undo grids
 void PlayMode::clear_undo_stack() {
 	while (!undo_grids.empty()) {
-		// TODO - need to do any other cleanup for each grid?
+		delete undo_grids.top();
 		undo_grids.pop();
 	}
 }

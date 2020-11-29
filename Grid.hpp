@@ -41,7 +41,7 @@ struct Grid {
 	OverworldNode *highest_level_node = nullptr;
 
 	// Constructor
-	Grid(size_t _width, size_t _height, unsigned int _goal, unsigned int _num_disposed);
+	Grid(size_t _width, size_t _height, unsigned int _goal, unsigned int _num_disposed = 0, int env_score = 0);
 	// Destructor
 	~Grid();
 
@@ -99,6 +99,8 @@ struct CellItem {
 	// Constructors
 	CellItem() {};
 	CellItem(Scene *scene, int _rotations = 0);
+	// Destructor
+	~CellItem();
 
 	// Methods
 	void load_and_reposition_models(Scene *scene);

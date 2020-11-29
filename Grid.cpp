@@ -16,7 +16,7 @@ std::stack<Grid*> undo_grids = std::stack<Grid*>();
 /* ----- Grid ----- */
 
 // Grid constructor
-Grid::Grid(size_t _width, size_t _height, unsigned int _goal, unsigned int _num_disposed = 0) : width(_width), height(_height), goal(_goal), num_disposed(_num_disposed) {
+Grid::Grid(size_t _w, size_t _h, unsigned int _g, unsigned int _num_disposed, int _env_score) : width(_w), height(_h), goal(_g), num_disposed(_num_disposed), grid_environment_score(_env_score) {
   cells = std::vector<std::vector<Cell>>(width, std::vector<Cell>(height, Cell(glm::ivec2(0))));
   for (size_t x = 0; x < width; x++) {
     for (size_t y = 0; y < height; y++) {
@@ -28,6 +28,7 @@ Grid::Grid(size_t _width, size_t _height, unsigned int _goal, unsigned int _num_
 
 // Grid destructor
 Grid::~Grid() {
+  cells.clear();
 }
 
 
@@ -101,12 +102,10 @@ Cell::Cell(glm::ivec2 _pos) : pos(_pos) {
 
 // Cell destructor
 Cell::~Cell() {
-  if (bgTile) delete bgTile;
-  if (fgObj) delete fgObj;
-  if (skyObj) delete skyObj;
-  bgTile = nullptr;
-  fgObj = nullptr;
-  skyObj = nullptr;
+  // TODO - implement these destructors?
+  if (bgTile != nullptr) delete bgTile;
+  if (fgObj != nullptr) delete fgObj;
+  if (skyObj != nullptr) delete skyObj;
 }
 
 
@@ -131,7 +130,7 @@ void Cell::set_bg_tile(BgTile* _bgTile) {
   }
   this->bgTile->cell = this;
   if (this->bgTile->drawable == nullptr) return;
-  // TODO - smoothly move/animate this object?
+  // smoothly move/animate this object?
   if (!this->bgTile->drawable->transform) throw std::runtime_error("No transform on a BgTile that's trying to move");
   this->bgTile->position_models();
 }
@@ -148,7 +147,7 @@ void Cell::set_fg_obj(FgObj* _fgObj) {
   }
   this->fgObj->cell = this;
   if (this->fgObj->drawable == nullptr) return;
-  // TODO - smoothly move/animate this object?
+  // smoothly move/animate this object?
   if (!this->fgObj->drawable->transform) throw std::runtime_error("No transform on a FgObj that's trying to move");
   this->fgObj->position_models();
 }
@@ -165,7 +164,7 @@ void Cell::set_sky_obj(SkyObj* _skyObj) {
   }
   this->skyObj->cell = this;
   if (this->skyObj->drawable == nullptr) return;
-  // TODO - smoothly move/animate this object?
+  // smoothly move/animate this object?
   if (!this->skyObj->drawable->transform) throw std::runtime_error("No transform on a SkyObj that's trying to move");
   this->skyObj->position_models();
 }
@@ -245,9 +244,15 @@ void Cell::on_post_tick() {
 
 /* ----- Cell Items ----- */
 
-// Constructors
+// Constructor
 CellItem::CellItem(Scene* scene, int _rotations) : rotations(_rotations) {
  //load_and_reposition_models(scene);
+}
+
+
+// Destructor
+CellItem::~CellItem() {
+  //TODO - Remove drawables? Currently this is just being done by clearing drawables
 }
 
 

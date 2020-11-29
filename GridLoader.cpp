@@ -25,7 +25,7 @@
 
 Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
     //remove drawables from current grid 
-    scene->drawables.clear();
+    unload_current_grid(scene);
 
     std::vector< int > obj_ids; 
     std::vector< PackedGrid > packed_grids; 
@@ -269,9 +269,19 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
 }
 
 
+// Clears the drawables and deletes the current_grid
+void GridLoader::unload_current_grid(Scene *scene) {
+  if (current_grid == nullptr) return;
+  // clear all drawables. TODO - improve this so we don't clear ALL?
+  scene->drawables.clear();
+  delete current_grid;
+  current_grid = nullptr;
+}
+
+
 // Returns a copy of src Grid, presumably current_grid, to be pushed onto the undo_grids stack.
 Grid* GridLoader::create_undo_copy(Grid* src) {
-  Grid* grid_cpy = new Grid(src->width, src->height, src->goal, src->num_disposed);
+  Grid* grid_cpy = new Grid(src->width, src->height, src->goal, src->num_disposed, src->grid_environment_score);
 
   for (size_t y = 0; y < grid_cpy->height; y++) {
     for (size_t x = 0; x < grid_cpy->width; x++) {
@@ -291,6 +301,14 @@ Grid* GridLoader::create_undo_copy(Grid* src) {
         cell->skyObj = src_cell->skyObj->clone_lightweight(cell);
       }
     }
+  }
+
+  grid_cpy->player = dynamic_cast<Player*>(grid_cpy->cell_at(src->player->cell->pos)->fgObj);
+  if (grid_cpy->player == nullptr) throw std::runtime_error("Couldn't find player in create_undo_copy()");
+
+  if (src->highest_level_node != nullptr) {
+    grid_cpy->highest_level_node = dynamic_cast<OverworldNode*>(grid_cpy->cell_at(src->highest_level_node->cell->pos)->bgTile);
+    if (grid_cpy->highest_level_node == nullptr) throw std::runtime_error("Couldn't find highest_level_node in create_undo_copy()");
   }
   
   return grid_cpy;
@@ -314,6 +332,7 @@ void GridLoader::load_undo_copy(Grid* undo_copy, Scene* scene) {
       // FgObj
       if (cell->fgObj != nullptr) {
         cell->fgObj->load_and_reposition_models(scene);
+        
       }
       // SkyObj
       if (cell->skyObj != nullptr) {
