@@ -17,5 +17,10 @@ scenes/show-scene*
 *.blend[0-9]
 scenes/Makefile
 
+dist/Enviro.ilk
+dist/Enviro.pdb
+dist/Enviro
+dist/Enviro.exe
+
 .DS_Store
 vs_project/Debug/

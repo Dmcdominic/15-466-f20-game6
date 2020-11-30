@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
 
 	//create window:
 	SDL_Window *window = SDL_CreateWindow(
-		"Toxic",
+		"Enviro",
 		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 		1280, 980, //TODO: modify window size if you'd like
 		SDL_WINDOW_OPENGL

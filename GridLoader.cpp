@@ -41,7 +41,6 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
 
     OverworldNode* first_node = nullptr;
 
-    std::cout << "BG objects" << std::endl;
 
     Bridge *bridge = nullptr;
     //set the BG objects 
@@ -86,7 +85,6 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
         }
     }
 
-    std::cout << "Oveworld path search" << std::endl;
 
     // Overworld - set the paths appropriately
     // Start from first_node and set all the level_indices
@@ -127,8 +125,6 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
 
 
     // Instantiate and shape the river/bridges
-
-    std::cout << "river/bridges" << std::endl;
     bool prev_is_land = true; // Used for orienting bridge tiles
     for(unsigned int y = 0; y < packed_grid.height; y++) {
         for (unsigned int x = 0; x < packed_grid.width; x++) {
@@ -162,7 +158,7 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
 
                     // Check if there's a railing here that we should load.
                     if(obj_ids[packed_grid.data_start + packed_grid.width * packed_grid.height + x + y * packed_grid.width]==16){
-                        Railing *railing = new Railing(scene, river->rotations);
+                        Railing *railing = new Railing(scene, river->rotations, left, right, upper, lower);
                         grid->cells.at(x).at(y).set_fg_obj(railing);
                         railing->load_and_reposition_models(scene);
                     }
@@ -178,7 +174,6 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
         prev_is_land = false;
     }
 
-    std::cout << "FG objects" << std::endl;
 
     //set the FG objects
     for(unsigned int y = 0; y < packed_grid.height; y++) {
@@ -220,7 +215,6 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
         }
     }
 
-    std::cout << "buttons" << std::endl;
 
     // Instantiate buttons
     for (unsigned int y = 0; y < packed_grid.height; y++) {
@@ -235,7 +229,7 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
         }
       }
     }
-    std::cout << "sky objects" << std::endl;
+
 
     //set the sky objects 
     for(unsigned int y = 0; y < packed_grid.height; y++) {
@@ -251,10 +245,10 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
         }
     }
 
-    std::cout << "returning grid" << std::endl;
     
     return grid; 
 }
+
 
 
 // Clears the drawables and deletes the current_grid

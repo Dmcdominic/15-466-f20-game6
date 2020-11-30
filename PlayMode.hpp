@@ -77,6 +77,7 @@ struct PlayMode : Mode {
 	}
 
 	int environment_score = 100;
+	bool level_completion = false;
 	PngView *png_meter100 = new PngView("meter100.png");
 	PngView *png_meter75 = new PngView("meter75.png");
 	PngView *png_meter50 = new PngView("meter50.png");

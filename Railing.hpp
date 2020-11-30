@@ -6,8 +6,11 @@
 
 
 struct Railing : FgObj {
-    // Constructors (inherited)
-    using FgObj::FgObj;
+    // Fields
+    bool left, right, upper, lower;
+
+    // Constructor
+    Railing(Scene *scene, int _rotations, bool left, bool right, bool upper, bool lower);
 
     // Methods
     std::string get_model_name() override { return "Railing_Straight"; }

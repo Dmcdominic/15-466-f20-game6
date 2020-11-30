@@ -183,6 +183,12 @@ void PlayMode::update(float elapsed) {
 			load_level(current_level + 1);
 		} else if (input.type == InputType::UNDO) {
 			undo_move();
+    } else if (level_completion&&input.type == InputType::INTERACT) {
+      level_completion = false;
+			environment_score += current_grid->grid_environment_score;
+      // load the Overworld
+      load_level(0);
+			break;
 		} else {
 			if (!is_Overworld()) { // Push an undo copy (Overworld excluded)
 				undo_grids.push(GridLoader::create_undo_copy(current_grid));
@@ -200,21 +206,12 @@ void PlayMode::update(float elapsed) {
 			break;
 		}
 
-		// Check if we should advance levels.
+		// Check if the user passed.
 		if (current_grid->num_disposed >= current_grid->goal) {
-			environment_score += current_grid->grid_environment_score;
 			completed_level = std::max(completed_level, current_level);
-            std::vector< MenuMode::Item > items;
-            if (current_level + 1 == num_levels) {
-	            update_congrats_items(items);
-	        } else {
-	            update_pass_items(items);
-	        }
-	        game_menu->update_items(items);
-	        Mode::switch_to_menu();
-	        // load the Overworld
-	        load_level(0);
-	        break;
+			level_completion = true;
+		} else {
+			level_completion = false;
 		}
 	}
 
@@ -312,10 +309,10 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 		));
 
 		constexpr float H = 0.09f;
-		lines.draw_text(std::to_string(environment_score),
-			glm::vec3(-aspect + 0.335 + 0.1f * H, -0.76 + 0.1f * H, 0.0),
-			glm::vec3(0.7 * H, 0.0f, 0.0f), glm::vec3(0.0f, 0.7 * H, 0.0f),
-		    glm::u8vec4(0xff, 0xff, 0xff, 0xff));
+//		lines.draw_text(std::to_string(environment_score),
+//			glm::vec3(-aspect + 0.335 + 0.1f * H, -0.76 + 0.1f * H, 0.0),
+//			glm::vec3(0.7 * H, 0.0f, 0.0f), glm::vec3(0.0f, 0.7 * H, 0.0f),
+//		    glm::u8vec4(0xff, 0xff, 0xff, 0xff));
         lines.draw_text("remaining: " + std::to_string(current_grid->goal),
                         glm::vec3(-aspect + 0.52 + 0.1f * H, 0.75 + 0.1f * H, 0.0),
                         glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
@@ -328,36 +325,12 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 		                glm::vec3(-aspect + 2.67 + 0.1f * H, -0.87 + 0.1f * H, 0.0),
 		                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
 		                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
+        if (level_completion) lines.draw_text("Congratulations! Press ENTER/SPACE to go back to OverWorld",
+                        glm::vec3(-aspect+0.8, 0.0, 0.0),
+                        glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
+                        glm::u8vec4(0xff, 0xff, 0xff, 0xff));
 	}
 	GL_ERRORS();
-}
-
-
-void PlayMode::update_congrats_items(std::vector< MenuMode::Item > &items){
-    items.emplace_back("Congratulations!");
-    items.emplace_back("Restart from Level 0");
-    items.back().on_select = [this](MenuMode::Item const &) {
-        Mode::switch_to_play();
-        load_level(current_level + 1);
-    };
-    items.back().on_select = [](MenuMode::Item const&) {
-        Mode::switch_to_play();
-    };
-}
-
-
-void PlayMode::update_pass_items(std::vector< MenuMode::Item > &items){
-    if (current_grid->grid_environment_score==100)
-        items.emplace_back("You nailed it! Your environmental score for this level is 100");
-    else
-        items.emplace_back("Try harder! Your environmental score for this level is"+std::to_string(current_grid->grid_environment_score));
-    items.emplace_back("Go to Level "+ std::to_string(current_level+1));
-    items.back().on_select = [](MenuMode::Item const &) {
-        Mode::switch_to_play();
-    };
-    items.back().on_select = [](MenuMode::Item const&) {
-        Mode::switch_to_play();
-    };
 }
 
 
