@@ -10,6 +10,8 @@ struct Ramp : FgObj {
 	using FgObj::FgObj;
 
 	// Methods
+	std::string get_model_name() override { return "Ramp"; }
+
 	void load_models(Scene* scene) override;
 	Ramp* clone_lightweight(Cell* new_cell) override;
 

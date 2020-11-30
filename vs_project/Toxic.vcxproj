@@ -127,7 +127,6 @@
     <ClCompile Include="..\TextDrawer.cpp" />
     <ClCompile Include="..\Tree.cpp" />
     <ClCompile Include="..\Turnstile.cpp" />
-    <ClCompile Include="..\WalkMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Animal.hpp" />
@@ -182,7 +181,6 @@
     <ClInclude Include="..\TextDrawer.hpp" />
     <ClInclude Include="..\Tree.hpp" />
     <ClInclude Include="..\Turnstile.hpp" />
-    <ClInclude Include="..\WalkMesh.hpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\.gitignore" />

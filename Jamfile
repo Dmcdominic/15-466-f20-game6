@@ -104,7 +104,6 @@ GAME_NAMES =
     game_menu
     MenuMode
     TextDrawer
-	WalkMesh
 	level_sequence
 	AudioManager
 	PlayMode

@@ -10,6 +10,8 @@ struct Barrel : FgObj {
 	Barrel(Scene* scene, int _rotations = 0);
 
 	// Methods
+	std::string get_model_name() override { return "Barrel"; }
+
 	void load_models(Scene* scene) override;
 	Barrel* clone_lightweight(Cell* new_cell) override;
 

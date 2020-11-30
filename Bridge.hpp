@@ -21,8 +21,10 @@ struct Bridge : River {
 
     bool can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
     void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
+    
     void activate();
     void deactivate();
+    void set_bridge_drawables();
 
     void rotate_90(bool skip_incr = false) override;
 };

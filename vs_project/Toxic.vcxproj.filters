@@ -93,9 +93,6 @@
     <ClCompile Include="..\Sound.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\WalkMesh.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Grid.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -252,9 +249,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Sound.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\WalkMesh.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Grid.hpp">

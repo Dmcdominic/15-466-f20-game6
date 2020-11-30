@@ -10,6 +10,8 @@ struct Railing : FgObj {
     using FgObj::FgObj;
 
     // Methods
+    std::string get_model_name() override { return "Railing_Straight"; }
+
     void load_models(Scene* scene) override;
     Railing* clone_lightweight(Cell* new_cell) override;
 

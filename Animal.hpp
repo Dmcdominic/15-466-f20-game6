@@ -10,6 +10,8 @@ struct Animal : FgObj {
 	using FgObj::FgObj;
 
 	// Methods
+	std::string get_model_name() override { return "Animal"; }
+
 	void load_models(Scene* scene) override;
 	Animal* clone_lightweight(Cell* new_cell) override;
 };

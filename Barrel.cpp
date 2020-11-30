@@ -6,7 +6,7 @@ Barrel::Barrel(Scene *scene, int _rotations) : FgObj(scene, _rotations) {}
 
 // Load all drawables
 void Barrel::load_models(Scene* scene) {
-  scene->drawables.push_back(model_loader->create_model("Barrel"));
+  scene->drawables.push_back(model_loader->create_model(get_model_name()));
   this->drawable = &(scene->drawables.back());
 };
 

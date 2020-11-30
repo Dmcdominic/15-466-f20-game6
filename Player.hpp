@@ -20,6 +20,8 @@ struct Player : FgObj {
 	using FgObj::FgObj;
 
 	// Methods
+	std::string get_model_name() override { return "Player"; }
+
 	void load_models(Scene* scene) override;
 	Player* clone_lightweight(Cell* new_cell) override;
 

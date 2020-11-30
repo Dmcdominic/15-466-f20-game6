@@ -7,7 +7,7 @@
 
 // Load any drawables
 void Player::load_models(Scene* scene) {
-  scene->drawables.push_back(model_loader->create_model("Player"));
+  scene->drawables.push_back(model_loader->create_model(get_model_name()));
   this->drawable = &(scene->drawables.back());
 
   scene->drawables.push_back(model_loader->create_model("Player_idle0"));
@@ -49,29 +49,31 @@ bool Player::on_input(const Input& input, Output* output) {
   }
 
   glm::ivec2 displ;
-  float roll;
+  int target_rotations = 0;
   switch (input.type) {
     case InputType::UP:
       displ = glm::ivec2( 0,  1);
-      roll = 0.0f;
+      target_rotations = 0;
       break;
     case InputType::DOWN:
       displ = glm::ivec2( 0, -1);
-      roll = glm::pi<float>();
+      target_rotations = 2;
       break;
     case InputType::LEFT:
       displ = glm::ivec2(-1,  0);
-      roll = glm::half_pi<float>();
+      target_rotations = 3;
       break;
     case InputType::RIGHT:
       displ = glm::ivec2( 1,  0);
-      roll = glm::three_over_two_pi<float>();
+      target_rotations = 1;
       break;
     default:
       return false;
   }
 
-  this->drawable->transform->rotation = glm::angleAxis(roll, glm::vec3(0.0f, 0.0f, 1.0f));
+  while (rotations % 4 != target_rotations) {
+    rotate_90();
+  }
 
   // Make sure we're looking at a valid position
   glm::ivec2 target_pos = cell->pos + displ;

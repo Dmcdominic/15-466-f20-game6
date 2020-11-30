@@ -18,6 +18,8 @@ struct Tree : FgObj {
 	const std::vector<int> flower_prob { 50, 20, 20 };
 
 	// Methods
+	std::string get_model_name() override { return "Tree"; }
+
 	void load_models(Scene* scene) override;
 	Tree* clone_lightweight(Cell* new_cell) override;
 

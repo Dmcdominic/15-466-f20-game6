@@ -127,7 +127,7 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 		} else if (evt.key.keysym.sym == SDLK_q) {  // QUIT
 			this->quit = true;
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_r) { // RESET
+		} else if (evt.key.keysym.sym == SDLK_r || evt.key.keysym.sym == SDLK_x) { // RESET
 			input_q.push(Input(InputType::RESET));
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_z) { // UNDO
@@ -157,28 +157,6 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 			return true;
 		}*/
 	}
-	/*
-	else if (evt.type == SDL_MOUSEMOTION) {
-		if (SDL_GetRelativeMouseMode() == SDL_TRUE) {
-			glm::vec2 motion = glm::vec2(
-				evt.motion.xrel / float(window_size.y),
-				-evt.motion.yrel / float(window_size.y)
-			);
-			//glm::vec3 up = walkmesh->to_world_smooth_normal(playerOLD.at);
-			glm::vec3 up = glm::vec3(0, 0, 1.0f);
-			active_camera->transform->rotation = glm::angleAxis(-motion.x * active_camera->fovy, up) * active_camera->transform->rotation;
-
-			float pitch = glm::pitch(active_camera->transform->rotation);
-			pitch += motion.y * active_camera->fovy;
-			//camera looks down -z (basically at the player's feet) when pitch is at zero.
-			pitch = std::min(pitch, 0.95f * 3.1415926f);
-			pitch = std::max(pitch, 0.05f * 3.1415926f);
-			active_camera->transform->rotation = glm::angleAxis(pitch, glm::vec3(1.0f, 0.0f, 0.0f));
-
-			return true;
-		}
-	}
-	*/
 
 	return false;
 }
@@ -284,6 +262,7 @@ void PlayMode::update(float elapsed) {
 	up_player.downs = 0;
 	down_player.downs = 0;
 
+	// Update environment score meter
 	if (environment_score >= 87) {
 		png_meter = png_meter100;
 	} else if (environment_score >= 62) {

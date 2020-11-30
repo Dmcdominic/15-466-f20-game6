@@ -39,9 +39,9 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
     PackedGrid packed_grid = packed_grids[grid_id]; 
     Grid *grid = new Grid(packed_grid.width, packed_grid.height, packed_grid.goal, 0);
 
-    int river_counter = 0;
     OverworldNode* first_node = nullptr;
 
+    std::cout << "BG objects" << std::endl;
 
     Bridge *bridge = nullptr;
     //set the BG objects 
@@ -55,14 +55,12 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
                     break;
                 }
                 case 8:
-                    river_counter++;
                     break;
                 case 11: {
                     cell.set_bg_tile(new Disposal(scene));
                     break; 
                 }
                 case 13:
-	                  river_counter++;
 	                  break;
                 case 14: 
                     cell.set_bg_tile(new Grass(scene));
@@ -88,7 +86,9 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
         }
     }
 
+    std::cout << "Oveworld path search" << std::endl;
 
+    // Overworld - set the paths appropriately
     // Start from first_node and set all the level_indices
     uint8_t level_index = 1;
     OverworldTile* OTile = first_node;
@@ -127,18 +127,15 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
 
 
     // Instantiate and shape the river/bridges
-    std::vector< River* > *river_tiles = new std::vector< River* >(river_counter);
-    int inserted = 0;
 
+    std::cout << "river/bridges" << std::endl;
     bool prev_is_land = true; // Used for orienting bridge tiles
     for(unsigned int y = 0; y < packed_grid.height; y++) {
         for (unsigned int x = 0; x < packed_grid.width; x++) {
-            switch(obj_ids[packed_grid.data_start + x + y * packed_grid.width]) {
+            int obj_id = obj_ids[packed_grid.data_start + x + y * packed_grid.width];
+            switch(obj_id) {
                 case 8:{
                     bridge = new Bridge(scene, !prev_is_land);
-
-                    (*river_tiles)[inserted] = bridge;
-                    inserted++;
                     grid->cells.at(x).at(y).set_bg_tile(bridge);
                     bridge->load_and_reposition_models(scene);
                     prev_is_land = false;
@@ -160,16 +157,12 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
                                 || (obj_ids[packed_grid.data_start + (x-1) + y * packed_grid.width] == 8));
                     River *river = new River(scene, left, right, upper, lower);
 
-                    (*river_tiles)[inserted] = river;
-                    inserted++;
                     grid->cells.at(x).at(y).set_bg_tile(river);
                     river->load_and_reposition_models(scene);
 
                     // Check if there's a railing here that we should load.
-                    // TODO - load bent railing?
                     if(obj_ids[packed_grid.data_start + packed_grid.width * packed_grid.height + x + y * packed_grid.width]==16){
-                        Railing *railing = new Railing(scene);
-                        railing->drawable->transform->rotation = river->drawable->transform->rotation;
+                        Railing *railing = new Railing(scene, river->rotations);
                         grid->cells.at(x).at(y).set_fg_obj(railing);
                         railing->load_and_reposition_models(scene);
                     }
@@ -185,30 +178,7 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
         prev_is_land = false;
     }
 
-    for(size_t i = 0; i < river_tiles->size(); i++){
-        (*river_tiles)[i]->tiles = new std::vector< River* >(river_counter-1);
-        int inserted = 0;
-        for(size_t j = 0; j < river_tiles->size(); j++) {
-            if (i != j) {
-                (*river_tiles->at(i)->tiles)[inserted] = river_tiles->at(j);
-                inserted++;
-            }
-        }
-    }
-
-    // Instantiate buttons
-    for(unsigned int y = 0; y < packed_grid.height; y++) {
-        for (unsigned int x = 0; x < packed_grid.width; x++) {
-            switch (obj_ids[packed_grid.data_start + x + y * packed_grid.width]) {
-                case 9:{
-                    Button *button = new Button(scene, bridge->cell->pos);
-                    grid->cells.at(x).at(y).set_bg_tile(button);
-                    button->load_and_reposition_models(scene);
-                    break;
-                }
-            }
-        }
-    }
+    std::cout << "FG objects" << std::endl;
 
     //set the FG objects
     for(unsigned int y = 0; y < packed_grid.height; y++) {
@@ -250,6 +220,23 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
         }
     }
 
+    std::cout << "buttons" << std::endl;
+
+    // Instantiate buttons
+    for (unsigned int y = 0; y < packed_grid.height; y++) {
+      for (unsigned int x = 0; x < packed_grid.width; x++) {
+        switch (obj_ids[packed_grid.data_start + x + y * packed_grid.width]) {
+        case 9: {
+          Button* button = new Button(scene, bridge->cell->pos);
+          grid->cells.at(x).at(y).set_bg_tile(button);
+          button->load_and_reposition_models(scene);
+          break;
+        }
+        }
+      }
+    }
+    std::cout << "sky objects" << std::endl;
+
     //set the sky objects 
     for(unsigned int y = 0; y < packed_grid.height; y++) {
         for(unsigned int x = 0; x < packed_grid.width; x++) {
@@ -264,6 +251,7 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
         }
     }
 
+    std::cout << "returning grid" << std::endl;
     
     return grid; 
 }
@@ -310,7 +298,7 @@ Grid* GridLoader::create_undo_copy(Grid* src) {
     grid_cpy->highest_level_node = dynamic_cast<OverworldNode*>(grid_cpy->cell_at(src->highest_level_node->cell->pos)->bgTile);
     if (grid_cpy->highest_level_node == nullptr) throw std::runtime_error("Couldn't find highest_level_node in create_undo_copy()");
   }
-  
+
   return grid_cpy;
 }
 

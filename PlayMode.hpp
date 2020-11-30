@@ -1,7 +1,6 @@
 #include "Mode.hpp"
 
 #include "Scene.hpp"
-#include "WalkMesh.hpp"
 #include "GridLoader.hpp"
 #include "Grid.hpp"
 #include "ModelLoader.hpp"

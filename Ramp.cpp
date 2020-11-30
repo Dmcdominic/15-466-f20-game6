@@ -4,7 +4,7 @@
 
 // Load all drawables
 void Ramp::load_models(Scene* scene) {
-  scene->drawables.push_back(model_loader->create_model("Ramp"));
+  scene->drawables.push_back(model_loader->create_model(get_model_name()));
   this->drawable = &(scene->drawables.back());
 };
 

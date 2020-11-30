@@ -6,9 +6,12 @@
 
 struct Button : BgTile {
     // Fields
-    glm::ivec2 bridge_pos;
+    glm::ivec2 bridge_pos = glm::ivec2();
     Scene::Drawable* pressed = nullptr;
     Scene::Drawable* grass = nullptr;
+
+    private: Bridge* cached_bridge = nullptr;
+    public:
 
     // Constructor
   	Button(Scene *_scene, glm::ivec2 _bridge_pos);
@@ -20,8 +23,6 @@ struct Button : BgTile {
     void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
     void on_post_tick() override;
 
-    Bridge *get_bridge();
+    Bridge *get_bridge(Grid* grid);
 
-    private:
-      Bridge* cached_bridge = nullptr;
 };

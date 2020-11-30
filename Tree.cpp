@@ -4,7 +4,7 @@
 
 // Load any drawables
 void Tree::load_models(Scene* scene) {
-	scene->drawables.push_back(model_loader->create_model("Tree"));
+	scene->drawables.push_back(model_loader->create_model(get_model_name()));
 	this->drawable = &(scene->drawables.back());
 
 	scene->drawables.push_back(model_loader->create_model("Tree_Flower1"));

@@ -4,7 +4,7 @@
 
 // Load any drawables
 void Animal::load_models(Scene* scene) {
-  scene->drawables.push_back(model_loader->create_model("Animal"));
+  scene->drawables.push_back(model_loader->create_model(get_model_name()));
   this->drawable = &(scene->drawables.back());
 }
 

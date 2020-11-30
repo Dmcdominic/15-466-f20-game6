@@ -160,6 +160,8 @@ struct FgObj : CellItem {
 	virtual ~FgObj() {};
 
 	// Methods
+	virtual std::string get_model_name() = 0;
+
 	virtual FgObj* clone_lightweight(Cell* new_cell) override = 0;
 
 	bool try_to_move_by(const glm::ivec2& displ) override;

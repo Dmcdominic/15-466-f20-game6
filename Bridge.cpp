@@ -17,8 +17,9 @@ void Bridge::load_models(Scene* scene) {
 
   scene->drawables.push_back(model_loader->create_model("Bridge"));
   bridge = &(scene->drawables.back());
-  bridge->disabled = true;
   extra_drawables.push_back(bridge);
+
+  set_bridge_drawables();
 }
 
 
@@ -35,7 +36,6 @@ Bridge* Bridge::clone_lightweight(Cell* new_cell) {
   new_bridge->drawable = nullptr;
   new_bridge->water = nullptr;
   new_bridge->sunk_object = nullptr;
-  new_bridge->tiles->clear();
   new_bridge->unactivated = nullptr;
   new_bridge->bridge = nullptr;
   new_bridge->extra_drawables.clear();
@@ -51,18 +51,27 @@ bool Bridge::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ)
 
 void Bridge::activate() {
     activated = true;
-    unactivated->disabled = true;
-    bridge->disabled = false;
+    set_bridge_drawables();
 }
 
 
 void Bridge::deactivate() {
     activated = false;
-    unactivated->disabled = false;
-    bridge->disabled = true;
+    set_bridge_drawables();
     
     //sink object if it is on top
-    try_to_sink(*this->cell->fgObj);
+    if (this->cell->fgObj != nullptr) {
+      try_to_sink(*this->cell->fgObj);
+    }
+}
+
+
+// Sets the unactivated and activated bridge drawables disabled according to current activated state.
+void Bridge::set_bridge_drawables() {
+  if (unactivated != nullptr) unactivated->disabled = activated;
+  //if (unactivated != nullptr) unactivated->transform->position = glm::vec3(0.0f, 0.0f, 3.0f);
+  if (bridge != nullptr) bridge->disabled = !activated;
+  //if (bridge != nullptr) bridge->transform->position = glm::vec3(0.0f, 0.0f, 3.0f);
 }
 
 
