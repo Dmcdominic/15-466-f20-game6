@@ -105,7 +105,7 @@ void OverworldPath::make_faded() {
   //delete this->drawable->transform;
   //*(this->drawable) = path_faded;
   this->drawable->pipeline.set_uniforms = []() {
-    glUniform1f(lit_toxic_color_texture_program->BROWN_AMT_float, .0);
+    glUniform1f(lit_toxic_color_texture_program->BROWN_AMT_float, .05f);
   };
 }
 
@@ -146,7 +146,7 @@ void OverworldNode::make_faded() {
   // delete this->drawable->transform;
   // *(this->drawable) = node_faded;
   this->drawable->pipeline.set_uniforms = []() {
-    glUniform1f(lit_toxic_color_texture_program->BROWN_AMT_float, .0);
+    glUniform1f(lit_toxic_color_texture_program->BROWN_AMT_float, .05f);
   };
 }
 

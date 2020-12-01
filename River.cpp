@@ -60,6 +60,9 @@ void River::load_models(Scene* scene) {
   scene->drawables.push_back(model_loader->create_model("Water"));
   water = &(scene->drawables.back());
   //extra_drawables.push_back(water);
+  this->water->pipeline.set_uniforms = []() {
+    glUniform1f(lit_toxic_color_texture_program->BROWN_AMT_float, .05f);
+  };
 
   if (sunk_object_model_name.length() > 0) {
     scene->drawables.push_back(model_loader->create_model(sunk_object_model_name));
@@ -96,11 +99,13 @@ River* River::clone_lightweight(Cell* new_cell) {
 // Applies the current purple amount of the river to its uniforms, based on iscontaminated
 void River::apply_purple_amt() {
   float amt = (float)is_contaminated / (float)max_contaminated;
-  if (amt > 0) {
+  //if (amt > 0) {
     this->water->pipeline.set_uniforms = [amt]() {
       glUniform1f(lit_toxic_color_texture_program->PURPLE_AMT_float, amt);
+      glUniform1f(lit_toxic_color_texture_program->BROWN_AMT_float, .05f);
+
     };
-  }
+  //}
 }
 
 

@@ -51,8 +51,7 @@ LitPlantColorTextureProgram::LitPlantColorTextureProgram() {
 		"uniform mat4 OBJECT_TO_CLIP;\n"
 		"uniform mat4x3 OBJECT_TO_LIGHT;\n"
 		"uniform mat3 NORMAL_TO_LIGHT;\n"
-		"uniform float PURPLE_AMT;\n"
-		"uniform float BROWN_AMT;\n"
+		"uniform float ENVIRONMENT_HEALTH;\n"
 		"in vec4 Position;\n"
 		"in vec3 Normal;\n"
 		"in vec4 Color;\n"
@@ -66,10 +65,9 @@ LitPlantColorTextureProgram::LitPlantColorTextureProgram() {
 		"	position = OBJECT_TO_LIGHT * Position;\n"
 		"	normal = NORMAL_TO_LIGHT * Normal;\n"
 		"	color = Color;\n"
-		"	vec4 purpleColor = vec4(1.0,0.0,1.0, 1.0) * Color;\n"
-		"	color = purpleColor * PURPLE_AMT + color * (1 - PURPLE_AMT);\n"
-		"	vec4 brownColor = vec4(0.8,0.4,0.3, 1.0) * Color;\n"
-		"	color = brownColor * BROWN_AMT + color * (1 - BROWN_AMT);\n"
+		"	vec4 brownColor = vec4(0.8,0.4,0.3, 1.0);\n"
+		"	float brownAmt = 0.4 * (1.0 - ENVIRONMENT_HEALTH);\n"
+		"	color = brownColor * brownAmt + color * (1 - brownAmt);\n"
 		"	texCoord = TexCoord;\n"
 		"}\n"
 	,
@@ -126,8 +124,7 @@ LitPlantColorTextureProgram::LitPlantColorTextureProgram() {
 	OBJECT_TO_CLIP_mat4 = glGetUniformLocation(program, "OBJECT_TO_CLIP");
 	OBJECT_TO_LIGHT_mat4x3 = glGetUniformLocation(program, "OBJECT_TO_LIGHT");
 	NORMAL_TO_LIGHT_mat3 = glGetUniformLocation(program, "NORMAL_TO_LIGHT");
-	PURPLE_AMT_float = glGetUniformLocation(program, "PURPLE_AMT");
-	BROWN_AMT_float = glGetUniformLocation(program, "BROWN_AMT");
+	ENVIRONMENT_HEALTH_float = glGetUniformLocation(program, "ENVIRONMENT_HEALTH");
 
 	LIGHT_TYPE_int = glGetUniformLocation(program, "LIGHT_TYPE");
 	LIGHT_LOCATION_vec3 = glGetUniformLocation(program, "LIGHT_LOCATION");

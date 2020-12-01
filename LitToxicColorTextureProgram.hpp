@@ -23,6 +23,7 @@ struct LitToxicColorTextureProgram {
 	GLuint NORMAL_TO_LIGHT_mat3 = -1U;
 	GLuint PURPLE_AMT_float = -1U;
 	GLuint BROWN_AMT_float = -1U;
+	GLuint ENVIRONMENT_HEALTH_float = -1U;
 
 	//lighting:
 	GLuint LIGHT_TYPE_int = -1U;

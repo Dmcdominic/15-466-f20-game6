@@ -21,8 +21,7 @@ struct LitPlantColorTextureProgram {
 	GLuint OBJECT_TO_CLIP_mat4 = -1U;
 	GLuint OBJECT_TO_LIGHT_mat4x3 = -1U;
 	GLuint NORMAL_TO_LIGHT_mat3 = -1U;
-	GLuint PURPLE_AMT_float = -1U;
-	GLuint BROWN_AMT_float = -1U;
+	GLuint ENVIRONMENT_HEALTH_float = -1U;
 
 	//lighting:
 	GLuint LIGHT_TYPE_int = -1U;

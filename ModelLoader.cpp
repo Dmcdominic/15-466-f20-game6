@@ -79,9 +79,6 @@ Scene::Drawable ModelLoader::create_model(std::string model_name){
         drawable.pipeline.set_uniforms = [](){
             glUniform1f(lit_toxic_color_texture_program->PURPLE_AMT_float, 0.0f);
             glUniform1f(lit_toxic_color_texture_program->BROWN_AMT_float, 0.0f);
-            glUniform1i(lit_toxic_color_texture_program->LIGHT_TYPE_int, 1);
-            glUniform3fv(lit_toxic_color_texture_program->LIGHT_DIRECTION_vec3, 1, glm::value_ptr(glm::vec3(0.0f, 0.0f,-1.0f)));
-            glUniform3fv(lit_toxic_color_texture_program->LIGHT_ENERGY_vec3, 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 0.95f)));
         };
     }
     drawable.pipeline.type = t.type; 
