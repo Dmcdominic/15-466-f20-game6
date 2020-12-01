@@ -1,23 +1,70 @@
 #include "Overworld.hpp"
 #include "Player.hpp"
+#include "LitToxicColorTextureProgram.hpp"
 
 #include "PlayMode.hpp"
 
 #include <iostream>
+// ----- OVERWORLD TILE -----
+void OverworldTile::position_models() {
+  //position the layered models
+  CellItem::position_models();
+  grass->transform->position = this->drawable->transform->position;
+}
 
 
 // ----- OVERWORLD PATH -----
 
-
-// Load any drawables
+// Load and shape to path direction
 void OverworldPath::load_models(Scene* scene) {
-  scene->drawables.push_back(model_loader->create_model("Path"));
+  if (left && right && !upper && !lower) {
+    scene->drawables.push_back(model_loader->create_model("Path_Straight"));
+    rotations = 1;
+  }
+  else if (!left && !right && upper && lower) {
+    scene->drawables.push_back(model_loader->create_model("Path_Straight"));
+  }
+  else if (!left && right && !upper && lower) {
+    scene->drawables.push_back(model_loader->create_model("Path_Bent"));
+  }
+  else if (!left && right && upper && !lower) {
+    scene->drawables.push_back(model_loader->create_model("Path_Bent"));
+    rotations = 3;
+  }
+  else if (left && !right && upper && !lower) {
+    scene->drawables.push_back(model_loader->create_model("Path_Bent"));
+    rotations = 2;
+  }
+  else if (left && !right && !upper && lower) {
+    scene->drawables.push_back(model_loader->create_model("Path_Bent"));
+    rotations = 1;
+  }
+  else if (!left && !right && upper && !lower) {
+    scene->drawables.push_back(model_loader->create_model("Path_End"));
+  }
+  else if (!left && right && !upper && !lower) {
+    scene->drawables.push_back(model_loader->create_model("Path_End"));
+    rotations = 1;
+  }
+  else if (!left && !right && !upper && lower) {
+    scene->drawables.push_back(model_loader->create_model("Path_End"));
+    rotations = 2;
+  }
+  else if (left && !right && !upper && !lower) {
+    scene->drawables.push_back(model_loader->create_model("Path_End"));
+    rotations = 3;
+  }
+  else {
+    scene->drawables.push_back(model_loader->create_model("Path_None"));
+  }
   this->drawable = &(scene->drawables.back());
+  this->drawable->pipeline.set_uniforms = []() {
+    glUniform1f(lit_toxic_color_texture_program->BROWN_AMT_float, 0.3f);
+  };
 
   scene->drawables.push_back(model_loader->create_model("Grass"));
-  this->extra_drawables.push_back(&scene->drawables.back());
+  this->grass = &scene->drawables.back();
 }
-
 
 // Create a copy with no drawables
 OverworldPath* OverworldPath::clone_lightweight(Cell* new_cell) {
@@ -53,10 +100,13 @@ void OverworldPath::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec
 // Fade the path
 void OverworldPath::make_faded() {
   faded = true;
-  Scene::Drawable path_faded = model_loader->create_model("Path_Faded");
-  path_faded.transform->position = this->drawable->transform->position;
-  delete this->drawable->transform;
-  *(this->drawable) = path_faded;
+  //Scene::Drawable path_faded = model_loader->create_model("Path_Faded");
+  //path_faded.transform->position = this->drawable->transform->position;
+  //delete this->drawable->transform;
+  //*(this->drawable) = path_faded;
+  this->drawable->pipeline.set_uniforms = []() {
+    glUniform1f(lit_toxic_color_texture_program->BROWN_AMT_float, .0);
+  };
 }
 
 
@@ -74,11 +124,31 @@ bool OverworldPath::accessible() {
 void OverworldNode::load_models(Scene* scene) {
   scene->drawables.push_back(model_loader->create_model("Node"));
   this->drawable = &(scene->drawables.back());
-
+  this->drawable->pipeline.set_uniforms = []() {
+    glUniform1f(lit_toxic_color_texture_program->BROWN_AMT_float, 0.3f);
+  };
   scene->drawables.push_back(model_loader->create_model("Grass"));
-  this->extra_drawables.push_back(&scene->drawables.back());
+  this->grass = &scene->drawables.back();
+
 }
 
+void OverworldNode::position_models() {
+  //position the layered models
+  CellItem::position_models();
+  grass->transform->position = this->drawable->transform->position;
+}
+
+// Fade the node
+void OverworldNode::make_faded() {
+  faded = true;
+  // Scene::Drawable node_faded = model_loader->create_model("Node_Faded");
+  // node_faded.transform->position = this->drawable->transform->position;
+  // delete this->drawable->transform;
+  // *(this->drawable) = node_faded;
+  this->drawable->pipeline.set_uniforms = []() {
+    glUniform1f(lit_toxic_color_texture_program->BROWN_AMT_float, .0);
+  };
+}
 
 // Create a copy with no drawables
 OverworldNode* OverworldNode::clone_lightweight(Cell* new_cell) {

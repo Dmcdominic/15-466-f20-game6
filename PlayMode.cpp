@@ -1,7 +1,7 @@
 #include "PlayMode.hpp"
 
 #include "LitColorTextureProgram.hpp"
-#include "LitPurpleColorTextureProgram.hpp"
+#include "LitToxicColorTextureProgram.hpp"
 
 #include "DrawLines.hpp"
 #include "Mesh.hpp"
@@ -36,7 +36,7 @@
 // Load< MeshBuffer > toxic_prefabs_meshes(LoadTagDefault, []() -> MeshBuffer const * {
 // 	MeshBuffer const *ret = new MeshBuffer(data_path("toxic-prefabs.pnct"));
 // 	toxic_prefabs_meshes_for_lit_color_texture_program = ret->make_vao_for_program(lit_color_texture_program->program);
-// 	toxic_meshes_for_lit_purple_color_texture_program = ret->make_vao_for_program(lit_purple_color_texture_program->program);
+// 	toxic_meshes_for_lit_toxic_color_texture_program = ret->make_vao_for_program(lit_toxic_color_texture_program->program);
 // 	return ret;
 // });
 

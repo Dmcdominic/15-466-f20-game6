@@ -1,26 +1,26 @@
-#include "LitPurpleColorTextureProgram.hpp"
+#include "LitToxicColorTextureProgram.hpp"
 
 #include "gl_compile_program.hpp"
 #include "gl_errors.hpp"
 
-Scene::Drawable::Pipeline lit_purple_color_texture_program_pipeline;
+Scene::Drawable::Pipeline lit_toxic_color_texture_program_pipeline;
 
-Load< LitPurpleColorTextureProgram > lit_purple_color_texture_program(LoadTagEarly, []() -> LitPurpleColorTextureProgram const * {
-	LitPurpleColorTextureProgram *ret = new LitPurpleColorTextureProgram();
+Load< LitToxicColorTextureProgram > lit_toxic_color_texture_program(LoadTagEarly, []() -> LitToxicColorTextureProgram const * {
+	LitToxicColorTextureProgram *ret = new LitToxicColorTextureProgram();
 
 	//----- build the pipeline template -----
-	lit_purple_color_texture_program_pipeline.program = ret->program;
+	lit_toxic_color_texture_program_pipeline.program = ret->program;
 
-	lit_purple_color_texture_program_pipeline.OBJECT_TO_CLIP_mat4 = ret->OBJECT_TO_CLIP_mat4;
-	lit_purple_color_texture_program_pipeline.OBJECT_TO_LIGHT_mat4x3 = ret->OBJECT_TO_LIGHT_mat4x3;
-	lit_purple_color_texture_program_pipeline.NORMAL_TO_LIGHT_mat3 = ret->NORMAL_TO_LIGHT_mat3;
+	lit_toxic_color_texture_program_pipeline.OBJECT_TO_CLIP_mat4 = ret->OBJECT_TO_CLIP_mat4;
+	lit_toxic_color_texture_program_pipeline.OBJECT_TO_LIGHT_mat4x3 = ret->OBJECT_TO_LIGHT_mat4x3;
+	lit_toxic_color_texture_program_pipeline.NORMAL_TO_LIGHT_mat3 = ret->NORMAL_TO_LIGHT_mat3;
 
 	/* This will be used later if/when we build a light loop into the Scene:
-	lit_purple_color_texture_program_pipeline.LIGHT_TYPE_int = ret->LIGHT_TYPE_int;
-	lit_purple_color_texture_program_pipeline.LIGHT_LOCATION_vec3 = ret->LIGHT_LOCATION_vec3;
-	lit_purple_color_texture_program_pipeline.LIGHT_DIRECTION_vec3 = ret->LIGHT_DIRECTION_vec3;
-	lit_purple_color_texture_program_pipeline.LIGHT_ENERGY_vec3 = ret->LIGHT_ENERGY_vec3;
-	lit_purple_color_texture_program_pipeline.LIGHT_CUTOFF_float = ret->LIGHT_CUTOFF_float;
+	lit_toxic_color_texture_program_pipeline.LIGHT_TYPE_int = ret->LIGHT_TYPE_int;
+	lit_toxic_color_texture_program_pipeline.LIGHT_LOCATION_vec3 = ret->LIGHT_LOCATION_vec3;
+	lit_toxic_color_texture_program_pipeline.LIGHT_DIRECTION_vec3 = ret->LIGHT_DIRECTION_vec3;
+	lit_toxic_color_texture_program_pipeline.LIGHT_ENERGY_vec3 = ret->LIGHT_ENERGY_vec3;
+	lit_toxic_color_texture_program_pipeline.LIGHT_CUTOFF_float = ret->LIGHT_CUTOFF_float;
 	*/
 
 	//make a 1-pixel white texture to bind by default:
@@ -37,13 +37,13 @@ Load< LitPurpleColorTextureProgram > lit_purple_color_texture_program(LoadTagEar
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 
-	lit_purple_color_texture_program_pipeline.textures[0].texture = tex;
-	lit_purple_color_texture_program_pipeline.textures[0].target = GL_TEXTURE_2D;
+	lit_toxic_color_texture_program_pipeline.textures[0].texture = tex;
+	lit_toxic_color_texture_program_pipeline.textures[0].target = GL_TEXTURE_2D;
 
 	return ret;
 });
 
-LitPurpleColorTextureProgram::LitPurpleColorTextureProgram() {
+LitToxicColorTextureProgram::LitToxicColorTextureProgram() {
 	//Compile vertex and fragment shaders using the convenient 'gl_compile_program' helper function:
 	program = gl_compile_program(
 		//vertex shader:
@@ -52,6 +52,7 @@ LitPurpleColorTextureProgram::LitPurpleColorTextureProgram() {
 		"uniform mat4x3 OBJECT_TO_LIGHT;\n"
 		"uniform mat3 NORMAL_TO_LIGHT;\n"
 		"uniform float PURPLE_AMT;\n"
+		"uniform float BROWN_AMT;\n"
 		"in vec4 Position;\n"
 		"in vec3 Normal;\n"
 		"in vec4 Color;\n"
@@ -64,9 +65,11 @@ LitPurpleColorTextureProgram::LitPurpleColorTextureProgram() {
 		"	gl_Position = OBJECT_TO_CLIP * Position;\n"
 		"	position = OBJECT_TO_LIGHT * Position;\n"
 		"	normal = NORMAL_TO_LIGHT * Normal;\n"
-		// "	color = Color;\n"
+		"	color = Color;\n"
 		"	vec4 purpleColor = vec4(1.0,0.0,1.0, 1.0) * Color;\n"
-		"	color = purpleColor * PURPLE_AMT + Color * (1 - PURPLE_AMT);\n"
+		"	color = purpleColor * PURPLE_AMT + color * (1 - PURPLE_AMT);\n"
+		"	vec4 brownColor = vec4(0.8,0.4,0.3, 1.0) * Color;\n"
+		"	color = brownColor * BROWN_AMT + color * (1 - BROWN_AMT);\n"
 		"	texCoord = TexCoord;\n"
 		"}\n"
 	,
@@ -124,6 +127,7 @@ LitPurpleColorTextureProgram::LitPurpleColorTextureProgram() {
 	OBJECT_TO_LIGHT_mat4x3 = glGetUniformLocation(program, "OBJECT_TO_LIGHT");
 	NORMAL_TO_LIGHT_mat3 = glGetUniformLocation(program, "NORMAL_TO_LIGHT");
 	PURPLE_AMT_float = glGetUniformLocation(program, "PURPLE_AMT");
+	BROWN_AMT_float = glGetUniformLocation(program, "BROWN_AMT");
 
 	LIGHT_TYPE_int = glGetUniformLocation(program, "LIGHT_TYPE");
 	LIGHT_LOCATION_vec3 = glGetUniformLocation(program, "LIGHT_LOCATION");
@@ -142,7 +146,7 @@ LitPurpleColorTextureProgram::LitPurpleColorTextureProgram() {
 	glUseProgram(0); //unbind program -- glUniform* calls refer to ??? now
 }
 
-LitPurpleColorTextureProgram::~LitPurpleColorTextureProgram() {
+LitToxicColorTextureProgram::~LitToxicColorTextureProgram() {
 	glDeleteProgram(program);
 	program = 0;
 }

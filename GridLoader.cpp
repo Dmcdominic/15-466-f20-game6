@@ -24,6 +24,7 @@
 
 
 Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
+    
     //remove drawables from current grid 
     unload_current_grid(scene);
 
@@ -69,8 +70,19 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
                     break;
                 }
                 case 17: {
-                    //TODO: shape path models
-                    OverworldPath* overworldPath = new OverworldPath(scene);
+                    bool upper = (y <= (packed_grid.height - 2))
+                                &&((obj_ids[packed_grid.data_start + x + (y+1) * packed_grid.width] == 17)
+                                || (obj_ids[packed_grid.data_start + x + (y+1) * packed_grid.width] == 18));
+                    bool lower = (y >= 1)
+                                &&((obj_ids[packed_grid.data_start + x + (y-1) * packed_grid.width] == 17)
+                                || (obj_ids[packed_grid.data_start + x + (y-1) * packed_grid.width] == 18));
+                    bool right = (x <= (packed_grid.width - 2))
+                                &&((obj_ids[packed_grid.data_start + (x+1) + y * packed_grid.width] == 17)
+                                || (obj_ids[packed_grid.data_start + (x+1) + y * packed_grid.width] == 18));
+                    bool left = (x >= 1)
+                                &&((obj_ids[packed_grid.data_start + (x-1) + y * packed_grid.width] == 17)
+                                || (obj_ids[packed_grid.data_start + (x-1) + y * packed_grid.width] == 18));
+                    OverworldPath* overworldPath = new OverworldPath(scene, left, right, upper, lower);
                     cell.set_bg_tile(overworldPath);
                     break;
                 }
@@ -84,7 +96,6 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
             if (cell.bgTile != nullptr) cell.bgTile->load_and_reposition_models(scene);
         }
     }
-
 
     // Overworld - set the paths appropriately
     // Start from first_node and set all the level_indices
@@ -100,6 +111,9 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
         this_node->level_index = level_index;
         level_index++;
         if (this_node->accessible()) grid->highest_level_node = this_node;
+        else {
+            this_node->make_faded(); 
+        }
       } else if (this_path != nullptr) {
         this_path->max_adjacent_lvl = level_index;
         // Set path to be faded if this isn't accessible
