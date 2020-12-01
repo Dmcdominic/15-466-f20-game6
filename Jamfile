@@ -136,6 +136,8 @@ GAME_NAMES =
 	PngView
 	Animal
 	Cloud
+	Acorn
+	Mud
 	;
 
 COMMON_NAMES =

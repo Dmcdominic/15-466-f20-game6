@@ -13,5 +13,4 @@ struct Mud : BgTile {
   void load_models(Scene* scene) override;
   Mud* clone_lightweight(Cell* new_cell) override;
 
-  void on_post_tick() override;
 };

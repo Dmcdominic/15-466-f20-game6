@@ -291,14 +291,15 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	glUniform1i(lit_plant_color_texture_program->LIGHT_TYPE_int, 1);
 	glUniform3fv(lit_plant_color_texture_program->LIGHT_DIRECTION_vec3, 1, glm::value_ptr(glm::vec3(0.0f, 0.0f,-1.0f)));
 	glUniform3fv(lit_plant_color_texture_program->LIGHT_ENERGY_vec3, 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 0.95f)));
-	glUniform1f(lit_plant_color_texture_program->ENVIRONMENT_HEALTH_float, 0.5f);
+	glUniform1f(lit_plant_color_texture_program->ENVIRONMENT_HEALTH_float, std::clamp(float(environment_score) / 100, 0.0f, 1.0f));
 	glUseProgram(0);
 
 	glUseProgram(lit_toxic_color_texture_program->program);
 	glUniform1i(lit_toxic_color_texture_program->LIGHT_TYPE_int, 1);
 	glUniform3fv(lit_toxic_color_texture_program->LIGHT_DIRECTION_vec3, 1, glm::value_ptr(glm::vec3(0.0f, 0.0f,-1.0f)));
 	glUniform3fv(lit_toxic_color_texture_program->LIGHT_ENERGY_vec3, 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 0.95f)));
-	glUniform1f(lit_toxic_color_texture_program->ENVIRONMENT_HEALTH_float, 0.5f);
+	glUniform1f(lit_toxic_color_texture_program->ENVIRONMENT_HEALTH_float, std::clamp(float(environment_score) / 100, 0.0f, 1.0f));
+
 	glUseProgram(0);
 
 	glClearColor(0.4f, 0.6f, .85f, 1.0f);

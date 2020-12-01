@@ -21,6 +21,8 @@
 #include "Ramp.hpp"
 #include "Animal.hpp"
 #include "Cloud.hpp"
+#include "Mud.hpp"
+#include "Acorn.hpp"
 
 
 Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
@@ -90,6 +92,10 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
                     OverworldNode* overworldNode = new OverworldNode(scene);
                     if (first_node == nullptr) first_node = overworldNode;
                     cell.set_bg_tile(overworldNode);
+                    break;
+                }
+                case 24: {
+                    cell.set_bg_tile(new Mud(scene));
                     break;
                 }
             }
@@ -224,6 +230,11 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
                     grid->cells.at(x).at(y).set_fg_obj(ramp);
                     break;
                 }
+                case 23:
+                                    std::cout << "acorn"; 
+
+                    cell.set_fg_obj(new Acorn(scene));
+                    break;
             }
             if (cell.fgObj != nullptr) cell.fgObj->load_and_reposition_models(scene);
         }
