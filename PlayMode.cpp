@@ -2,6 +2,7 @@
 
 #include "LitColorTextureProgram.hpp"
 #include "LitToxicColorTextureProgram.hpp"
+#include "LitPlantColorTextureProgram.hpp"
 
 #include "DrawLines.hpp"
 #include "Mesh.hpp"
@@ -286,6 +287,12 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	glUniform3fv(lit_color_texture_program->LIGHT_ENERGY_vec3, 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 0.95f)));
 	glUseProgram(0);
 
+	glUseProgram(lit_plant_color_texture_program->program);
+	glUniform1i(lit_plant_color_texture_program->LIGHT_TYPE_int, 1);
+	glUniform3fv(lit_plant_color_texture_program->LIGHT_DIRECTION_vec3, 1, glm::value_ptr(glm::vec3(0.0f, 0.0f,-1.0f)));
+	glUniform3fv(lit_plant_color_texture_program->LIGHT_ENERGY_vec3, 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 0.95f)));
+	glUniform1f(lit_plant_color_texture_program->BROWN_AMT_float, 0.5f * (1.0f - float(environment_score) / 100));
+	glUseProgram(0);
 	glClearColor(0.4f, 0.6f, .85f, 1.0f);
 	glClearDepth(1.0f); //1.0 is actually the default value to clear the depth buffer to, but FYI you can change it.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -313,7 +320,7 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 //			glm::vec3(-aspect + 0.335 + 0.1f * H, -0.76 + 0.1f * H, 0.0),
 //			glm::vec3(0.7 * H, 0.0f, 0.0f), glm::vec3(0.0f, 0.7 * H, 0.0f),
 //		    glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-        lines.draw_text("remaining: " + std::to_string(current_grid->goal),
+        lines.draw_text("remaining: " + std::to_string(current_grid->goal - current_grid->num_disposed),
                         glm::vec3(-aspect + 0.52 + 0.1f * H, 0.75 + 0.1f * H, 0.0),
                         glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
                         glm::u8vec4(0xff, 0xff, 0xff, 0xff));

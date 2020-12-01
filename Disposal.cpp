@@ -34,7 +34,7 @@ bool Disposal::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& disp
 
 
 void Disposal::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ){
-	if(dynamic_cast<Barrel*>(&objBeingMoved) != nullptr) {
+	if(dynamic_cast<Barrel*>(&objBeingMoved) != nullptr && this->cell->fgObj == nullptr) {
         //add points
         current_grid->num_disposed++; 
         //delete the barrel
