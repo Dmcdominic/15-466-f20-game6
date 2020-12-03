@@ -262,22 +262,35 @@ void PlayMode::update(float elapsed) {
 
 	// Update environment score meter
 	if (environment_score >= 87) {
-		png_meter = png_meter100;
+		png_meter = png_meter0;
 	} else if (environment_score >= 62) {
-		png_meter = png_meter75;
+		png_meter = png_meter25;
 	} else if (environment_score >= 37) {
 		png_meter = png_meter50;
 	} else if (environment_score >= 12) {
-		png_meter = png_meter25;
+		png_meter = png_meter75;
 	} else {
-		png_meter = png_meter0;
+		png_meter = png_meter100;
 	}
+}
+
+void PlayMode::update_png_pos(float drawable_aspect) {
+	float barrel_y = 1 - barrel_aspect * barrel_w * drawable_aspect;
+	png_barrel->ys[1] = barrel_y;
+	png_barrel->ys[2] = barrel_y;
+	png_barrel->ys[4] = barrel_y;
+	png_barrel->load();
 }
 
 
 void PlayMode::draw(glm::uvec2 const &drawable_size) {
+	float drawable_aspect = float(drawable_size.x) / float(drawable_size.y);
+	if (prev_drawable_size != drawable_size) {
+		update_png_pos(drawable_aspect);
+	}
 	//update camera aspect ratio for drawable:
-	active_camera->aspect = float(drawable_size.x) / float(drawable_size.y);
+	active_camera->aspect = drawable_aspect;
+	prev_drawable_size = drawable_size;
 
 	//set up light type and position for lit_color_texture_program:
 	// TODO: consider using the Light(s) in the scene to do this
@@ -313,6 +326,7 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 
 	//draw environment meter png
 	png_meter->draw();
+	png_barrel->draw();
 
 	{ //use DrawLines to overlay some text:
 		glDisable(GL_DEPTH_TEST);
@@ -330,15 +344,15 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 //			glm::vec3(0.7 * H, 0.0f, 0.0f), glm::vec3(0.0f, 0.7 * H, 0.0f),
 //		    glm::u8vec4(0xff, 0xff, 0xff, 0xff));
         lines.draw_text("remaining: " + std::to_string(current_grid->goal - current_grid->num_disposed),
-                        glm::vec3(-aspect + 0.52 + 0.1f * H, 0.75 + 0.1f * H, 0.0),
+                        glm::vec3(-aspect + 4 *  H * aspect, 0.75 + 0.1f * H, 0.0),
                         glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
                         glm::u8vec4(0xff, 0xff, 0xff, 0xff));
 		lines.draw_text("move",
-		                glm::vec3(-aspect + 2.75 + 0.1f * H, -0.55 + 0.1f * H, 0.0),
+						glm::vec3(aspect - 3.2f * H * aspect, -1 + 5 * H, 0.0),
 		                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
 		                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
 		lines.draw_text("reset level",
-		                glm::vec3(-aspect + 2.67 + 0.1f * H, -0.87 + 0.1f * H, 0.0),
+		                glm::vec3(aspect - 4 * H * aspect, -1 + 1.5f * H, 0.0),
 		                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
 		                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
         if (level_completion) lines.draw_text("Congratulations! Press ENTER/SPACE to go back to OverWorld",

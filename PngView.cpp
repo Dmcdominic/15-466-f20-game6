@@ -8,18 +8,31 @@
 #include <vector>
 
 
-PngView::PngView(std::string meter_filename) {
+PngView::PngView(std::string _meter_filename, float *_xs, float *_ys) {
+	meter_filename = _meter_filename;
+	xs = _xs;
+	ys = _ys;
+	load();
+}
 
+PngView::~PngView() {
+	glDeleteBuffers(1, &vbo_);
+	glDeleteVertexArrays(1, &vao_);
+	glDeleteTextures(1, &texture_);
+	GL_ERRORS();
+}
+
+void PngView::load() {
 	// vertex attributes for the "quad"
 	float quad_vertices[] = {
 			// positions vec4         // colors vec4          // texCoords vec2
-			-1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-			-1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
-			1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+			xs[0], ys[0], 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+			xs[1], ys[1], 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f,
+			xs[2], ys[2], 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
 
-			-1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
-			1.0f, -1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
-			1.0f,  1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f
+			xs[3], ys[3], 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f,
+			xs[4], ys[4], 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 0.0f,
+			xs[5], ys[5], 0.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f
 	};
 	glGenBuffers(1, &vbo_);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo_);
@@ -54,13 +67,6 @@ PngView::PngView(std::string meter_filename) {
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
-	GL_ERRORS();
-}
-
-PngView::~PngView() {
-	glDeleteBuffers(1, &vbo_);
-	glDeleteVertexArrays(1, &vao_);
-	glDeleteTextures(1, &texture_);
 	GL_ERRORS();
 }
 
