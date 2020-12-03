@@ -21,6 +21,8 @@
 #include "Ramp.hpp"
 #include "Animal.hpp"
 #include "Cloud.hpp"
+#include "Mud.hpp"
+#include "Acorn.hpp"
 
 
 Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
@@ -92,6 +94,10 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
                     cell.set_bg_tile(overworldNode);
                     break;
                 }
+                case 24: {
+                    cell.set_bg_tile(new Mud(scene));
+                    break;
+                }
             }
             if (cell.bgTile != nullptr) cell.bgTile->load_and_reposition_models(scene);
         }
@@ -137,7 +143,6 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
         }
       }
     }
-
 
     // Instantiate and shape the river/bridges
     bool prev_is_land = true; // Used for orienting bridge tiles
@@ -189,7 +194,6 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
         prev_is_land = false;
     }
 
-
     //set the FG objects
     for(unsigned int y = 0; y < packed_grid.height; y++) {
         for(unsigned int x = 0; x < packed_grid.width; x++) {
@@ -225,6 +229,9 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
                     grid->cells.at(x).at(y).set_fg_obj(ramp);
                     break;
                 }
+                case 23:
+                    cell.set_fg_obj(new Acorn(scene));
+                    break;
             }
             if (cell.fgObj != nullptr) cell.fgObj->load_and_reposition_models(scene);
         }

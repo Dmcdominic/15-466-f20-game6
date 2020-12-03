@@ -15,6 +15,7 @@ std::vector<level> level_sequence = std::vector<level>({
     level("7", glm::uvec2(8, 8), 1),
     level("8", glm::uvec2(8, 8), 1),
     level("9", glm::uvec2(8, 8), 1),
+    level("Mush1", glm::uvec2(8, 8), 1),
     level("Ramp1", glm::uvec2(8, 8), 1),
     level("Ramp2", glm::uvec2(8, 8), 1),
     level("Ramp3", glm::uvec2(8, 8), 1),

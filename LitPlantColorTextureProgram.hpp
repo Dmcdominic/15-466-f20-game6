@@ -5,9 +5,9 @@
 #include "Scene.hpp"
 
 //Shader program that draws transformed, lit, textured vertices tinted with vertex colors:
-struct LitToxicColorTextureProgram {
-	LitToxicColorTextureProgram();
-	~LitToxicColorTextureProgram();
+struct LitPlantColorTextureProgram {
+	LitPlantColorTextureProgram();
+	~LitPlantColorTextureProgram();
 
 	GLuint program = 0;
 
@@ -21,8 +21,6 @@ struct LitToxicColorTextureProgram {
 	GLuint OBJECT_TO_CLIP_mat4 = -1U;
 	GLuint OBJECT_TO_LIGHT_mat4x3 = -1U;
 	GLuint NORMAL_TO_LIGHT_mat3 = -1U;
-	GLuint PURPLE_AMT_float = -1U;
-	GLuint BROWN_AMT_float = -1U;
 	GLuint ENVIRONMENT_HEALTH_float = -1U;
 
 	//lighting:
@@ -36,8 +34,8 @@ struct LitToxicColorTextureProgram {
 	//TEXTURE0 - texture that is accessed by TexCoord
 };
 
-extern Load< LitToxicColorTextureProgram > lit_toxic_color_texture_program;
+extern Load< LitPlantColorTextureProgram > lit_plant_color_texture_program;
 
 //For convenient scene-graph setup, copy this object:
 // NOTE: by default, has texture bound to 1-pixel white texture -- so it's okay to use with vertex-color-only meshes.
-extern Scene::Drawable::Pipeline lit_toxic_color_texture_program_pipeline;
+extern Scene::Drawable::Pipeline lit_plant_color_texture_program_pipeline;

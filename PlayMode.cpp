@@ -2,6 +2,7 @@
 
 #include "LitColorTextureProgram.hpp"
 #include "LitToxicColorTextureProgram.hpp"
+#include "LitPlantColorTextureProgram.hpp"
 
 #include "DrawLines.hpp"
 #include "Mesh.hpp"
@@ -29,6 +30,7 @@
 
 #include <random>
 #include <time.h>
+#include <math.h>
 
 
 // GLuint toxic_prefabs_meshes_for_lit_color_texture_program = 0;
@@ -85,7 +87,21 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 
 	// --- MODEL & GRID INITIALIZATION ---
 	model_loader = new ModelLoader;
+	
 	load_level(0);
+	
+	// Create cloud cover (for loading) 
+	cloud_scene = Scene(); 
+	cloud_cover = new CloudCover(&cloud_scene); 
+	cloud_scene.transforms.emplace_back();
+	cloud_scene.cameras.emplace_back(&cloud_scene.transforms.back());
+	cloud_camera = &cloud_scene.cameras.back();
+	cloud_camera->fovy = glm::radians(60.0f);
+	cloud_camera->near = 0.01f;
+	cloud_camera->transform->position = glm::vec3(0.0f, 0.0f, 5.0f);
+	cloud_camera->transform->rotation = glm::quat(glm::vec3(0.0f, 0.0f, 0.0f));
+
+
 }
 
 PlayMode::~PlayMode() {
@@ -94,7 +110,7 @@ PlayMode::~PlayMode() {
 
 bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size) {
 
-	if (evt.type == SDL_KEYDOWN) {
+	if (!loading_level && evt.type == SDL_KEYDOWN) {
 
 		if (evt.key.keysym.sym == SDLK_ESCAPE) { // TODO - PAUSE MENU
 			/*SDL_SetRelativeMouseMode(SDL_FALSE);
@@ -168,6 +184,24 @@ void PlayMode::update(float elapsed) {
 
 	// Player animation
 	current_grid->player->on_update();
+	
+	// don't process input yet if clouds are moving
+	if(loading_level) {
+		cloud_cover->update(elapsed); 
+
+		//if the clouds are done moving
+		if(!cloud_cover->moving && !cloud_cover->covering) {
+			loading_level = false; 
+		}
+
+		//if the clouds need to start moving outwards 
+		else if(!cloud_cover->moving && cloud_cover->covering) {
+			cloud_cover->uncover(); 
+			load_level(level_to_load); 
+		}
+		return; 
+
+	}
 
 	// Process input
 	while (!input_q.empty()) {
@@ -178,7 +212,10 @@ void PlayMode::update(float elapsed) {
 			if (!is_Overworld()) { // Push an undo copy (Overworld excluded)
 				undo_grids.push(GridLoader::create_undo_copy(current_grid));
 			}
-			load_level(current_level);
+			// load_level(current_level);
+			level_to_load = current_level; 
+			loading_level = true; 
+			cloud_cover->cover(); 
 		} else if (input.type == InputType::SKIP_LVL) {
 			load_level(current_level + 1);
 		} else if (input.type == InputType::UNDO) {
@@ -186,8 +223,12 @@ void PlayMode::update(float elapsed) {
     } else if (level_completion&&input.type == InputType::INTERACT) {
       level_completion = false;
 			environment_score += current_grid->grid_environment_score;
-      // load the Overworld
-      load_level(0);
+			// load the Overworld
+			//load_level(0);
+	  		level_to_load = 0; 
+			loading_level = true; 
+			cloud_cover->cover(); 
+
 			break;
 		} else {
 			if (!is_Overworld()) { // Push an undo copy (Overworld excluded)
@@ -202,7 +243,11 @@ void PlayMode::update(float elapsed) {
 
 		// Check if the output indicates a new level to load, e.g. they interacted with an overworld node.
 		if (output.level_to_load) {
-			load_level(*output.level_to_load);
+			cloud_cover->cover(); 
+			level_to_load = *output.level_to_load; 
+			loading_level = true; 
+
+			//load_level(*output.level_to_load);
 			break;
 		}
 
@@ -261,20 +306,51 @@ void PlayMode::update(float elapsed) {
 
 	// Update environment score meter
 	if (environment_score >= 87) {
-		png_meter = png_meter100;
+		png_meter = png_meter0;
 	} else if (environment_score >= 62) {
-		png_meter = png_meter75;
+		png_meter = png_meter25;
 	} else if (environment_score >= 37) {
 		png_meter = png_meter50;
 	} else if (environment_score >= 12) {
-		png_meter = png_meter25;
+		png_meter = png_meter75;
 	} else {
-		png_meter = png_meter0;
+		png_meter = png_meter100;
 	}
+}
+
+void PlayMode::update_png_pos(glm::uvec2 const &drawable_size) {
+	float prev_area = float(prev_drawable_size.x) * float(prev_drawable_size.y);
+	float cur_area = float(drawable_size.x) * float(drawable_size.y);
+
+	float barrel_w = (1 + barrel_xs[5]) * prev_drawable_size.x;
+	float barrel_x = sqrt((barrel_w * barrel_w / prev_area) * cur_area) / drawable_size.x - 1;
+	float barrel_y = 1 - (barrel_x + 1) * drawable_size.x / drawable_size.y;
+
+	float meter_w = (1 + meter_xs[5]) * prev_drawable_size.x;
+	float meter_h = (1 + meter_ys[5]) * prev_drawable_size.y;
+	float meter_x = sqrt((meter_w * meter_h / prev_area) * cur_area) / drawable_size.x - 1;
+	float meter_y = (meter_x + 1) * drawable_size.x / drawable_size.y - 1;
+
+	for (int i = 0; i < 3; i++) {
+		png_barrel->xs[right_x[i]] = barrel_x;
+		png_barrel->ys[bottom_y[i]] = barrel_y;
+		png_meter->xs[right_x[i]] = meter_x;
+		png_meter->ys[top_y[i]] = meter_y;
+	}
+
+	png_barrel->load();
+	png_meter->load();
 }
 
 
 void PlayMode::draw(glm::uvec2 const &drawable_size) {
+	if (prev_drawable_size == glm::uvec2(0, 0)) {
+		prev_drawable_size = drawable_size;
+		update_png_pos(drawable_size);
+	} else if (prev_drawable_size != drawable_size) {
+		update_png_pos(drawable_size);
+		prev_drawable_size = drawable_size;
+	}
 	//update camera aspect ratio for drawable:
 	active_camera->aspect = float(drawable_size.x) / float(drawable_size.y);
 
@@ -286,6 +362,21 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	glUniform3fv(lit_color_texture_program->LIGHT_ENERGY_vec3, 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 0.95f)));
 	glUseProgram(0);
 
+	glUseProgram(lit_plant_color_texture_program->program);
+	glUniform1i(lit_plant_color_texture_program->LIGHT_TYPE_int, 1);
+	glUniform3fv(lit_plant_color_texture_program->LIGHT_DIRECTION_vec3, 1, glm::value_ptr(glm::vec3(0.0f, 0.0f,-1.0f)));
+	glUniform3fv(lit_plant_color_texture_program->LIGHT_ENERGY_vec3, 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 0.95f)));
+	glUniform1f(lit_plant_color_texture_program->ENVIRONMENT_HEALTH_float, std::clamp(float(environment_score) / 100, 0.0f, 1.0f));
+	glUseProgram(0);
+
+	glUseProgram(lit_toxic_color_texture_program->program);
+	glUniform1i(lit_toxic_color_texture_program->LIGHT_TYPE_int, 1);
+	glUniform3fv(lit_toxic_color_texture_program->LIGHT_DIRECTION_vec3, 1, glm::value_ptr(glm::vec3(0.0f, 0.0f,-1.0f)));
+	glUniform3fv(lit_toxic_color_texture_program->LIGHT_ENERGY_vec3, 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 0.95f)));
+	glUniform1f(lit_toxic_color_texture_program->ENVIRONMENT_HEALTH_float, std::clamp(float(environment_score) / 100, 0.0f, 1.0f));
+
+	glUseProgram(0);
+
 	glClearColor(0.4f, 0.6f, .85f, 1.0f);
 	glClearDepth(1.0f); //1.0 is actually the default value to clear the depth buffer to, but FYI you can change it.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -295,8 +386,12 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 
 	scene.draw(*active_camera);
 
+	//draw cloud overlay
+	cloud_scene.draw(*cloud_camera);
+
 	//draw environment meter png
 	png_meter->draw();
+	png_barrel->draw();
 
 	{ //use DrawLines to overlay some text:
 		glDisable(GL_DEPTH_TEST);
@@ -313,16 +408,16 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 //			glm::vec3(-aspect + 0.335 + 0.1f * H, -0.76 + 0.1f * H, 0.0),
 //			glm::vec3(0.7 * H, 0.0f, 0.0f), glm::vec3(0.0f, 0.7 * H, 0.0f),
 //		    glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-        lines.draw_text("remaining: " + std::to_string(current_grid->goal),
-                        glm::vec3(-aspect + 0.52 + 0.1f * H, 0.75 + 0.1f * H, 0.0),
+        lines.draw_text("remaining: " + std::to_string(current_grid->goal - current_grid->num_disposed),
+                        glm::vec3(-aspect + 4 *  H * aspect, 0.75 + 0.1f * H, 0.0),
                         glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
                         glm::u8vec4(0xff, 0xff, 0xff, 0xff));
 		lines.draw_text("move",
-		                glm::vec3(-aspect + 2.75 + 0.1f * H, -0.55 + 0.1f * H, 0.0),
+						glm::vec3(aspect - 3.2f * H * aspect, -1 + 5 * H, 0.0),
 		                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
 		                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
 		lines.draw_text("reset level",
-		                glm::vec3(-aspect + 2.67 + 0.1f * H, -0.87 + 0.1f * H, 0.0),
+		                glm::vec3(aspect - 4 * H * aspect, -1 + 1.5f * H, 0.0),
 		                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
 		                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
         if (level_completion) lines.draw_text("Congratulations! Press ENTER/SPACE to go back to OverWorld",

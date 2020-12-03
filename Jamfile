@@ -110,6 +110,7 @@ GAME_NAMES =
 	main
 	LitColorTextureProgram
 	LitToxicColorTextureProgram
+	LitPlantColorTextureProgram
 	ColorTextureProgram #not used right now, but you might want it
 	Sound
 	load_wav
@@ -135,6 +136,9 @@ GAME_NAMES =
 	PngView
 	Animal
 	Cloud
+	Acorn
+	Mud
+	CloudCover
 	;
 
 COMMON_NAMES =

@@ -2,6 +2,7 @@
 
 #include "Scene.hpp"
 #include "GridLoader.hpp"
+#include "CloudCover.hpp"
 #include "Grid.hpp"
 #include "ModelLoader.hpp"
 #include "game_menu.hpp"
@@ -23,12 +24,17 @@ struct PlayMode : Mode {
 	virtual void update(float elapsed) override;
 	virtual void draw(glm::uvec2 const &drawable_size) override;
 
-  void update_congrats_items(std::vector< MenuMode::Item > &items);
-  void update_pass_items(std::vector< MenuMode::Item > &items);
+	void update_congrats_items(std::vector< MenuMode::Item > &items);
+	void update_pass_items(std::vector< MenuMode::Item > &items);
 
 	void load_level(uint8_t level_index);
 	bool undo_move();
 	void clear_undo_stack();
+
+	bool loading_level = false; 
+	int level_to_load = 0; 
+	
+	void update_png_pos(glm::uvec2 const &drawable_size);
 
 
 	//----- game state -----
@@ -51,9 +57,14 @@ struct PlayMode : Mode {
 
 	//local copy of the game scene (so code can change it during gameplay):
 	Scene scene;
+	Scene cloud_scene; 
 
 	// Active camera
 	Scene::Camera *active_camera = nullptr;
+	Scene::Camera *cloud_camera = nullptr;
+
+	//Cloud Cover for loading
+	CloudCover *cloud_cover = nullptr; 
 
 	float camera_height = 8.0f;
 	float camera_height_OW = 10.0f;
@@ -61,7 +72,7 @@ struct PlayMode : Mode {
 	glm::vec3 camera_offset_from_player = glm::vec3();
 	glm::vec3 randomized_offset_range = glm::vec3(1.5f, 1.5f, 2.0f);
 
-	float camera_max_speed = 0.05f;
+	float camera_max_speed = 0.07f;
 	float camera_max_speed_OW = 0.09f;
 	float camera_accel = 0.15f;
 	glm::vec3 camera_velo = glm::vec3();
@@ -78,10 +89,24 @@ struct PlayMode : Mode {
 
 	int environment_score = 100;
 	bool level_completion = false;
-	PngView *png_meter100 = new PngView("meter100.png");
-	PngView *png_meter75 = new PngView("meter75.png");
-	PngView *png_meter50 = new PngView("meter50.png");
-	PngView *png_meter25 = new PngView("meter25.png");
-	PngView *png_meter0 = new PngView("meter0.png");
-	PngView *png_meter = png_meter100;
+
+	glm::uvec2 prev_drawable_size = glm::uvec2(0, 0);
+
+	int left_x[3] = {0, 1, 3};
+	int right_x[3] = {2, 4, 5};
+	int top_y[3] = {0, 3, 5};
+	int bottom_y[3] = {1, 2, 4};
+
+				  /* lower left triangle */  /* upper right triangle */
+	float meter_xs[6] = {-1.0f, -1.0f, -0.7f, -1.0f, -0.7f, -0.7f};
+	float meter_ys[6] = {-0.5f, -1.0f, -1.0f, -0.5f, -1.0f, -0.5f};
+	PngView *png_meter100 = new PngView("meter100.png", meter_xs, meter_ys);
+	PngView *png_meter75 = new PngView("meter75.png", meter_xs, meter_ys);
+	PngView *png_meter50 = new PngView("meter50.png", meter_xs, meter_ys);
+	PngView *png_meter25 = new PngView("meter25.png", meter_xs, meter_ys);
+	PngView *png_meter0 = new PngView("meter0.png", meter_xs, meter_ys);
+	PngView *png_meter = png_meter0;
+	float barrel_xs[6] = {-1.0f, -1.0f, -0.7f, -1.0f, -0.7f, -0.7f};
+	float barrel_ys[6] = {1.0f, 0.7f, 0.7f, 1.0f, 0.7f, 1.0f};
+	PngView *png_barrel = new PngView("barrel.png", barrel_xs, barrel_ys);
 };
