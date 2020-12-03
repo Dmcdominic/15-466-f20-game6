@@ -143,7 +143,6 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
       }
     }
 
-
     // Instantiate and shape the river/bridges
     bool prev_is_land = true; // Used for orienting bridge tiles
     for(unsigned int y = 0; y < packed_grid.height; y++) {
@@ -194,7 +193,6 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
         prev_is_land = false;
     }
 
-
     //set the FG objects
     for(unsigned int y = 0; y < packed_grid.height; y++) {
         for(unsigned int x = 0; x < packed_grid.width; x++) {
@@ -231,8 +229,6 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
                     break;
                 }
                 case 23:
-                                    std::cout << "acorn"; 
-
                     cell.set_fg_obj(new Acorn(scene));
                     break;
             }

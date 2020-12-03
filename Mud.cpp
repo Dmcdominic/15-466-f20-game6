@@ -1,4 +1,5 @@
 #include "Mud.hpp"
+#include "Acorn.hpp"
 
 
 // Load any drawables
@@ -8,6 +9,7 @@ void Mud::load_models(Scene* scene) {
 
   scene->drawables.push_back(model_loader->create_model("Grass"));
   this->extra_drawables.push_back(&scene->drawables.back());
+
 }
 
 
@@ -20,3 +22,10 @@ Mud* Mud::clone_lightweight(Cell* new_cell) {
   return new_mud;
 }
 
+
+
+void Mud::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ){
+	if(dynamic_cast<Acorn*>(&objBeingMoved) != nullptr) {
+        dynamic_cast<Acorn*>(&objBeingMoved)->sprout(); 
+	}
+}
