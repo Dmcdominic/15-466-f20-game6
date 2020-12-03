@@ -87,7 +87,7 @@ struct PlayMode : Mode {
 	int right_x[3] = {2, 4, 5};
 	int top_y[3] = {0, 3, 5};
 	int bottom_y[3] = {1, 2, 4};
-	
+
 				  /* lower left triangle */  /* upper right triangle */
 	float meter_xs[6] = {-1.0f, -1.0f, -0.7f, -1.0f, -0.7f, -0.7f};
 	float meter_ys[6] = {-0.5f, -1.0f, -1.0f, -0.5f, -1.0f, -0.5f};

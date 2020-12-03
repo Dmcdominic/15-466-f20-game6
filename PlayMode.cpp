@@ -276,8 +276,8 @@ void PlayMode::update(float elapsed) {
 }
 
 void PlayMode::update_png_pos(glm::uvec2 const &drawable_size) {
-	float prev_area = prev_drawable_size.x * prev_drawable_size.y;
-	float cur_area = drawable_size.x * drawable_size.y;
+	float prev_area = float(prev_drawable_size.x) * float(prev_drawable_size.y);
+	float cur_area = float(drawable_size.x) * float(drawable_size.y);
 
 	float barrel_w = (1 + barrel_xs[5]) * prev_drawable_size.x;
 	float barrel_x = sqrt((barrel_w * barrel_w / prev_area) * cur_area) / drawable_size.x - 1;
