@@ -30,6 +30,7 @@
 
 #include <random>
 #include <time.h>
+#include <math.h>
 
 
 // GLuint toxic_prefabs_meshes_for_lit_color_texture_program = 0;
@@ -274,23 +275,41 @@ void PlayMode::update(float elapsed) {
 	}
 }
 
-void PlayMode::update_png_pos(float drawable_aspect) {
-	float barrel_y = 1 - barrel_aspect * barrel_w * drawable_aspect;
-	png_barrel->ys[1] = barrel_y;
-	png_barrel->ys[2] = barrel_y;
-	png_barrel->ys[4] = barrel_y;
+void PlayMode::update_png_pos(glm::uvec2 const &drawable_size) {
+	float prev_area = prev_drawable_size.x * prev_drawable_size.y;
+	float cur_area = drawable_size.x * drawable_size.y;
+
+	float barrel_w = (1 + barrel_xs[5]) * prev_drawable_size.x;
+	float barrel_x = sqrt((barrel_w * barrel_w / prev_area) * cur_area) / drawable_size.x - 1;
+	float barrel_y = 1 - (barrel_x + 1) * drawable_size.x / drawable_size.y;
+
+	float meter_w = (1 + meter_xs[5]) * prev_drawable_size.x;
+	float meter_h = (1 + meter_ys[5]) * prev_drawable_size.y;
+	float meter_x = sqrt((meter_w * meter_h / prev_area) * cur_area) / drawable_size.x - 1;
+	float meter_y = (meter_x + 1) * drawable_size.x / drawable_size.y - 1;
+
+	for (int i = 0; i < 3; i++) {
+		png_barrel->xs[right_x[i]] = barrel_x;
+		png_barrel->ys[bottom_y[i]] = barrel_y;
+		png_meter->xs[right_x[i]] = meter_x;
+		png_meter->ys[top_y[i]] = meter_y;
+	}
+
 	png_barrel->load();
+	png_meter->load();
 }
 
 
 void PlayMode::draw(glm::uvec2 const &drawable_size) {
-	float drawable_aspect = float(drawable_size.x) / float(drawable_size.y);
-	if (prev_drawable_size != drawable_size) {
-		update_png_pos(drawable_aspect);
+	if (prev_drawable_size == glm::uvec2(0, 0)) {
+		prev_drawable_size = drawable_size;
+		update_png_pos(drawable_size);
+	} else if (prev_drawable_size != drawable_size) {
+		update_png_pos(drawable_size);
+		prev_drawable_size = drawable_size;
 	}
 	//update camera aspect ratio for drawable:
-	active_camera->aspect = drawable_aspect;
-	prev_drawable_size = drawable_size;
+	active_camera->aspect = float(drawable_size.x) / float(drawable_size.y);
 
 	//set up light type and position for lit_color_texture_program:
 	// TODO: consider using the Light(s) in the scene to do this

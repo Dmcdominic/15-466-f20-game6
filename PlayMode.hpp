@@ -30,7 +30,7 @@ struct PlayMode : Mode {
 	bool undo_move();
 	void clear_undo_stack();
 
-	void update_png_pos(float drawable_aspect);
+	void update_png_pos(glm::uvec2 const &drawable_size);
 
 
 	//----- game state -----
@@ -80,7 +80,14 @@ struct PlayMode : Mode {
 
 	int environment_score = 100;
 	bool level_completion = false;
+
 	glm::uvec2 prev_drawable_size = glm::uvec2(0, 0);
+
+	int left_x[3] = {0, 1, 3};
+	int right_x[3] = {2, 4, 5};
+	int top_y[3] = {0, 3, 5};
+	int bottom_y[3] = {1, 2, 4};
+	
 				  /* lower left triangle */  /* upper right triangle */
 	float meter_xs[6] = {-1.0f, -1.0f, -0.7f, -1.0f, -0.7f, -0.7f};
 	float meter_ys[6] = {-0.5f, -1.0f, -1.0f, -0.5f, -1.0f, -0.5f};
@@ -90,9 +97,7 @@ struct PlayMode : Mode {
 	PngView *png_meter25 = new PngView("meter25.png", meter_xs, meter_ys);
 	PngView *png_meter0 = new PngView("meter0.png", meter_xs, meter_ys);
 	PngView *png_meter = png_meter0;
-	float barrel_aspect = 1.0f;
-	float barrel_w = 0.3f;
-	float barrel_xs[6] = {-1.0f, -1.0f, barrel_w - 1.0f, -1.0f, barrel_w - 1.0f, barrel_w - 1.0f};
-	float barrel_ys[6] = {1.0f, 1 - barrel_w, 1 - barrel_w, 1.0f, 1 - barrel_w, 1.0f};
+	float barrel_xs[6] = {-1.0f, -1.0f, -0.7f, -1.0f, -0.7f, -0.7f};
+	float barrel_ys[6] = {1.0f, 0.7f, 0.7f, 1.0f, 0.7f, 1.0f};
 	PngView *png_barrel = new PngView("barrel.png", barrel_xs, barrel_ys);
 };
