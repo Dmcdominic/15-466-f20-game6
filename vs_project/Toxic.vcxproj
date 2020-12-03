@@ -95,6 +95,7 @@
     <ClCompile Include="..\level_sequence.cpp" />
     <ClCompile Include="..\LitColorTextureProgram.cpp" />
     <ClCompile Include="..\LitPurpleColorTextureProgram.cpp" />
+    <ClCompile Include="..\LitToxicColorTextureProgram.cpp" />
     <ClCompile Include="..\Load.cpp" />
     <ClCompile Include="..\load_opus.cpp" />
     <ClCompile Include="..\load_save_png.cpp" />
@@ -152,6 +153,7 @@
     <ClInclude Include="..\level_sequence.hpp" />
     <ClInclude Include="..\LitColorTextureProgram.hpp" />
     <ClInclude Include="..\LitPurpleColorTextureProgram.hpp" />
+    <ClInclude Include="..\LitToxicColorTextureProgram.hpp" />
     <ClInclude Include="..\Load.hpp" />
     <ClInclude Include="..\load_opus.hpp" />
     <ClInclude Include="..\load_save_png.hpp" />
