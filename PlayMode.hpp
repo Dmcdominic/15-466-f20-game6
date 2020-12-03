@@ -91,7 +91,7 @@ struct PlayMode : Mode {
 	PngView *png_meter0 = new PngView("meter0.png", meter_xs, meter_ys);
 	PngView *png_meter = png_meter0;
 	float barrel_aspect = 1.0f;
-	float barrel_w = 0.3;
+	float barrel_w = 0.3f;
 	float barrel_xs[6] = {-1.0f, -1.0f, barrel_w - 1.0f, -1.0f, barrel_w - 1.0f, barrel_w - 1.0f};
 	float barrel_ys[6] = {1.0f, 1 - barrel_w, 1 - barrel_w, 1.0f, 1 - barrel_w, 1.0f};
 	PngView *png_barrel = new PngView("barrel.png", barrel_xs, barrel_ys);
