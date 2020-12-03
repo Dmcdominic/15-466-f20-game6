@@ -207,7 +207,7 @@ void PlayMode::update(float elapsed) {
 		}
 
 		// Check if the user passed.
-		if (current_grid->num_disposed >= current_grid->goal) {
+		if (!is_Overworld() && current_grid->num_disposed >= current_grid->goal) {
 			completed_level = std::max(completed_level, current_level);
 			level_completion = true;
 		} else {
@@ -370,7 +370,7 @@ bool PlayMode::undo_move() {
 	GridLoader::unload_current_grid(&scene);
 	// Load the undo copy grid
 	GridLoader::load_undo_copy(last_grid, &scene);
-	// TODO - play a sound or something?
+	AudioManager::clips_to_play.push(AudioManager::AudioClip::UNDO);
 	return true;
 }
 

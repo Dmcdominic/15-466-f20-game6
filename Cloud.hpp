@@ -6,9 +6,8 @@
 
 
 struct Cloud : SkyObj {
-	// Constructors (inherited)
-	using SkyObj::SkyObj;
-  	Cloud(Scene *scene); 
+	// Constructor
+	Cloud(Scene* scene);
 
 		// Methods
 		void load_models(Scene* scene) override;

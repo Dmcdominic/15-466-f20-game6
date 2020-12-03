@@ -86,9 +86,14 @@ bool Grid::on_input(const Input& input, Output* output) {
 }
 
 
-// Returns a copy of a displacement vector with any positive coordinates set to 1.
+// Returns a copy of a displacement vector that is "normalized":
+//   Positive coordinates set to  1
+//   Negative coordinates set to -1
+//   Otherwise set to 0
 glm::ivec2 Grid::normalize_displ(const glm::ivec2& displ) {
-  return glm::ivec2(displ.x == 0 ? 0 : 1, displ.y == 0 ? 0 : 1);
+  int x = (displ.x == 0) ? 0 : ((displ.x < 0) ? -1 : 1);
+  int y = (displ.y == 0) ? 0 : ((displ.y < 0) ? -1 : 1);
+  return glm::ivec2(x, y);
 }
 
 
@@ -366,19 +371,21 @@ bool FgObj::try_to_move_by(const glm::ivec2& displ) {
 // Returns true iff the given foreground object is allowed to be moved/pushed into this object.
 // Default behavior is that this can be pushed according to displ.
 bool FgObj::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
-  glm::ivec2 target_pos = this->cell->pos + displ;
+  glm::ivec2 norm_displ = Grid::normalize_displ(displ);
+  glm::ivec2 target_pos = this->cell->pos + norm_displ;
   // First check if this will end up outside the current grid.
   if (!current_grid->is_valid_pos(target_pos)) {
     return false;
   }
   // Otherwise, check if this can be pushed according to displ.
-  return current_grid->cell_at(target_pos)->can_fg_obj_move_into(*this, displ);
+  return current_grid->cell_at(target_pos)->can_fg_obj_move_into(*this, norm_displ);
 }
 
 
 // Does whatever should happen when the given foreground object is moved/pushed into this object.
 void FgObj::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
-  if (!try_to_move_by(displ)) {
+  glm::ivec2 norm_displ = Grid::normalize_displ(displ);
+  if (!try_to_move_by(norm_displ)) {
     throw std::runtime_error("when_fg_obj_moved_into() somehow called for an object position & displacement that COULDN'T move.");
   }
   push_move_clip();
@@ -436,7 +443,8 @@ void SkyObj::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& disp
 
 // Returns true iff a sky object can safely be moved/pushed into this cell
 bool SkyObj::can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2& displ) {
-  glm::ivec2 target_pos = this->cell->pos + displ;
+  glm::ivec2 norm_displ = Grid::normalize_displ(displ);
+  glm::ivec2 target_pos = this->cell->pos + norm_displ;
   // First check if this will end up outside the current grid.
   if (!current_grid->is_valid_pos(target_pos)) {
     return false;
@@ -448,7 +456,8 @@ bool SkyObj::can_sky_obj_move_into(const SkyObj& objBeingMoved, const glm::ivec2
 
 // Does whatever should happen when the given sky object is moved/pushed onto this tile.
 void SkyObj::when_sky_obj_moved_into(SkyObj& objBeingMoved, const glm::ivec2& displ) {
-  if (!try_to_move_by(displ)) {
+  glm::ivec2 norm_displ = Grid::normalize_displ(displ);
+  if (!try_to_move_by(norm_displ)) {
     throw std::runtime_error("when_sky_obj_moved_into() somehow called for an object position & displacement that COULDN'T move.");
   }
   push_move_clip();

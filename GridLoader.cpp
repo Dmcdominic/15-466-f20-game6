@@ -97,6 +97,7 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
         }
     }
 
+
     // Overworld - set the paths appropriately
     // Start from first_node and set all the level_indices
     uint8_t level_index = 1;
@@ -250,9 +251,8 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
         for(unsigned int x = 0; x < packed_grid.width; x++) {
             switch(obj_ids[packed_grid.data_start + 2 * packed_grid.width * packed_grid.height + x + y * packed_grid.width]) {
                 case 10: 
-                    //TODO: cloud path 
                     Cloud *cloud = new Cloud(scene);
-                    grid->cells.at(x).at(y).set_sky_obj(new Cloud(scene));
+                    grid->cells.at(x).at(y).set_sky_obj(cloud);
                     cloud->load_and_reposition_models(scene);
                     break;
             }

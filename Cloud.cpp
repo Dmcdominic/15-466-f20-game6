@@ -3,7 +3,7 @@
 
 
 // Constructor
-Cloud::Cloud(Scene *scene) {}
+Cloud::Cloud(Scene *scene) : SkyObj(scene) {}
 
 
 // Load any drawables
