@@ -2,6 +2,7 @@
 
 #include "Scene.hpp"
 #include "GridLoader.hpp"
+#include "CloudCover.hpp"
 #include "Grid.hpp"
 #include "ModelLoader.hpp"
 #include "game_menu.hpp"
@@ -23,13 +24,15 @@ struct PlayMode : Mode {
 	virtual void update(float elapsed) override;
 	virtual void draw(glm::uvec2 const &drawable_size) override;
 
-  void update_congrats_items(std::vector< MenuMode::Item > &items);
-  void update_pass_items(std::vector< MenuMode::Item > &items);
+	void update_congrats_items(std::vector< MenuMode::Item > &items);
+	void update_pass_items(std::vector< MenuMode::Item > &items);
 
 	void load_level(uint8_t level_index);
 	bool undo_move();
 	void clear_undo_stack();
 
+	bool loading_level = false; 
+	int level_to_load = 0; 
 
 	//----- game state -----
 
@@ -51,9 +54,14 @@ struct PlayMode : Mode {
 
 	//local copy of the game scene (so code can change it during gameplay):
 	Scene scene;
+	Scene cloud_scene; 
 
 	// Active camera
 	Scene::Camera *active_camera = nullptr;
+	Scene::Camera *cloud_camera = nullptr;
+
+	//Cloud Cover for loading
+	CloudCover *cloud_cover = nullptr; 
 
 	float camera_height = 8.0f;
 	float camera_height_OW = 10.0f;

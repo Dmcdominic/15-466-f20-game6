@@ -86,7 +86,21 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 
 	// --- MODEL & GRID INITIALIZATION ---
 	model_loader = new ModelLoader;
+	
 	load_level(0);
+	
+	// Create cloud cover (for loading) 
+	cloud_scene = Scene(); 
+	cloud_cover = new CloudCover(&cloud_scene); 
+	cloud_scene.transforms.emplace_back();
+	cloud_scene.cameras.emplace_back(&cloud_scene.transforms.back());
+	cloud_camera = &cloud_scene.cameras.back();
+	cloud_camera->fovy = glm::radians(60.0f);
+	cloud_camera->near = 0.01f;
+	cloud_camera->transform->position = glm::vec3(0.0f, 0.0f, 5.0f);
+	cloud_camera->transform->rotation = glm::quat(glm::vec3(0.0f, 0.0f, 0.0f));
+
+
 }
 
 PlayMode::~PlayMode() {
@@ -95,7 +109,7 @@ PlayMode::~PlayMode() {
 
 bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size) {
 
-	if (evt.type == SDL_KEYDOWN) {
+	if (!loading_level && evt.type == SDL_KEYDOWN) {
 
 		if (evt.key.keysym.sym == SDLK_ESCAPE) { // TODO - PAUSE MENU
 			/*SDL_SetRelativeMouseMode(SDL_FALSE);
@@ -169,6 +183,24 @@ void PlayMode::update(float elapsed) {
 
 	// Player animation
 	current_grid->player->on_update();
+	
+	// don't process input yet if clouds are moving
+	if(loading_level) {
+		cloud_cover->update(elapsed); 
+
+		//if the clouds are done moving
+		if(!cloud_cover->moving && !cloud_cover->covering) {
+			loading_level = false; 
+		}
+
+		//if the clouds need to start moving outwards 
+		else if(!cloud_cover->moving && cloud_cover->covering) {
+			cloud_cover->uncover(); 
+			load_level(level_to_load); 
+		}
+		return; 
+
+	}
 
 	// Process input
 	while (!input_q.empty()) {
@@ -179,7 +211,10 @@ void PlayMode::update(float elapsed) {
 			if (!is_Overworld()) { // Push an undo copy (Overworld excluded)
 				undo_grids.push(GridLoader::create_undo_copy(current_grid));
 			}
-			load_level(current_level);
+			// load_level(current_level);
+			level_to_load = current_level; 
+			loading_level = true; 
+			cloud_cover->cover(); 
 		} else if (input.type == InputType::SKIP_LVL) {
 			load_level(current_level + 1);
 		} else if (input.type == InputType::UNDO) {
@@ -187,8 +222,12 @@ void PlayMode::update(float elapsed) {
     } else if (level_completion&&input.type == InputType::INTERACT) {
       level_completion = false;
 			environment_score += current_grid->grid_environment_score;
-      // load the Overworld
-      load_level(0);
+			// load the Overworld
+			//load_level(0);
+	  		level_to_load = 0; 
+			loading_level = true; 
+			cloud_cover->cover(); 
+
 			break;
 		} else {
 			if (!is_Overworld()) { // Push an undo copy (Overworld excluded)
@@ -203,7 +242,11 @@ void PlayMode::update(float elapsed) {
 
 		// Check if the output indicates a new level to load, e.g. they interacted with an overworld node.
 		if (output.level_to_load) {
-			load_level(*output.level_to_load);
+			cloud_cover->cover(); 
+			level_to_load = *output.level_to_load; 
+			loading_level = true; 
+
+			//load_level(*output.level_to_load);
 			break;
 		}
 
@@ -310,6 +353,9 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	glDepthFunc(GL_LESS); //this is the default depth comparison function, but FYI you can change it.
 
 	scene.draw(*active_camera);
+
+	//draw cloud overlay
+	cloud_scene.draw(*cloud_camera);
 
 	//draw environment meter png
 	png_meter->draw();

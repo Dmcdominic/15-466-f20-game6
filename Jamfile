@@ -138,6 +138,7 @@ GAME_NAMES =
 	Cloud
 	Acorn
 	Mud
+	CloudCover
 	;
 
 COMMON_NAMES =
