@@ -90,7 +90,7 @@ void PngHelper::update_png_pos(glm::uvec2 const &drawable_size) {
 			}
 			png_wasd->xs[left[i]] = 1 - wasd_x;
 			png_wasd->ys[top[i]] = wasd_y - 1;
-			png_enter->xs[left[i]] = 0.97 - enter_x;
+			png_enter->xs[left[i]] = 0.97f - enter_x;
 			png_enter->ys[bottom[i]] = 1 - enter_y;
 			png_reset->xs[left[i]] = 1 - reset_x;
 			png_reset->ys[bottom[i]] = png_wasd->ys[top[i]];
