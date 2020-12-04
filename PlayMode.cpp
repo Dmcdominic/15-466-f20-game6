@@ -253,6 +253,7 @@ void PlayMode::update(float elapsed) {
 		// Check if the user passed.
 		if (!is_Overworld() && current_grid->num_disposed >= current_grid->goal) {
 			completed_level = std::max(completed_level, current_level);
+			pngHelper->draw();
 			level_completion = true;
 		} else {
 			level_completion = false;
@@ -346,11 +347,16 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 
 	scene.draw(*active_camera);
 
+	//draw png's
+	pngHelper->draw(!is_Overworld(), // draw barrels in levels
+	                (!level_completion && (completed_level != current_level)), // draw WASD if player can move
+	                (is_Overworld() || level_completion), // draw enter in overworld or after level completes
+	                (!is_Overworld() && !level_completion && (completed_level != current_level)), // reset during game
+	                current_grid->num_disposed, current_grid->goal, current_level // for drawing faded/filled barrels
+	);
+
 	//draw cloud overlay
 	cloud_scene.draw(*cloud_camera);
-
-	//draw png's
-	pngHelper->draw(!is_Overworld(), (completed_level != 0 || current_level == 1));
 
 	{ //use DrawLines to overlay some text:
 		glDisable(GL_DEPTH_TEST);
@@ -367,22 +373,38 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 //			glm::vec3(-aspect + 0.335 + 0.1f * H, -0.76 + 0.1f * H, 0.0),
 //			glm::vec3(0.7 * H, 0.0f, 0.0f), glm::vec3(0.0f, 0.7 * H, 0.0f),
 //		    glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-//        lines.draw_text("remaining: " + std::to_string(current_grid->goal - current_grid->num_disposed),
-//                        glm::vec3(-aspect + 3.2 * H * aspect, 0.75 + 0.1f * H, 0.0),
-//                        glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
-//                        glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-//		lines.draw_text("move",
-//						glm::vec3(aspect - 3.2f * H * aspect, -1 + 5 * H, 0.0),
-//		                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
-//		                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-//		lines.draw_text("reset level",
-//		                glm::vec3(aspect - 4 * H * aspect, -1 + 1.5f * H, 0.0),
-//		                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
-//		                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-        if (level_completion) lines.draw_text("Congratulations! Press ENTER/SPACE to go back to OverWorld",
-                        glm::vec3(-aspect+0.8, 0.0, 0.0),
-                        glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
-                        glm::u8vec4(0xff, 0xff, 0xff, 0xff));
+		if (!level_completion && (completed_level != current_level)) {
+			lines.draw_text("move",
+			                glm::vec3(aspect - 2.8f * H * aspect, -1 + 1.5f * H, 0.0),
+			                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
+			                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
+		}
+		if (!is_Overworld() && !level_completion && (completed_level != current_level)) {
+		    lines.draw_text("reset",
+		                glm::vec3(aspect - 2.8f * H * aspect, -1 + 6.1f * H, 0.0),
+		                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
+		                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
+			lines.draw_text("undo",
+			                glm::vec3(aspect - 2.8f * H * aspect, -1 + 11.3f * H, 0.0),
+			                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
+			                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
+		}
+		if (is_Overworld()){
+			lines.draw_text("select",
+			                glm::vec3(aspect - 2.8f * H * aspect, 1 - 4.3f * H, 0.0),
+			                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
+			                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
+		}
+        if (level_completion) {
+	        lines.draw_text("return",
+		                glm::vec3(aspect - 2.8f * H * aspect, 1 - 4.2f * H, 0.0),
+		                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
+		                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
+	        lines.draw_text("Congratulations!",
+	                        glm::vec3(-aspect+0.8, 0.0, 0.0),
+	                        glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
+	                        glm::u8vec4(0xff, 0xff, 0xff, 0xff));
+        }
 	}
 	GL_ERRORS();
 }

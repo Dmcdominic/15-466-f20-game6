@@ -7,7 +7,7 @@
 
 class PngView {
 public:
-	PngView(std::string meter_filename, float _xs[6], float _ys[6]);
+	PngView(std::string filename, float _xs[6], float _ys[6]);
 	~PngView();
 
 	// copy semantics is disallowed
@@ -15,7 +15,7 @@ public:
 	PngView(const PngView &) = delete;
 	PngView& operator=(const PngView &) = delete;
 
-	std::string meter_filename;
+	std::string filename;
 	float *xs;
 	float *ys;
 

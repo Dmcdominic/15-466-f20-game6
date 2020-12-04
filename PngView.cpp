@@ -8,8 +8,8 @@
 #include <vector>
 
 
-PngView::PngView(std::string _meter_filename, float *_xs, float *_ys) {
-	meter_filename = _meter_filename;
+PngView::PngView(std::string _filename, float *_xs, float *_ys) {
+	filename = _filename;
 	xs = _xs;
 	ys = _ys;
 	load();
@@ -55,7 +55,7 @@ void PngView::load() {
 
 	glm::uvec2 png_size;
 	std::vector<glm::u8vec4> data;
-	load_png(data_path(meter_filename), &png_size, &data, LowerLeftOrigin);
+	load_png(data_path(filename), &png_size, &data, LowerLeftOrigin);
 	glTexImage2D(GL_TEXTURE_2D,
 	             0, GL_RGBA, png_size.x, png_size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data()
 	);

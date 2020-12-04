@@ -8,7 +8,6 @@
 #include "game_menu.hpp"
 #include "level_sequence.hpp"
 
-#include "PngView.hpp"
 #include "PngHelper.hpp"
 
 #include <glm/glm.hpp>
