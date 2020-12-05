@@ -108,6 +108,10 @@ PlayMode::~PlayMode() {
 
 
 bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size) {
+	if (evt.type == SDL_KEYDOWN && evt.key.keysym.sym == SDLK_q) { // QUIT - check before !loading_level check
+		this->quit = true;
+		return true;
+	}
 
 	if (!loading_level && evt.type == SDL_KEYDOWN) {
 
@@ -138,9 +142,6 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 		           evt.key.keysym.sym == SDLK_SPACE ||
 							 evt.key.keysym.sym == SDLK_RETURN) { // INTERACT
 			input_q.push(Input(InputType::INTERACT));
-			return true;
-		} else if (evt.key.keysym.sym == SDLK_q) {  // QUIT
-			this->quit = true;
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_r || evt.key.keysym.sym == SDLK_x) { // RESET
 			input_q.push(Input(InputType::RESET));
@@ -251,14 +252,8 @@ void PlayMode::update(float elapsed) {
 			break;
 		}
 
-		// Check if the user passed.
-		if (!is_Overworld() && current_grid->num_disposed >= current_grid->goal) {
-			completed_level = std::max(completed_level, current_level);
-			pngHelper->draw();
-			level_completion = true;
-		} else {
-			level_completion = false;
-		}
+		// Check if level is complete
+		check_level_completion();
 	}
 
 	// Play audio
@@ -273,6 +268,9 @@ void PlayMode::update(float elapsed) {
 		current_grid->player->next_forced_move = std::nullopt;
 		current_grid->player->try_to_move_by(displ);
 	}
+
+	// Check if level is complete
+	check_level_completion();
 
 	// --- Move camera to follow player ---
 	glm::vec3 target_cam_pos = current_grid->player->drawable->transform->position + camera_offset_from_player;
@@ -432,5 +430,17 @@ void PlayMode::clear_undo_stack() {
 	while (!undo_grids.empty()) {
 		delete undo_grids.top();
 		undo_grids.pop();
+	}
+}
+
+
+// Sets level_completion to true if current_grid goal is satisfied, false otherwise
+void PlayMode::check_level_completion() {
+	if (!is_Overworld() && current_grid->num_disposed >= current_grid->goal) {
+		completed_level = std::max(completed_level, current_level);
+		pngHelper->draw();
+		level_completion = true;
+	} else {
+		level_completion = false;
 	}
 }

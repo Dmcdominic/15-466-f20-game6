@@ -50,11 +50,7 @@ Cell* Grid::cell_at(glm::ivec2 _pos) {
 // Returns true iff something handled the input.
 // For now, it only allows 1 CellItem to handle any input.
 bool Grid::on_input(const Input& input, Output* output) {
-  for (size_t x = 0; x < width; x++) {
-    for (size_t y = 0; y < height; y++) {
-      cells[x][y].on_pre_tick();
-    }
-  }
+  pre_tick_done = false;
 
   // on_input()
   bool input_handled = false;
@@ -83,6 +79,19 @@ bool Grid::on_input(const Input& input, Output* output) {
   }
 
   return true;
+}
+
+
+// Call this to run on_pre_tick() for all cells.
+//   But will only run it once per on_input()
+void Grid::pre_tick() {
+  if (pre_tick_done) return;
+  pre_tick_done = true;
+  for (size_t x = 0; x < width; x++) {
+    for (size_t y = 0; y < height; y++) {
+      cells[x][y].on_pre_tick();
+    }
+  }
 }
 
 

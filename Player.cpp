@@ -38,10 +38,12 @@ bool Player::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ)
 // Controls the player's movement.
 // If up/down/left/right is pressed, move in the grid.
 // Also handles interaction logic (at least for overworld nodes).
+// MUST CALL current_grid->pre_tick(); BEFORE UPDATING GRID BASED ON INPUT
 bool Player::on_input(const Input& input, Output* output) {
   if (input.type == InputType::INTERACT) {
     OverworldNode *current_node = dynamic_cast<OverworldNode*>(cell->bgTile);
     if (current_node != nullptr) {
+      current_grid->pre_tick();
       output->level_to_load = { current_node->level_index };
       return true;
     }
@@ -93,16 +95,25 @@ bool Player::on_input(const Input& input, Output* output) {
     if (targetTile == nullptr || !targetTile->accessible()) return false;
   }
 
-  // Actually try to move according to displ
-  if (try_to_move_by(displ)) {
-    if (rand() < RAND_MAX / 3) {
-      AudioManager::clips_to_play.push(AudioManager::AudioClip::FOOTSTEP);
-    } else {
-      AudioManager::clips_to_play.push(AudioManager::AudioClip::FOOTSTEP_SHORT);
-    }
-    return true;
+  // Actually try to move according to displ.
+  // Based on FgObj::try_to_move_by()
+  Cell* target_cell = current_grid->cell_at(target_pos);
+  if (!target_cell->can_fg_obj_move_into(*this, displ)) return false;
+  current_grid->pre_tick();
+  target_cell->when_fg_obj_moved_into(*this, displ);
+  if (target_cell->fgObj != nullptr) {
+    throw std::runtime_error("Trying to move an FgObj into a cell that seems to still have one");
   }
-  return false;
+  target_cell->set_fg_obj(this);
+
+  if (rand() < RAND_MAX / 3) {
+    AudioManager::clips_to_play.push(AudioManager::AudioClip::FOOTSTEP);
+  }
+  else {
+    AudioManager::clips_to_play.push(AudioManager::AudioClip::FOOTSTEP_SHORT);
+  }
+
+  return true;
 }
 
 

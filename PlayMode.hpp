@@ -85,6 +85,8 @@ struct PlayMode : Mode {
 		return camera_offset_from_player + randomized_offset_range * rand_scale;
 	}
 
+	void check_level_completion();
+
 	int environment_score = 100;
 	bool level_completion = false;
 
