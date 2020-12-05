@@ -46,11 +46,6 @@ struct PlayMode : Mode {
 	ModelLoader loader; 
 
 	//input tracking:
-	struct Button {
-		uint8_t downs = 0;
-		uint8_t pressed = 0;
-	} left_player, right_player, down_player, up_player;
-
 	std::queue<Input> input_q;
 
 	//local copy of the game scene (so code can change it during gameplay):
