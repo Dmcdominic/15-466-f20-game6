@@ -55,7 +55,7 @@ void PngView::load() {
 
 	glm::uvec2 png_size;
 	std::vector<glm::u8vec4> data;
-	load_png(data_path("../pngs/" + filename), &png_size, &data, LowerLeftOrigin);
+	load_png(data_path("pngs/" + filename), &png_size, &data, LowerLeftOrigin);
 	glTexImage2D(GL_TEXTURE_2D,
 	             0, GL_RGBA, png_size.x, png_size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.data()
 	);
