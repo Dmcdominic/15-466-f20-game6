@@ -139,6 +139,7 @@ GAME_NAMES =
 	Acorn
 	Mud
 	CloudCover
+	Framebuffers
 	;
 
 COMMON_NAMES =

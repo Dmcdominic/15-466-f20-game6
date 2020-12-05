@@ -3,6 +3,7 @@
 #include "LitColorTextureProgram.hpp"
 #include "LitToxicColorTextureProgram.hpp"
 #include "LitPlantColorTextureProgram.hpp"
+#include "Framebuffers.hpp"
 
 #include "DrawLines.hpp"
 #include "Mesh.hpp"
@@ -351,6 +352,11 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 		update_png_pos(drawable_size);
 		prev_drawable_size = drawable_size;
 	}
+
+	//https://github.com/15-466/15-466-f20-framebuffer/blob/master/PlayMode.cpp framebuffer code
+	//make sure framebuffers are the same size as the window:
+	framebuffers.realloc(drawable_size);
+
 	//update camera aspect ratio for drawable:
 	active_camera->aspect = float(drawable_size.x) / float(drawable_size.y);
 
@@ -374,8 +380,10 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	glUniform3fv(lit_toxic_color_texture_program->LIGHT_DIRECTION_vec3, 1, glm::value_ptr(glm::vec3(0.0f, 0.0f,-1.0f)));
 	glUniform3fv(lit_toxic_color_texture_program->LIGHT_ENERGY_vec3, 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 0.95f)));
 	glUniform1f(lit_toxic_color_texture_program->ENVIRONMENT_HEALTH_float, std::clamp(float(environment_score) / 100, 0.0f, 1.0f));
-
 	glUseProgram(0);
+
+	//---- draw scene to HDR framebuffer ----
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffers.hdr_fb);
 
 	glClearColor(0.4f, 0.6f, .85f, 1.0f);
 	glClearDepth(1.0f); //1.0 is actually the default value to clear the depth buffer to, but FYI you can change it.
@@ -388,6 +396,11 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 
 	//draw cloud overlay
 	cloud_scene.draw(*cloud_camera);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	//copy scene to main window framebuffer:
+	framebuffers.tone_map();
 
 	//draw environment meter png
 	png_meter->draw();
