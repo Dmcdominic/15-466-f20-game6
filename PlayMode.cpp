@@ -120,23 +120,15 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 			/*SDL_SetRelativeMouseMode(SDL_FALSE);
 			return true;*/
 		} else if (evt.key.keysym.sym == SDLK_LEFT || evt.key.keysym.sym == SDLK_a) {
-			left_player.downs += 1;
-			left_player.pressed = true;
 			input_q.push(Input(InputType::LEFT));
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_RIGHT || evt.key.keysym.sym == SDLK_d) {
-			right_player.downs += 1;
-			right_player.pressed = true;
 			input_q.push(Input(InputType::RIGHT));
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_UP || evt.key.keysym.sym == SDLK_w) {
-			up_player.downs += 1;
-			up_player.pressed = true;
 			input_q.push(Input(InputType::UP));
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_DOWN || evt.key.keysym.sym == SDLK_s) {
-			down_player.downs += 1;
-			down_player.pressed = true;
 			input_q.push(Input(InputType::DOWN));
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_e ||
@@ -157,17 +149,13 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 		}
 	} else if (evt.type == SDL_KEYUP) {
 		if (evt.key.keysym.sym == SDLK_LEFT || evt.key.keysym.sym == SDLK_a) {
-			left_player.pressed = false;
-			return true;
+			//return true;
 		} else if (evt.key.keysym.sym == SDLK_RIGHT || evt.key.keysym.sym == SDLK_d) {
-			right_player.pressed = false;
-			return true;
+			//return true;
 		} else if (evt.key.keysym.sym == SDLK_UP || evt.key.keysym.sym == SDLK_w) {
-			up_player.pressed = false;
-			return true;
+			//return true;
 		} else if (evt.key.keysym.sym == SDLK_DOWN || evt.key.keysym.sym == SDLK_s) {
-			down_player.pressed = false;
-			return true;
+			//return true;
 		}
 	} else if (evt.type == SDL_MOUSEBUTTONDOWN) {
 		/*if (SDL_GetRelativeMouseMode() == SDL_FALSE) {
@@ -201,8 +189,8 @@ void PlayMode::update(float elapsed) {
 			cloud_cover->uncover(); 
 			load_level(level_to_load); 
 		}
-		return; 
-
+		camera_velo = glm::vec3(0.0f);
+		return;
 	}
 
 	// Process input
@@ -298,15 +286,8 @@ void PlayMode::update(float elapsed) {
 		active_camera->transform->position += camera_velo;
 	}
 
-	//reset button press counters:
-	left_player.downs = 0;
-	right_player.downs = 0;
-	up_player.downs = 0;
-	down_player.downs = 0;
-
 	// Update environment score meter
 	pngHelper->update_env_score(environment_score);
-
 }
 
 
