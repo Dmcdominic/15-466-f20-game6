@@ -144,6 +144,7 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_r || evt.key.keysym.sym == SDLK_x) { // RESET
 			input_q.push(Input(InputType::RESET));
+			pngHelper->reset();
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_z) { // UNDO
 			input_q.push(Input(InputType::UNDO));
@@ -350,7 +351,8 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	//draw png's
 	pngHelper->draw(!is_Overworld(), // draw barrels in levels
 	                (!level_completion && (completed_level != current_level)), // draw WASD if player can move
-	                (is_Overworld() || level_completion), // draw enter in overworld or after level completes
+	                level_completion, // draw return after level completes
+	                is_Overworld(), // draw select at overworld
 	                (!is_Overworld() && !level_completion && (completed_level != current_level)), // reset during game
 	                current_grid->num_disposed, current_grid->goal, current_level // for drawing faded/filled barrels
 	);
@@ -373,38 +375,12 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 //			glm::vec3(-aspect + 0.335 + 0.1f * H, -0.76 + 0.1f * H, 0.0),
 //			glm::vec3(0.7 * H, 0.0f, 0.0f), glm::vec3(0.0f, 0.7 * H, 0.0f),
 //		    glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-		if (!level_completion && (completed_level != current_level)) {
-			lines.draw_text("move",
-			                glm::vec3(aspect - 2.8f * H * aspect, -1 + 1.5f * H, 0.0),
+		if (level_completion) {
+			lines.draw_text("Congratulations!",
+			                glm::vec3(-aspect+0.8, 0.0, 0.0),
 			                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
 			                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
 		}
-		if (!is_Overworld() && !level_completion && (completed_level != current_level)) {
-		    lines.draw_text("reset",
-		                glm::vec3(aspect - 2.8f * H * aspect, -1 + 6.1f * H, 0.0),
-		                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
-		                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-			lines.draw_text("undo",
-			                glm::vec3(aspect - 2.8f * H * aspect, -1 + 11.3f * H, 0.0),
-			                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
-			                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-		}
-		if (is_Overworld()){
-			lines.draw_text("select",
-			                glm::vec3(aspect - 2.8f * H * aspect, 1 - 4.3f * H, 0.0),
-			                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
-			                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-		}
-        if (level_completion) {
-	        lines.draw_text("return",
-		                glm::vec3(aspect - 2.8f * H * aspect, 1 - 4.2f * H, 0.0),
-		                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
-		                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-	        lines.draw_text("Congratulations!",
-	                        glm::vec3(-aspect+0.8, 0.0, 0.0),
-	                        glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
-	                        glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-        }
 	}
 	GL_ERRORS();
 }
