@@ -31,7 +31,6 @@
 
 #include <random>
 #include <time.h>
-#include <math.h>
 
 
 // GLuint toxic_prefabs_meshes_for_lit_color_texture_program = 0;
@@ -110,6 +109,10 @@ PlayMode::~PlayMode() {
 
 
 bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size) {
+	if (evt.type == SDL_KEYDOWN && evt.key.keysym.sym == SDLK_q) { // QUIT - check before !loading_level check
+		this->quit = true;
+		return true;
+	}
 
 	if (!loading_level && evt.type == SDL_KEYDOWN) {
 
@@ -141,11 +144,9 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 							 evt.key.keysym.sym == SDLK_RETURN) { // INTERACT
 			input_q.push(Input(InputType::INTERACT));
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_q) {  // QUIT
-			this->quit = true;
-			return true;
 		} else if (evt.key.keysym.sym == SDLK_r || evt.key.keysym.sym == SDLK_x) { // RESET
 			input_q.push(Input(InputType::RESET));
+			pngHelper->reset();
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_z) { // UNDO
 			input_q.push(Input(InputType::UNDO));
@@ -252,13 +253,8 @@ void PlayMode::update(float elapsed) {
 			break;
 		}
 
-		// Check if the user passed.
-		if (!is_Overworld() && current_grid->num_disposed >= current_grid->goal) {
-			completed_level = std::max(completed_level, current_level);
-			level_completion = true;
-		} else {
-			level_completion = false;
-		}
+		// Check if level is complete
+		check_level_completion();
 	}
 
 	// Play audio
@@ -273,6 +269,9 @@ void PlayMode::update(float elapsed) {
 		current_grid->player->next_forced_move = std::nullopt;
 		current_grid->player->try_to_move_by(displ);
 	}
+
+	// Check if level is complete
+	check_level_completion();
 
 	// --- Move camera to follow player ---
 	glm::vec3 target_cam_pos = current_grid->player->drawable->transform->position + camera_offset_from_player;
@@ -306,41 +305,8 @@ void PlayMode::update(float elapsed) {
 	down_player.downs = 0;
 
 	// Update environment score meter
-	if (environment_score >= 87) {
-		png_meter = png_meter0;
-	} else if (environment_score >= 62) {
-		png_meter = png_meter25;
-	} else if (environment_score >= 37) {
-		png_meter = png_meter50;
-	} else if (environment_score >= 12) {
-		png_meter = png_meter75;
-	} else {
-		png_meter = png_meter100;
-	}
-}
+	pngHelper->update_env_score(environment_score);
 
-void PlayMode::update_png_pos(glm::uvec2 const &drawable_size) {
-	float prev_area = float(prev_drawable_size.x) * float(prev_drawable_size.y);
-	float cur_area = float(drawable_size.x) * float(drawable_size.y);
-
-	float barrel_w = (1 + barrel_xs[5]) * prev_drawable_size.x;
-	float barrel_x = sqrt((barrel_w * barrel_w / prev_area) * cur_area) / drawable_size.x - 1;
-	float barrel_y = 1 - (barrel_x + 1) * drawable_size.x / drawable_size.y;
-
-	float meter_w = (1 + meter_xs[5]) * prev_drawable_size.x;
-	float meter_h = (1 + meter_ys[5]) * prev_drawable_size.y;
-	float meter_x = sqrt((meter_w * meter_h / prev_area) * cur_area) / drawable_size.x - 1;
-	float meter_y = (meter_x + 1) * drawable_size.x / drawable_size.y - 1;
-
-	for (int i = 0; i < 3; i++) {
-		png_barrel->xs[right_x[i]] = barrel_x;
-		png_barrel->ys[bottom_y[i]] = barrel_y;
-		png_meter->xs[right_x[i]] = meter_x;
-		png_meter->ys[top_y[i]] = meter_y;
-	}
-
-	png_barrel->load();
-	png_meter->load();
 }
 
 
@@ -357,6 +323,7 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	//make sure framebuffers are the same size as the window:
 	framebuffers.realloc(drawable_size);
 
+	pngHelper->update_png_pos(drawable_size);
 	//update camera aspect ratio for drawable:
 	active_camera->aspect = float(drawable_size.x) / float(drawable_size.y);
 
@@ -394,6 +361,15 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 
 	scene.draw(*active_camera);
 
+	//draw png's
+	pngHelper->draw(!is_Overworld(), // draw barrels in levels
+	                (!level_completion && (completed_level != current_level)), // draw WASD if player can move
+	                level_completion, // draw return after level completes
+	                is_Overworld(), // draw select at overworld
+	                (!is_Overworld() && !level_completion && (completed_level != current_level)), // reset during game
+	                current_grid->num_disposed, current_grid->goal, current_level // for drawing faded/filled barrels
+	);
+
 	//draw cloud overlay
 	cloud_scene.draw(*cloud_camera);
 
@@ -421,22 +397,12 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 //			glm::vec3(-aspect + 0.335 + 0.1f * H, -0.76 + 0.1f * H, 0.0),
 //			glm::vec3(0.7 * H, 0.0f, 0.0f), glm::vec3(0.0f, 0.7 * H, 0.0f),
 //		    glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-        lines.draw_text("remaining: " + std::to_string(current_grid->goal - current_grid->num_disposed),
-                        glm::vec3(-aspect + 4 *  H * aspect, 0.75 + 0.1f * H, 0.0),
-                        glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
-                        glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-		lines.draw_text("move",
-						glm::vec3(aspect - 3.2f * H * aspect, -1 + 5 * H, 0.0),
-		                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
-		                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-		lines.draw_text("reset level",
-		                glm::vec3(aspect - 4 * H * aspect, -1 + 1.5f * H, 0.0),
-		                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
-		                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-        if (level_completion) lines.draw_text("Congratulations! Press ENTER/SPACE to go back to OverWorld",
-                        glm::vec3(-aspect+0.8, 0.0, 0.0),
-                        glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
-                        glm::u8vec4(0xff, 0xff, 0xff, 0xff));
+		if (level_completion) {
+			lines.draw_text("Congratulations!",
+			                glm::vec3(-aspect+0.8, 0.0, 0.0),
+			                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
+			                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
+		}
 	}
 	GL_ERRORS();
 }
@@ -488,5 +454,17 @@ void PlayMode::clear_undo_stack() {
 	while (!undo_grids.empty()) {
 		delete undo_grids.top();
 		undo_grids.pop();
+	}
+}
+
+
+// Sets level_completion to true if current_grid goal is satisfied, false otherwise
+void PlayMode::check_level_completion() {
+	if (!is_Overworld() && current_grid->num_disposed >= current_grid->goal) {
+		completed_level = std::max(completed_level, current_level);
+		pngHelper->draw();
+		level_completion = true;
+	} else {
+		level_completion = false;
 	}
 }

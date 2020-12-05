@@ -19,7 +19,7 @@ TextDrawer::TextDrawer(){
         std::cout << "Libary not loaded." << std::endl;
     }
 
-    error = FT_New_Face(library, &data_path("BadScript-Regular.ttf")[0], 0, &face);
+    error = FT_New_Face(library, &data_path("fonts/BadScript-Regular.ttf")[0], 0, &face);
     if (error)
     {
         std::cout << "Failed to create face." << std::endl;

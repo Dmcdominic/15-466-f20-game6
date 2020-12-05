@@ -140,6 +140,7 @@ GAME_NAMES =
 	Mud
 	CloudCover
 	Framebuffers
+	PngHelper
 	;
 
 COMMON_NAMES =
