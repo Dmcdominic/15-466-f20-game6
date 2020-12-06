@@ -2,7 +2,7 @@
 #include "Load.hpp"
 #include "data_path.hpp"
 
-#include "PlayMode.hpp"
+//#include "PlayMode.hpp"
 
 
 std::shared_ptr< MenuMode > game_menu;

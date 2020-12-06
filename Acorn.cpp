@@ -11,6 +11,11 @@ void Acorn::load_models(Scene* scene) {
 	sapling = &(scene->drawables.back());
   sapling->disabled = true; 
 	this->extra_drawables.push_back(sapling);
+
+  if (sprouted) {
+    sapling->disabled = false;
+    this->drawable->disabled = true;
+  }
 }
 
 
@@ -23,6 +28,7 @@ Acorn* Acorn::clone_lightweight(Cell* new_cell) {
   return new_acorn;
 }
 
+
 void Acorn::sprout() {
   sprouted = true; 
   sapling->disabled = false; 
@@ -30,8 +36,8 @@ void Acorn::sprout() {
 
   //TODO: balance this? 
   current_grid->grid_environment_score += 5;
-
 }
+
 
 bool Acorn::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ){
   if(sprouted) {
@@ -39,6 +45,7 @@ bool Acorn::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ){
   }
   else return FgObj::can_fg_obj_move_into(objBeingMoved, displ); 
 }
+
 
 // Returns the audio clip that should be played when this object is moved
 std::optional<AudioManager::AudioClip> Acorn::get_move_clip() {

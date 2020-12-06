@@ -85,7 +85,7 @@ bool Player::on_input(const Input& input, Output* output) {
   Ramp *ramp = dynamic_cast<Ramp*>(current_grid->cell_at(target_pos)->fgObj);
   if (ramp != nullptr && ramp->should_slide_up(displ)) {
     displ *= 3;
-    glm::ivec2 target_pos = cell->pos + displ;
+    target_pos = cell->pos + displ;
     if (!current_grid->is_valid_pos(target_pos)) return false;
   }
 

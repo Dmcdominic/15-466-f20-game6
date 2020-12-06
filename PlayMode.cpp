@@ -31,6 +31,7 @@
 
 #include <random>
 #include <time.h>
+#include <fstream>
 
 
 // GLuint toxic_prefabs_meshes_for_lit_color_texture_program = 0;
@@ -67,8 +68,10 @@ uint8_t PlayMode::completed_level = 0;
 
 
 // Constructor
-PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
+PlayMode::PlayMode(uint8_t _current_level, int _environment_score) : scene(*toxic_prefabs_scene), environment_score(_environment_score) {
 	// First, seed the random number generator
+
+    completed_level = _current_level;
 	std::srand((unsigned int)time(NULL));
 
 	//create a camera
@@ -89,7 +92,7 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 	model_loader = new ModelLoader;
 	
 	load_level(0);
-	
+
 	// Create cloud cover (for loading) 
 	cloud_scene = Scene(); 
 	cloud_cover = new CloudCover(&cloud_scene); 
@@ -100,8 +103,6 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 	cloud_camera->near = 0.01f;
 	cloud_camera->transform->position = glm::vec3(0.0f, 0.0f, 5.0f);
 	cloud_camera->transform->rotation = glm::quat(glm::vec3(0.0f, 0.0f, 0.0f));
-
-
 }
 
 PlayMode::~PlayMode() {
@@ -339,7 +340,7 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	//draw png's
 	pngHelper->draw(!is_Overworld(), // draw barrels in levels
 	                (!level_completion && (completed_level != current_level)), // draw WASD if player can move
-	                level_completion, // draw return after level completes
+	                (level_completion && !loading_level && !is_Overworld()), // draw return after level completes
 	                is_Overworld(), // draw select at overworld
 	                (!is_Overworld() && !level_completion && (completed_level != current_level)), // reset during game
 	                current_grid->num_disposed, current_grid->goal, current_level // for drawing faded/filled barrels
@@ -363,21 +364,27 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 			0.0f, 0.0f, 0.0f, 1.0f
 		));
 
-		constexpr float H = 0.09f;
+//		constexpr float H = 0.09f;
 //		lines.draw_text(std::to_string(environment_score),
 //			glm::vec3(-aspect + 0.335 + 0.1f * H, -0.76 + 0.1f * H, 0.0),
 //			glm::vec3(0.7 * H, 0.0f, 0.0f), glm::vec3(0.0f, 0.7 * H, 0.0f),
 //		    glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-		if (level_completion) {
-			lines.draw_text("Congratulations!",
-			                glm::vec3(-aspect+0.8, 0.0, 0.0),
-			                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
-			                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-		}
+//		if (level_completion) {
+//			lines.draw_text("Congratulations!",
+//			                glm::vec3(-aspect+0.8, 0.0, 0.0),
+//			                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
+//			                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
+//		}
 	}
 	GL_ERRORS();
 }
 
+void PlayMode::on_quit() {
+    std::fstream out;
+    out.open(data_path("in_game_data.txt"), std::fstream::out);
+    out << (int)completed_level << " " << environment_score << std::endl;
+    out.close();
+}
 
 // Loads a level using the GridLoader
 void PlayMode::load_level(uint8_t level_index) {
