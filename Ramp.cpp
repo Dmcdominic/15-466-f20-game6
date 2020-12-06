@@ -27,3 +27,9 @@ bool Ramp::should_slide_up(const glm::ivec2& displ) {
   }
   return displ == up_dir;
 }
+
+
+// Returns the audio clip that should be played when this object is moved
+std::optional<AudioManager::AudioClip> Ramp::get_move_clip() {
+  return std::optional(AudioManager::AudioClip::DRAG_STONE);
+}

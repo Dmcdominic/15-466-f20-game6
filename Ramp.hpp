@@ -16,4 +16,6 @@ struct Ramp : FgObj {
 	Ramp* clone_lightweight(Cell* new_cell) override;
 
 	bool should_slide_up(const glm::ivec2& displ);
+
+	std::optional<AudioManager::AudioClip> get_move_clip() override;
 };

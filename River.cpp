@@ -4,6 +4,7 @@
 #include "LitToxicColorTextureProgram.hpp"
 
 #include <iostream>
+#include "Ramp.hpp"
 
 
 // Constructor
@@ -112,6 +113,9 @@ void River::apply_purple_amt() {
 void River::contaminated() {
     current_grid->grid_environment_score -= 5;
     is_contaminated += 1;
+    if (is_contaminated == 2) {
+      AudioManager::clips_to_play.push(AudioManager::AudioClip::TOXIN_SPREAD);
+    }
     will_be_contaminated = false;
     // delete this->water->transform;
     // *water = (model_loader->create_model("Water_Toxic"));
@@ -122,6 +126,7 @@ void River::contaminated() {
 
 bool River::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
   if (!sunk_object && dynamic_cast<Player*>(&objBeingMoved) != nullptr) return false;
+  if (!sunk_object && dynamic_cast<Ramp*>(&objBeingMoved) != nullptr) return false;
   return BgTile::can_fg_obj_move_into(objBeingMoved, displ);
 }
 
@@ -136,6 +141,7 @@ void River::try_to_sink(FgObj& fgObj) {
   if (!sunk_object) {
     if (dynamic_cast<Barrel*>(&fgObj) != nullptr) {
       is_contaminated = 2;
+      AudioManager::clips_to_play.push(AudioManager::AudioClip::TOXIN_SPREAD);
       current_grid->grid_environment_score -= 5;
       // delete this->water->transform;
       // *water = (model_loader->create_model("Water_Toxic"));

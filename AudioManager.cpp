@@ -19,7 +19,8 @@ Load< std::vector<Sound::Sample> > AudioManager::Samples(LoadTagDefault, []() ->
 			Sound::Sample(data_path("audio/footstep-stone-short.wav")),
 			Sound::Sample(data_path("audio/rolling-metal-barrel.wav")),
 			Sound::Sample(data_path("audio/drag-stone.wav")),
-			Sound::Sample(data_path("audio/swosh.wav"))
+			Sound::Sample(data_path("audio/swosh.wav")),
+			Sound::Sample(data_path("audio/toxic-area.wav"))
 		});
 });
 
