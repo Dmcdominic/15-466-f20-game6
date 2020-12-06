@@ -292,13 +292,7 @@ void PlayMode::update(float elapsed) {
 
 
 void PlayMode::draw(glm::uvec2 const &drawable_size) {
-	if (prev_drawable_size == glm::uvec2(0, 0)) {
-		prev_drawable_size = drawable_size;
-		update_png_pos(drawable_size);
-	} else if (prev_drawable_size != drawable_size) {
-		update_png_pos(drawable_size);
-		prev_drawable_size = drawable_size;
-	}
+
 
 	//https://github.com/15-466/15-466-f20-framebuffer/blob/master/PlayMode.cpp framebuffer code
 	//make sure framebuffers are the same size as the window:
@@ -358,10 +352,6 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 
 	//copy scene to main window framebuffer:
 	framebuffers.tone_map();
-
-	//draw environment meter png
-	png_meter->draw();
-	png_barrel->draw();
 
 	{ //use DrawLines to overlay some text:
 		glDisable(GL_DEPTH_TEST);
