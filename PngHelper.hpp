@@ -31,6 +31,10 @@ struct PngHelper {
 		float sel_inst_xs[6]= { 0.3f,  0.3f,  0.7f,  0.3f,  0.7f,  0.7f};
 		float inst_ys[6]    = { 1.0f,  0.5f,  0.5f,  1.0f,  0.5f,  1.0f};
 		float bar_inst_xs[6]= {-0.8f, -0.8f, -0.4f, -0.8f, -0.4f, -0.4f};
+		float clr_inst_xs[6]= {-0.7f, -0.7f, -0.3f, -0.7f, -0.3f, -0.3f};
+		float clr_inst_ys[6]= { 0.2f, -0.3f, -0.3f,  0.2f, -0.3f,  0.2f};
+		float clear_xs[6]   = {-0.5f, -0.5f,  0.5f, -0.5f,  0.5f,  0.5f};
+		float clear_ys[6]   = { 0.7f, -0.7f, -0.7f,  0.7f, -0.7f,  0.7f};
 
 		PngView *png_meter100;
 		PngView *png_meter75;
@@ -55,6 +59,9 @@ struct PngHelper {
 		PngView *png_sel_inst;
 		PngView *png_bar_inst;
 		PngView *png_ret_inst;
+		PngView *png_clr_inst;
+
+		PngView *png_clear;
 
 		// for barrels
 		int already_disposed = 0;

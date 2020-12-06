@@ -5,7 +5,7 @@
 #include "CloudCover.hpp"
 #include "Grid.hpp"
 #include "ModelLoader.hpp"
-#include "game_menu.hpp"
+//#include "game_menu.hpp"
 #include "level_sequence.hpp"
 
 #include "PngHelper.hpp"
@@ -16,16 +16,18 @@
 
 
 struct PlayMode : Mode {
-	PlayMode();
+	PlayMode(uint8_t _current_level, int _environment_score);
 	virtual ~PlayMode();
 
 	//functions called by main loop:
 	virtual bool handle_event(SDL_Event const &, glm::uvec2 const &window_size) override;
 	virtual void update(float elapsed) override;
 	virtual void draw(glm::uvec2 const &drawable_size) override;
+    virtual void on_quit() override;
 
-	void update_congrats_items(std::vector< MenuMode::Item > &items);
-	void update_pass_items(std::vector< MenuMode::Item > &items);
+
+//	void update_congrats_items(std::vector< MenuMode::Item > &items);
+//	void update_pass_items(std::vector< MenuMode::Item > &items);
 
 	void load_level(uint8_t level_index);
 	bool undo_move();
@@ -79,10 +81,8 @@ struct PlayMode : Mode {
 		float rand_scale = -1.0f + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 2.0f;
 		return camera_offset_from_player + randomized_offset_range * rand_scale;
 	}
-
+	int environment_score;
 	void check_level_completion();
-
-	int environment_score = 100;
 	bool level_completion = false;
 
 	PngHelper *pngHelper = new PngHelper();
