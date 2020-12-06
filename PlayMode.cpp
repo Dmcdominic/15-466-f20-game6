@@ -102,16 +102,17 @@ PlayMode::PlayMode(uint8_t _current_level, int _environment_score) : scene(*toxi
 	cloud_camera->near = 0.01f;
 	cloud_camera->transform->position = glm::vec3(0.0f, 0.0f, 5.0f);
 	cloud_camera->transform->rotation = glm::quat(glm::vec3(0.0f, 0.0f, 0.0f));
-
-
 }
 
 PlayMode::~PlayMode() {
-    on_quit();
 }
 
 
 bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size) {
+	if (evt.type == SDL_KEYDOWN && evt.key.keysym.sym == SDLK_q) { // QUIT - check before !loading_level check
+		this->quit = true;
+		return true;
+	}
 
 	if (!loading_level && evt.type == SDL_KEYDOWN) {
 
@@ -119,32 +120,21 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 			/*SDL_SetRelativeMouseMode(SDL_FALSE);
 			return true;*/
 		} else if (evt.key.keysym.sym == SDLK_LEFT || evt.key.keysym.sym == SDLK_a) {
-			left_player.downs += 1;
-			left_player.pressed = true;
 			input_q.push(Input(InputType::LEFT));
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_RIGHT || evt.key.keysym.sym == SDLK_d) {
-			right_player.downs += 1;
-			right_player.pressed = true;
 			input_q.push(Input(InputType::RIGHT));
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_UP || evt.key.keysym.sym == SDLK_w) {
-			up_player.downs += 1;
-			up_player.pressed = true;
 			input_q.push(Input(InputType::UP));
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_DOWN || evt.key.keysym.sym == SDLK_s) {
-			down_player.downs += 1;
-			down_player.pressed = true;
 			input_q.push(Input(InputType::DOWN));
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_e ||
 		           evt.key.keysym.sym == SDLK_SPACE ||
 							 evt.key.keysym.sym == SDLK_RETURN) { // INTERACT
 			input_q.push(Input(InputType::INTERACT));
-			return true;
-		} else if (evt.key.keysym.sym == SDLK_q) {  // QUIT
-			this->quit = true;
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_r || evt.key.keysym.sym == SDLK_x) { // RESET
 			input_q.push(Input(InputType::RESET));
@@ -159,17 +149,13 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 		}
 	} else if (evt.type == SDL_KEYUP) {
 		if (evt.key.keysym.sym == SDLK_LEFT || evt.key.keysym.sym == SDLK_a) {
-			left_player.pressed = false;
-			return true;
+			//return true;
 		} else if (evt.key.keysym.sym == SDLK_RIGHT || evt.key.keysym.sym == SDLK_d) {
-			right_player.pressed = false;
-			return true;
+			//return true;
 		} else if (evt.key.keysym.sym == SDLK_UP || evt.key.keysym.sym == SDLK_w) {
-			up_player.pressed = false;
-			return true;
+			//return true;
 		} else if (evt.key.keysym.sym == SDLK_DOWN || evt.key.keysym.sym == SDLK_s) {
-			down_player.pressed = false;
-			return true;
+			//return true;
 		}
 	} else if (evt.type == SDL_MOUSEBUTTONDOWN) {
 		/*if (SDL_GetRelativeMouseMode() == SDL_FALSE) {
@@ -203,8 +189,8 @@ void PlayMode::update(float elapsed) {
 			cloud_cover->uncover(); 
 			load_level(level_to_load); 
 		}
-		return; 
-
+		camera_velo = glm::vec3(0.0f);
+		return;
 	}
 
 	// Process input
@@ -255,14 +241,8 @@ void PlayMode::update(float elapsed) {
 			break;
 		}
 
-		// Check if the user passed.
-		if (!is_Overworld() && current_grid->num_disposed >= current_grid->goal) {
-			completed_level = std::max(completed_level, current_level);
-			pngHelper->draw();
-			level_completion = true;
-		} else {
-			level_completion = false;
-		}
+		// Check if level is complete
+		check_level_completion();
 	}
 
 	// Play audio
@@ -277,6 +257,9 @@ void PlayMode::update(float elapsed) {
 		current_grid->player->next_forced_move = std::nullopt;
 		current_grid->player->try_to_move_by(displ);
 	}
+
+	// Check if level is complete
+	check_level_completion();
 
 	// --- Move camera to follow player ---
 	glm::vec3 target_cam_pos = current_grid->player->drawable->transform->position + camera_offset_from_player;
@@ -303,15 +286,8 @@ void PlayMode::update(float elapsed) {
 		active_camera->transform->position += camera_velo;
 	}
 
-	//reset button press counters:
-	left_player.downs = 0;
-	right_player.downs = 0;
-	up_player.downs = 0;
-	down_player.downs = 0;
-
 	// Update environment score meter
 	pngHelper->update_env_score(environment_score);
-
 }
 
 
@@ -355,7 +331,7 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	//draw png's
 	pngHelper->draw(!is_Overworld(), // draw barrels in levels
 	                (!level_completion && (completed_level != current_level)), // draw WASD if player can move
-	                level_completion, // draw return after level completes
+	                (level_completion && !loading_level && !is_Overworld()), // draw return after level completes
 	                is_Overworld(), // draw select at overworld
 	                (!is_Overworld() && !level_completion && (completed_level != current_level)), // reset during game
 	                current_grid->num_disposed, current_grid->goal, current_level // for drawing faded/filled barrels
@@ -374,17 +350,17 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 			0.0f, 0.0f, 0.0f, 1.0f
 		));
 
-		constexpr float H = 0.09f;
+//		constexpr float H = 0.09f;
 //		lines.draw_text(std::to_string(environment_score),
 //			glm::vec3(-aspect + 0.335 + 0.1f * H, -0.76 + 0.1f * H, 0.0),
 //			glm::vec3(0.7 * H, 0.0f, 0.0f), glm::vec3(0.0f, 0.7 * H, 0.0f),
 //		    glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-		if (level_completion) {
-			lines.draw_text("Congratulations!",
-			                glm::vec3(-aspect+0.8, 0.0, 0.0),
-			                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
-			                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-		}
+//		if (level_completion) {
+//			lines.draw_text("Congratulations!",
+//			                glm::vec3(-aspect+0.8, 0.0, 0.0),
+//			                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
+//			                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
+//		}
 	}
 	GL_ERRORS();
 }
@@ -442,5 +418,17 @@ void PlayMode::clear_undo_stack() {
 	while (!undo_grids.empty()) {
 		delete undo_grids.top();
 		undo_grids.pop();
+	}
+}
+
+
+// Sets level_completion to true if current_grid goal is satisfied, false otherwise
+void PlayMode::check_level_completion() {
+	if (!is_Overworld() && current_grid->num_disposed >= current_grid->goal) {
+		completed_level = std::max(completed_level, current_level);
+		pngHelper->draw();
+		level_completion = true;
+	} else {
+		level_completion = false;
 	}
 }

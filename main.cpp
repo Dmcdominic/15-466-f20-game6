@@ -164,6 +164,7 @@ int main(int argc, char **argv) {
 				if (Mode::current && Mode::current->handle_event(evt, window_size)) {
 					// mode handled it; great
 				} else if (evt.type == SDL_QUIT) {
+				    Mode::current->on_quit();
 					Mode::set_current(nullptr);
 					break;
 				} else if (evt.type == SDL_KEYDOWN && evt.key.keysym.sym == SDLK_PRINTSCREEN) {

@@ -23,12 +23,12 @@ struct PlayMode : Mode {
 	virtual bool handle_event(SDL_Event const &, glm::uvec2 const &window_size) override;
 	virtual void update(float elapsed) override;
 	virtual void draw(glm::uvec2 const &drawable_size) override;
+    virtual void on_quit() override;
 
 
 //	void update_congrats_items(std::vector< MenuMode::Item > &items);
 //	void update_pass_items(std::vector< MenuMode::Item > &items);
 
-    void on_quit();
 	void load_level(uint8_t level_index);
 	bool undo_move();
 	void clear_undo_stack();
@@ -48,11 +48,6 @@ struct PlayMode : Mode {
 	ModelLoader loader; 
 
 	//input tracking:
-	struct Button {
-		uint8_t downs = 0;
-		uint8_t pressed = 0;
-	} left_player, right_player, down_player, up_player;
-
 	std::queue<Input> input_q;
 
 	//local copy of the game scene (so code can change it during gameplay):
@@ -86,8 +81,8 @@ struct PlayMode : Mode {
 		float rand_scale = -1.0f + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 2.0f;
 		return camera_offset_from_player + randomized_offset_range * rand_scale;
 	}
-
 	int environment_score;
+	void check_level_completion();
 	bool level_completion = false;
 
 	PngHelper *pngHelper = new PngHelper();

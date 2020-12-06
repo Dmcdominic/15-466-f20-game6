@@ -40,6 +40,9 @@ struct Grid {
 	Player *player = nullptr;
 	OverworldNode *highest_level_node = nullptr;
 
+	private: bool pre_tick_done = false;
+	public:
+
 	// Constructor
 	Grid(size_t _width, size_t _height, unsigned int _goal, unsigned int _num_disposed = 0, int env_score = 0);
 	// Destructor
@@ -49,6 +52,7 @@ struct Grid {
 	bool is_valid_pos(glm::ivec2 _pos);
 	Cell* cell_at(glm::ivec2 _pos);
 	bool on_input(const Input& input, Output* output);
+	void pre_tick();
 
 	static glm::ivec2 normalize_displ(const glm::ivec2& displ);
 };

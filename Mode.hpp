@@ -20,7 +20,7 @@ struct Mode : std::enable_shared_from_this< Mode > {
 	//draw is called after update:
 	virtual void draw(glm::uvec2 const &drawable_size) = 0;
 
-//    virtual void on_quit(){}
+    virtual void on_quit(){}
 
 	//Mode::current is the Mode to which events are dispatched.
 	// use 'set_current' to change the current Mode (e.g., to switch to a menu)

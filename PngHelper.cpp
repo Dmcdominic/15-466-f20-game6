@@ -36,6 +36,9 @@ PngHelper::PngHelper() {
 	png_sel_inst = new PngView("select_inst.png", sel_inst_xs, inst_ys);
 	png_bar_inst = new PngView("barrel_inst.png", bar_inst_xs, inst_ys);
 	png_ret_inst = new PngView("return_inst.png", sel_inst_xs, inst_ys);
+	png_clr_inst = new PngView("disposed_inst.png", clr_inst_xs, clr_inst_ys);
+
+	png_clear = new PngView("clear.png", clear_xs, clear_ys);
 
 }
 
@@ -65,27 +68,24 @@ void PngHelper::update_png_pos(glm::uvec2 const &drawable_size) {
 		float meter_y = meter_x * drawable_size.x / drawable_size.y;
 
 		float keys_w = (keys_xs[2] - keys_xs[1]) * prev_drawable_size.x;
-		float wasd_h = (meter_ys[0] - meter_ys[1]) * prev_drawable_size.y;
-		float wasd_x = sqrt((keys_w * wasd_h / prev_area) * cur_area) / drawable_size.x;
-		float wasd_y = wasd_x * drawable_size.x / drawable_size.y;
+		float keys_h = (meter_ys[0] - meter_ys[1]) * prev_drawable_size.y;
+		float keys_x = sqrt((keys_w * keys_h / prev_area) * cur_area) / drawable_size.x;
+		float keys_y = keys_x * drawable_size.x / drawable_size.y;
 
 		float enter_w = (enter_xs[2] - enter_xs[1]) * prev_drawable_size.x;
 		float enter_h = (enter_ys[0] - enter_ys[1]) * prev_drawable_size.y;
 		float enter_x = sqrt((enter_w * enter_h / prev_area) * cur_area) / drawable_size.x;
 		float enter_y = enter_x * drawable_size.x / drawable_size.y;
 
-		float reset_h = (reset_ys[0] - reset_ys[1]) * prev_drawable_size.y;
-		float reset_x = sqrt((keys_w * reset_h / prev_area) * cur_area) / drawable_size.x;
-		float reset_y = reset_x * drawable_size.x / drawable_size.y;
-
-		float undo_h = (undo_ys[0] - undo_ys[1]) * prev_drawable_size.y;
-		float undo_x = sqrt((keys_w * undo_h / prev_area) * cur_area) / drawable_size.x;
-		float undo_y = undo_x * drawable_size.x / drawable_size.y;
-
 		float inst_w = (sel_inst_xs[2] - sel_inst_xs[1]) * prev_drawable_size.x;
 		float inst_h = (inst_ys[0] - inst_ys[1]) * prev_drawable_size.y;
 		float inst_x = sqrt((inst_w * inst_h / prev_area) * cur_area) / drawable_size.x;
 		float inst_y = inst_x * drawable_size.x / drawable_size.y;
+
+		float clear_w = (clear_xs[2] - clear_xs[1]) * prev_drawable_size.x;
+		float clear_h = (clear_ys[0] - clear_ys[1]) * prev_drawable_size.y;
+		float clear_x = sqrt((clear_w * clear_h / prev_area) * cur_area) / drawable_size.x;
+		float clear_y = inst_x * drawable_size.x / drawable_size.y;
 
 		// update positions according to position on screen
 		for (int i = 0; i < 3; i++) {
@@ -97,18 +97,18 @@ void PngHelper::update_png_pos(glm::uvec2 const &drawable_size) {
 				png_meters[j]->xs[right[i]] = meter_x - 1;
 				png_meters[j]->ys[top[i]] = meter_y - 1;
 			}
-			png_wasd->xs[left[i]] = 1 - wasd_x;
-			png_wasd->ys[top[i]] = wasd_y - 1;
+			png_wasd->xs[left[i]] = 1 - keys_x;
+			png_wasd->ys[top[i]] = keys_y - 1;
 			png_return->xs[left[i]] = 0.97f - enter_x;
 			png_return->ys[bottom[i]] = 1 - enter_y;
 			png_select->xs[left[i]] = 0.97f - enter_x;
 			png_select->ys[bottom[i]] = 1 - enter_y;
-			png_reset->xs[left[i]] = 1 - reset_x;
+			png_reset->xs[left[i]] = 1 - keys_x;
 			png_reset->ys[bottom[i]] = png_wasd->ys[top[i]];
-			png_reset->ys[top[i]] = png_reset->ys[bottom[i]] + reset_y;
-			png_undo->xs[left[i]] = 1 - undo_x;
+			png_reset->ys[top[i]] = png_reset->ys[bottom[i]] + keys_y;
+			png_undo->xs[left[i]] = 1 - keys_x;
 			png_undo->ys[bottom[i]] = png_reset->ys[top[i]];
-			png_undo->ys[top[i]] = png_undo->ys[bottom[i]] + undo_y;
+			png_undo->ys[top[i]] = png_undo->ys[bottom[i]] + keys_y;
 			png_sel_inst->xs[right[i]] = png_select->xs[left[i]];
 			png_sel_inst->xs[left[i]] = png_sel_inst->xs[right[i]] - inst_x;
 			png_sel_inst->ys[bottom[i]] = 1 - inst_y;
@@ -118,6 +118,12 @@ void PngHelper::update_png_pos(glm::uvec2 const &drawable_size) {
 			png_ret_inst->xs[right[i]] = png_select->xs[left[i]];
 			png_ret_inst->xs[left[i]] = png_sel_inst->xs[right[i]] - inst_x;
 			png_ret_inst->ys[bottom[i]] = 1 - inst_y;
+			png_clr_inst->xs[right[i]] = png_clr_inst->xs[0] + inst_x;
+			png_clr_inst->ys[top[i]] = png_clr_inst->ys[1] + inst_y;
+			png_clear->xs[left[i]] = -clear_x/2;
+			png_clear->xs[right[i]] = clear_x/2;
+			png_clear->ys[top[i]] = clear_y;
+			png_clear->ys[bottom[i]] = -clear_y;
 		}
 
 		// load the new vertex positions
@@ -135,6 +141,8 @@ void PngHelper::update_png_pos(glm::uvec2 const &drawable_size) {
 		png_sel_inst->load();
 		png_bar_inst->load();
 		png_ret_inst->load();
+		png_clr_inst->load();
+		png_clear->load();
 
 		prev_drawable_size = drawable_size;
 	}
@@ -179,7 +187,11 @@ void PngHelper::draw(bool draw_barrel, bool draw_wasd, bool draw_return, bool dr
 	if (draw_wasd) png_wasd->draw();
 	if (draw_return) {
 		png_return->draw();
-		if (cur_level == 1) png_ret_inst->draw();
+		png_clear->draw();
+		if (cur_level == 1) {
+			png_ret_inst->draw();
+			png_clr_inst->draw();
+		}
 	}
 	if (draw_select) {
 		png_select->draw();

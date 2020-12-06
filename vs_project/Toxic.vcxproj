@@ -73,12 +73,14 @@
   <ItemDefinitionGroup>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Acorn.cpp" />
     <ClCompile Include="..\Animal.cpp" />
     <ClCompile Include="..\AudioManager.cpp" />
     <ClCompile Include="..\Barrel.cpp" />
     <ClCompile Include="..\Bridge.cpp" />
     <ClCompile Include="..\Button.cpp" />
     <ClCompile Include="..\Cloud.cpp" />
+    <ClCompile Include="..\CloudCover.cpp" />
     <ClCompile Include="..\Disposal.cpp" />
     <ClCompile Include="..\game_menu.cpp" />
     <ClCompile Include="..\Grass.cpp" />
@@ -94,6 +96,7 @@
     <ClCompile Include="..\Input.cpp" />
     <ClCompile Include="..\level_sequence.cpp" />
     <ClCompile Include="..\LitColorTextureProgram.cpp" />
+    <ClCompile Include="..\LitPlantColorTextureProgram.cpp" />
     <ClCompile Include="..\LitPurpleColorTextureProgram.cpp" />
     <ClCompile Include="..\LitToxicColorTextureProgram.cpp" />
     <ClCompile Include="..\Load.cpp" />
@@ -105,6 +108,7 @@
     <ClCompile Include="..\Mesh.cpp" />
     <ClCompile Include="..\Mode.cpp" />
     <ClCompile Include="..\ModelLoader.cpp" />
+    <ClCompile Include="..\Mud.cpp" />
     <ClCompile Include="..\Overworld.cpp" />
     <ClCompile Include="..\pack-levels.cpp" />
     <ClCompile Include="..\PathFont-font.cpp" />
@@ -112,6 +116,7 @@
     <ClCompile Include="..\Pit.cpp" />
     <ClCompile Include="..\Player.cpp" />
     <ClCompile Include="..\PlayMode.cpp" />
+    <ClCompile Include="..\PngHelper.cpp" />
     <ClCompile Include="..\PngView.cpp" />
     <ClCompile Include="..\Railing.cpp" />
     <ClCompile Include="..\Ramp.cpp" />
@@ -130,12 +135,14 @@
     <ClCompile Include="..\Turnstile.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Acorn.hpp" />
     <ClInclude Include="..\Animal.hpp" />
     <ClInclude Include="..\AudioManager.hpp" />
     <ClInclude Include="..\Barrel.hpp" />
     <ClInclude Include="..\Bridge.hpp" />
     <ClInclude Include="..\Button.hpp" />
     <ClInclude Include="..\Cloud.hpp" />
+    <ClInclude Include="..\CloudCover.hpp" />
     <ClInclude Include="..\Disposal.hpp" />
     <ClInclude Include="..\game_menu.hpp" />
     <ClInclude Include="..\Grass.hpp" />
@@ -152,6 +159,7 @@
     <ClInclude Include="..\Input.hpp" />
     <ClInclude Include="..\level_sequence.hpp" />
     <ClInclude Include="..\LitColorTextureProgram.hpp" />
+    <ClInclude Include="..\LitPlantColorTextureProgram.hpp" />
     <ClInclude Include="..\LitPurpleColorTextureProgram.hpp" />
     <ClInclude Include="..\LitToxicColorTextureProgram.hpp" />
     <ClInclude Include="..\Load.hpp" />
@@ -162,12 +170,14 @@
     <ClInclude Include="..\Mesh.hpp" />
     <ClInclude Include="..\Mode.hpp" />
     <ClInclude Include="..\ModelLoader.hpp" />
+    <ClInclude Include="..\Mud.hpp" />
     <ClInclude Include="..\Overworld.hpp" />
     <ClInclude Include="..\PackedGrid.hpp" />
     <ClInclude Include="..\PathFont.hpp" />
     <ClInclude Include="..\Pit.hpp" />
     <ClInclude Include="..\Player.hpp" />
     <ClInclude Include="..\PlayMode.hpp" />
+    <ClInclude Include="..\PngHelper.hpp" />
     <ClInclude Include="..\PngView.hpp" />
     <ClInclude Include="..\Railing.hpp" />
     <ClInclude Include="..\Ramp.hpp" />
