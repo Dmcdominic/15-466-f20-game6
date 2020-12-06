@@ -30,6 +30,7 @@
 
 #include <random>
 #include <time.h>
+#include <fstream>
 
 
 // GLuint toxic_prefabs_meshes_for_lit_color_texture_program = 0;
@@ -66,8 +67,10 @@ uint8_t PlayMode::completed_level = 0;
 
 
 // Constructor
-PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
+PlayMode::PlayMode(uint8_t _current_level, int _environment_score) : scene(*toxic_prefabs_scene), environment_score(_environment_score) {
 	// First, seed the random number generator
+
+    completed_level = _current_level;
 	std::srand((unsigned int)time(NULL));
 
 	//create a camera
@@ -88,7 +91,7 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 	model_loader = new ModelLoader;
 	
 	load_level(0);
-	
+
 	// Create cloud cover (for loading) 
 	cloud_scene = Scene(); 
 	cloud_cover = new CloudCover(&cloud_scene); 
@@ -104,6 +107,7 @@ PlayMode::PlayMode() : scene(*toxic_prefabs_scene) {
 }
 
 PlayMode::~PlayMode() {
+    on_quit();
 }
 
 
@@ -385,6 +389,12 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	GL_ERRORS();
 }
 
+void PlayMode::on_quit() {
+    std::fstream out;
+    out.open(data_path("in_game_data.txt"), std::fstream::out);
+    out << (int)completed_level << " " << environment_score << std::endl;
+    out.close();
+}
 
 // Loads a level using the GridLoader
 void PlayMode::load_level(uint8_t level_index) {

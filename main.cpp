@@ -2,7 +2,7 @@
 #include "Mode.hpp"
 
 //The 'PlayMode' mode plays the game:
-#include "PlayMode.hpp"
+//#include "PlayMode.hpp"
 
 #include "game_menu.hpp"
 
@@ -21,12 +21,15 @@
 //Includes for libSDL:
 #include <SDL.h>
 
+#include "data_path.hpp"
+
 //...and for c++ standard library functions:
 #include <chrono>
 #include <iostream>
 #include <stdexcept>
 #include <memory>
 #include <algorithm>
+#include <fstream>
 
 int main(int argc, char **argv) {
 #ifdef _WIN32
@@ -102,7 +105,30 @@ int main(int argc, char **argv) {
 
 	//------------ create game mode + make current --------------
 //	Mode::set_current(std::make_shared< PlayMode >());
-    Mode::set_play(std::make_shared< PlayMode >());
+    std::fstream in;
+    int current_level;
+    int environment_score;
+    in.open(data_path("in_game_data.txt"), std::fstream::in);
+    in >> current_level;
+    in >> environment_score;
+    in.close();
+
+    if(current_level!=0) {
+        std::vector< MenuMode::Item > items;
+        items.emplace_back("Continue");
+        items.back().on_select = [&current_level, &environment_score](MenuMode::Item const&) {
+            Mode::set_play(std::make_shared< PlayMode >((uint8_t)current_level, environment_score));
+            Mode::switch_to_play();
+        };
+        items.emplace_back("Restart Game");
+        items.back().on_select = [](MenuMode::Item const&) {
+            Mode::set_play(std::make_shared< PlayMode >(0, 100));
+            Mode::switch_to_play();
+        };
+        game_menu->update_items(items);
+    } else {
+        Mode::set_play(std::make_shared< PlayMode >((uint8_t)current_level, environment_score));
+    }
     Mode::set_menu(game_menu);
 
 	//------------ main loop ------------

@@ -5,7 +5,7 @@
 #include "CloudCover.hpp"
 #include "Grid.hpp"
 #include "ModelLoader.hpp"
-#include "game_menu.hpp"
+//#include "game_menu.hpp"
 #include "level_sequence.hpp"
 
 #include "PngHelper.hpp"
@@ -16,7 +16,7 @@
 
 
 struct PlayMode : Mode {
-	PlayMode();
+	PlayMode(uint8_t _current_level, int _environment_score);
 	virtual ~PlayMode();
 
 	//functions called by main loop:
@@ -24,9 +24,11 @@ struct PlayMode : Mode {
 	virtual void update(float elapsed) override;
 	virtual void draw(glm::uvec2 const &drawable_size) override;
 
-	void update_congrats_items(std::vector< MenuMode::Item > &items);
-	void update_pass_items(std::vector< MenuMode::Item > &items);
 
+//	void update_congrats_items(std::vector< MenuMode::Item > &items);
+//	void update_pass_items(std::vector< MenuMode::Item > &items);
+
+    void on_quit();
 	void load_level(uint8_t level_index);
 	bool undo_move();
 	void clear_undo_stack();
@@ -85,7 +87,7 @@ struct PlayMode : Mode {
 		return camera_offset_from_player + randomized_offset_range * rand_scale;
 	}
 
-	int environment_score = 100;
+	int environment_score;
 	bool level_completion = false;
 
 	PngHelper *pngHelper = new PngHelper();
