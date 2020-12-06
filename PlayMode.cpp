@@ -330,7 +330,7 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	//draw png's
 	pngHelper->draw(!is_Overworld(), // draw barrels in levels
 	                (!level_completion && (completed_level != current_level)), // draw WASD if player can move
-	                level_completion, // draw return after level completes
+	                (level_completion && !loading_level && !is_Overworld()), // draw return after level completes
 	                is_Overworld(), // draw select at overworld
 	                (!is_Overworld() && !level_completion && (completed_level != current_level)), // reset during game
 	                current_grid->num_disposed, current_grid->goal, current_level // for drawing faded/filled barrels
@@ -349,17 +349,17 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 			0.0f, 0.0f, 0.0f, 1.0f
 		));
 
-		constexpr float H = 0.09f;
+//		constexpr float H = 0.09f;
 //		lines.draw_text(std::to_string(environment_score),
 //			glm::vec3(-aspect + 0.335 + 0.1f * H, -0.76 + 0.1f * H, 0.0),
 //			glm::vec3(0.7 * H, 0.0f, 0.0f), glm::vec3(0.0f, 0.7 * H, 0.0f),
 //		    glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-		if (level_completion) {
-			lines.draw_text("Congratulations!",
-			                glm::vec3(-aspect+0.8, 0.0, 0.0),
-			                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
-			                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-		}
+//		if (level_completion) {
+//			lines.draw_text("Congratulations!",
+//			                glm::vec3(-aspect+0.8, 0.0, 0.0),
+//			                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
+//			                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
+//		}
 	}
 	GL_ERRORS();
 }
