@@ -337,7 +337,9 @@ void GridLoader::load_undo_copy(Grid* undo_copy, Scene* scene) {
       // FgObj
       if (cell->fgObj != nullptr) {
         cell->fgObj->load_and_reposition_models(scene);
-        
+        if (dynamic_cast<Barrel*>(cell->fgObj) != nullptr) {
+        	current_grid->barrels.push_back(dynamic_cast<Barrel*>(cell->fgObj));
+        }
       }
       // SkyObj
       if (cell->skyObj != nullptr) {

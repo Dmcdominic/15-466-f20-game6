@@ -204,9 +204,11 @@ void PlayMode::update(float elapsed) {
 		return;
 	}
 
+	// disable user input when a barrel is rolling
 	for (Barrel *barrel : current_grid->barrels) {
 		if (barrel->rolling) {
 			barrel->roll();
+			return;
 		}
 	}
 

@@ -51,6 +51,7 @@ struct Grid {
 	OverworldNode *highest_level_node = nullptr;
 
 	std::vector<Barrel *> barrels;
+	int barrel_count = 0;
 	bool rolling = false;
 	std::vector<RollItem *> to_be_moved;
 

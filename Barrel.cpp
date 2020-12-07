@@ -17,6 +17,7 @@ Barrel* Barrel::clone_lightweight(Cell* new_cell) {
   new_barrel->cell = new_cell;
   new_barrel->drawable = nullptr;
   new_barrel->extra_drawables.clear();
+  new_barrel->saved_target_cell = nullptr;
   return new_barrel;
 }
 
@@ -31,7 +32,8 @@ bool Barrel::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ)
   }
   // If that's all good, then use default pushable behavior.
   if (FgObj::can_fg_obj_move_into(objBeingMoved, displ)) {
-	  this->rolling = true;
+	  push_move_clip();
+	  rolling = true;
 	  current_grid->rolling = true;
 	  glm::ivec2 target_pos = this->cell->pos + displ;
 	  if (!current_grid->is_valid_pos(target_pos)) return false;
@@ -49,11 +51,13 @@ void Barrel::roll() {
 	float theta = displ_amt * 3.1415926f/2.0f;
 	drawable->transform->rotation *= glm::quat(0.0f, 0.0f, sin(theta/2.0f), cos(theta/2.0f));
 	displ_amt += displ_step;
-	push_move_clip();
 	if (displ_amt >= 1.0f) {
 		rolling = false;
 		current_grid->rolling = false;
 		displ_amt = 0;
+		if (saved_target_cell == nullptr) {
+			throw std::runtime_error("Previously saved target cell of the rolling barrel is somehow a nullptr");
+		}
 		saved_target_cell->when_fg_obj_moved_into(*this, saved_displ);
 		if (saved_target_cell->fgObj != nullptr) {
 			throw std::runtime_error("Trying to move barrel into a cell that seems to still have one");
