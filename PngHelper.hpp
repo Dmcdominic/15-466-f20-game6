@@ -39,11 +39,11 @@ struct PngHelper {
 		float bckgrnd_xs[6] = {-1.0f, -1.0f,  1.0f, -1.0f,  1.0f,  1.0f };
 		float bckgrnd_ys[6] = { 1.0f, -1.0f, -1.0f,  1.0f, -1.0f,  1.0f };
 
-		float menu_xs[6]    = { -0.3f, -0.3f,  0.3f, -0.3f,  0.3f,  0.3f };
-		float menu0_ys[6]   = {  0.5f,  0.2f,  0.2f,  0.5f,  0.2f,  0.5f };
-		float menu1_ys[6]   = { 0.15f,-0.15f,-0.15f, 0.15f,-0.15f, 0.15f };
-		float menu2_ys[6]   = { -0.2f, -0.5f, -0.5f, -0.2f, -0.5f, -0.2f };
-		float menu3_ys[6]   = {-0.55f,-0.85f,-0.85f,-0.55f,-0.85f,-0.55f };
+		float menu_xs[6]    = { -0.2f, -0.2f,  0.2f, -0.2f,  0.2f,  0.2f };
+		float menu0_ys[6]   = {  0.3f, 0.15f, 0.15f,  0.3f, 0.15f,  0.3f };
+		float menu1_ys[6]   = {  0.1f,-0.05f,-0.05f,  0.1f,-0.05f,  0.1f };
+		float menu2_ys[6]   = { -0.1f,-0.25f,-0.25f, -0.1f,-0.25f, -0.1f };
+		float menu3_ys[6]   = { -0.7f,-0.85f,-0.85f, -0.7f,-0.85f, -0.7f };
 		
 		float credits_xs[6] = {-1.0f, -1.0f,  1.0f, -1.0f,  1.0f,  1.0f };
 		float credits_ys[6] = { 0.9f, -0.5f, -0.5f,  0.9f, -0.5f,  0.9f };
@@ -108,6 +108,12 @@ struct PngHelper {
 		// for barrels
 		int already_disposed = 0;
 		int barrels_drawn = 0;
+
+		// animated main menu background
+		int menu_frame = 0;
+		int menu_frames = 7;
+		int frame_count = 0;
+		int frame_goal = 9;
 
 		glm::uvec2 prev_drawable_size = glm::uvec2(0, 0);
 
