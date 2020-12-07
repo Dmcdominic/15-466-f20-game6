@@ -45,6 +45,7 @@ bool Player::on_input(const Input& input, Output* output) {
     if (current_node != nullptr) {
       current_grid->pre_tick();
       output->level_to_load = { current_node->level_index };
+      output->last_node_pos = current_node->cell->pos;
       return true;
     }
     return false;

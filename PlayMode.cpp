@@ -65,6 +65,7 @@ Load< Scene > toxic_prefabs_scene(LoadTagDefault, []() -> Scene const * {
 // Static variable initialization
 uint8_t PlayMode::current_level = 0;
 uint8_t PlayMode::completed_level = 0;
+glm::ivec2 PlayMode::last_node_pos = glm::ivec2();
 
 
 // Constructor
@@ -302,6 +303,10 @@ void PlayMode::update(float elapsed) {
 		}
 
 		// Check if the output indicates a new level to load, e.g. they interacted with an overworld node.
+		if (output.last_node_pos != glm::ivec2()) {
+			last_node_pos = output.last_node_pos;
+		}
+			
 		if (output.level_to_load) {
 			cloud_cover->cover();
 			level_to_load = *output.level_to_load;
@@ -460,7 +465,15 @@ void PlayMode::load_level(uint8_t level_index) {
 	current_level = level_index % num_levels;
 
 	current_grid = GridLoader::load_level(current_level, &scene);
-	if (is_Overworld() && current_grid->highest_level_node != nullptr) {
+	if (is_Overworld() && last_node_pos != glm::ivec2()) {
+		// Find the position of the node you should teleport the player to
+		Cell* targetCell = current_grid->cell_at(last_node_pos);
+		if (targetCell->fgObj != current_grid->player) {
+			assert(targetCell->fgObj == nullptr);
+			targetCell->set_fg_obj(current_grid->player);
+		}
+		last_node_pos = glm::ivec2();
+	} else if (is_Overworld() && current_grid->highest_level_node != nullptr) {
 		// Find the position of the node you should teleport the player to
 		if (current_grid->highest_level_node->cell->fgObj != current_grid->player) {
 			assert(current_grid->highest_level_node->cell->fgObj == nullptr);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <optional>
+#include <glm/glm.hpp>
 
 
 // Types of input
@@ -24,4 +25,5 @@ struct Input {
 struct Output {
   // Fields
   std::optional<uint8_t> level_to_load = std::nullopt; // If this is set, we will load the corresponding level
+  glm::ivec2 last_node_pos = glm::ivec2();
 };

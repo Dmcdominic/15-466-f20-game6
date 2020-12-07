@@ -48,7 +48,7 @@ struct Grid {
 	int grid_environment_score = 0;
 
 	Player *player = nullptr;
-	OverworldNode *highest_level_node = nullptr;
+	OverworldNode* highest_level_node = nullptr;
 
 	std::vector<Barrel *> barrels;
 	int barrel_count = 0;
