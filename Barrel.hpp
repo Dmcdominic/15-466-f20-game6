@@ -10,8 +10,8 @@ struct Barrel : FgObj {
 	Barrel(Scene* scene, int _rotations = 0);
 
 	// Fields
-	float displ_step = 0.1;
-	float displ_amt = 0;
+	float displ_step = 0.1f;
+	float displ_amt = 0.0f;
 	bool rolling = false;
 	int saved_rotations = 0;
 	glm::vec2 saved_displ = glm::vec2(0, 0);
