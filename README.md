@@ -2,10 +2,10 @@
 
 
 ### Created By:
-Jianrong Yu
-Alyssa Lee
-Michelle Chang
-Dominic Calkosz
+* Jianrong Yu
+* Alyssa Lee
+* Michelle Chang
+* Dominic Calkosz
 
 
 ## How To Play:
