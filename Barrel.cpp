@@ -24,12 +24,72 @@ Barrel* Barrel::clone_lightweight(Cell* new_cell) {
 // The barrel can only roll along its long axis.
 bool Barrel::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
   // First check if displ is along the right axis for the barrel to roll.
-  if (( rollable_up_down() && displ.x != 0) ||
+  if (rolling ||
+      ( rollable_up_down() && displ.x != 0) ||
       (!rollable_up_down() && displ.y != 0)) {
     return false;
   }
   // If that's all good, then use default pushable behavior.
-  return FgObj::can_fg_obj_move_into(objBeingMoved, displ);
+  if (FgObj::can_fg_obj_move_into(objBeingMoved, displ)) {
+	  this->rolling = true;
+	  current_grid->rolling = true;
+	  glm::ivec2 target_pos = this->cell->pos + displ;
+	  if (!current_grid->is_valid_pos(target_pos)) return false;
+	  Cell* target_cell = current_grid->cell_at(target_pos);
+	  saved_target_cell = target_cell;
+	  return true;
+  } else {
+  	return false;
+  }
+}
+
+void Barrel::roll() {
+	drawable->transform->position.x += saved_displ.x * displ_step;
+	drawable->transform->position.y += saved_displ.y * displ_step;
+	float theta = displ_amt * 3.1415926f/2.0f;
+	drawable->transform->rotation *= glm::quat(0.0f, 0.0f, sin(theta/2.0f), cos(theta/2.0f));
+	displ_amt += displ_step;
+	push_move_clip();
+	if (displ_amt >= 1.0f) {
+		rolling = false;
+		current_grid->rolling = false;
+		displ_amt = 0;
+		saved_target_cell->when_fg_obj_moved_into(*this, saved_displ);
+		if (saved_target_cell->fgObj != nullptr) {
+			throw std::runtime_error("Trying to move barrel into a cell that seems to still have one");
+		}
+		this->cell->fgObj = nullptr;
+		saved_target_cell->set_fg_obj(this);
+
+		for (size_t i = 0; i < current_grid->to_be_moved.size(); i++) {
+			if(current_grid->to_be_moved[i]->target_cell->fgObj != nullptr) {
+				throw std::runtime_error("to be moved: Trying to move an FgObj into a cell that seems to still have one");
+			}
+			current_grid->to_be_moved[i]->target_cell->set_fg_obj(&(current_grid->to_be_moved[i]->item));
+		}
+		current_grid->to_be_moved.clear();
+	}
+}
+
+// Does whatever should happen when the given foreground object is moved/pushed into this object.
+void Barrel::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
+	glm::ivec2 norm_displ = Grid::normalize_displ(displ);
+	// throw error if barrel is not supposed to be rolling
+	if (!try_to_move_by(norm_displ) && displ_amt >= 1.0f) {
+		throw std::runtime_error("when_fg_obj_moved_into() somehow called for an object position & displacement that COULDN'T move.");
+	}
+}
+
+bool Barrel::try_to_move_by(const glm::ivec2 &displ) {
+	saved_displ = displ;
+	prev_pos = glm::vec2(this->cell->pos.x, this->cell->pos.y);
+	saved_rotations = rotations;
+	glm::ivec2 target_pos = this->cell->pos + displ;
+	if (!current_grid->is_valid_pos(target_pos)) return false;
+	Cell* target_cell = current_grid->cell_at(target_pos);
+	saved_target_cell = target_cell;
+	if (!target_cell->can_fg_obj_move_into(*this, displ)) return false;
+	return true;
 }
 
 

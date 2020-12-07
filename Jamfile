@@ -141,6 +141,7 @@ GAME_NAMES =
 	CloudCover
 	Framebuffers
 	PngHelper
+	Menu
 	;
 
 COMMON_NAMES =
