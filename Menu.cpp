@@ -20,13 +20,11 @@ Menu::Menu(PngHelper* pngHelper) {
   // Main Menu
   mainMenu->items.push_back(Item(pngHelper->png_mainMenu_Play, pngHelper->png_mainMenu_Play_selected));
   mainMenu->items.back().on_select = [this](Menu::Item const&) {
-    //this->disableMenu();
     this->play = true;
   };
 
   mainMenu->items.push_back(Item(pngHelper->png_mainMenu_NewGame, pngHelper->png_mainMenu_NewGame_selected));
   mainMenu->items.back().on_select = [this](Menu::Item const&) {
-    //this->disableMenu();
     this->new_game = true;
   };
 
@@ -56,19 +54,16 @@ Menu::Menu(PngHelper* pngHelper) {
 
   pause->items.push_back(Item(pngHelper->png_pause_Restart, pngHelper->png_pause_Restart_selected));
   pause->items.back().on_select = [this](Menu::Item const&) {
-    //this->disableMenu();
     this->restart_level = true;
   };
 
   pause->items.push_back(Item(pngHelper->png_pause_Overworld, pngHelper->png_pause_Overworld_selected));
   pause->items.back().on_select = [this](Menu::Item const&) {
-    //this->disableMenu();
     this->return_to_OW = true;
   };
 
   pause->items.push_back(Item(pngHelper->png_pause_MainMenu, pngHelper->png_pause_MainMenu_selected));
-  pause->items.back().on_select = [this, mainMenu](Menu::Item const&) {
-    //this->setSNode(mainMenu);
+  pause->items.back().on_select = [this](Menu::Item const&) {
     load_main_menu = true;
   };
 }

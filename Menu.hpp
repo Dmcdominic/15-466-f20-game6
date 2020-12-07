@@ -2,6 +2,7 @@
 
 #include <string>
 #include <functional>
+#include <vector>
 
 #include "PngView.hpp"
 
