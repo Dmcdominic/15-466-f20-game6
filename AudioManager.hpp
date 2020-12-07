@@ -9,7 +9,7 @@
 struct AudioManager {
 	// Types of audio clips to play
 	enum class AudioClip {
-		BACKGROUND, ERROR, FOOTSTEP, FOOTSTEP_SHORT, ROLL_BARREL, DRAG_STONE, UNDO, TOXIN_SPREAD
+		BACKGROUND, ERROR, FOOTSTEP, FOOTSTEP_SHORT, ROLL_BARREL, DRAG_STONE, UNDO, TOXIN_SPREAD, KILL_DUCK
 	};
 
 	// Static variables

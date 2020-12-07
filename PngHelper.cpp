@@ -66,6 +66,26 @@ PngHelper::PngHelper() {
 	png_pause_MainMenu = new PngView("buttons/menu.png", menu_xs, menu3_ys);
 	png_pause_MainMenu_selected = new PngView("buttons/menu_selected.png", menu_xs, menu3_ys);
 
+	png_buttons[0] = png_mainMenu_Play;
+	png_buttons[1] = png_mainMenu_Play_selected;
+	png_buttons[2] = png_mainMenu_NewGame;
+	png_buttons[3] = png_mainMenu_NewGame_selected;
+	png_buttons[4] = png_mainMenu_Credits;
+	png_buttons[5] = png_mainMenu_Credits_selected;
+	png_buttons[6] = png_mainMenu_Quit;
+	png_buttons[7] = png_mainMenu_Quit_selected;
+	png_buttons[8] = png_credits_MainMenu;
+	png_buttons[9] = png_credits_MainMenu_selected;
+	png_buttons[10] = png_pause_Continue;
+	png_buttons[11] = png_pause_Continue_selected;
+	png_buttons[12] = png_pause_Restart;
+	png_buttons[13] = png_pause_Restart_selected;
+	png_buttons[14] = png_pause_Overworld;
+	png_buttons[15] = png_pause_Overworld_selected;
+	png_buttons[16] = png_pause_MainMenu;
+	png_buttons[17] = png_pause_MainMenu_selected;
+
+
 }
 
 
@@ -116,6 +136,11 @@ void PngHelper::update_png_pos(glm::uvec2 const &drawable_size) {
 		float clear_x = sqrt((clear_w * clear_h / prev_area) * cur_area) / drawable_size.x;
 		float clear_y = inst_x * drawable_size.x / drawable_size.y;
 
+		float menu_w = (menu_xs[2] - menu_xs[1]) * prev_drawable_size.x;
+		float menu_h = (menu0_ys[0] - menu0_ys[1]) * prev_drawable_size.y;
+		float menu_x = sqrt((menu_w * menu_h / prev_area) * cur_area) / drawable_size.x;
+		float menu_y = menu_x * drawable_size.x / drawable_size.y;
+
 		// update positions according to position on screen
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
@@ -153,8 +178,11 @@ void PngHelper::update_png_pos(glm::uvec2 const &drawable_size) {
 			png_clear->xs[right[i]] = clear_x/2;
 			png_clear->ys[top[i]] = clear_y;
 			png_clear->ys[bottom[i]] = -clear_y;
-
-			// TODO - do this for menu png's too!(?)
+			for (int j = 0; j < 18; j++) {
+				png_buttons[j]->xs[left[i]] = -menu_x;
+				png_buttons[j]->xs[right[i]] = menu_x;
+				png_buttons[j]->ys[top[i]] = png_buttons[j]->ys[bottom[i]] + menu_y/2;
+			}
 		}
 
 		// load the new vertex positions
@@ -174,7 +202,9 @@ void PngHelper::update_png_pos(glm::uvec2 const &drawable_size) {
 		png_ret_inst->load();
 		png_clr_inst->load();
 		png_clear->load();
-		// TODO - do this for menu png's too!(?)
+		for (int j = 0; j < 18; j++) {
+			png_buttons[j]->load();
+		}
 
 		prev_drawable_size = drawable_size;
 	}

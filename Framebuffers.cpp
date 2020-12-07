@@ -164,7 +164,7 @@ struct FXAAProgram {
 			//vertex shader -- draws a fullscreen triangle using no attribute streams
 			"#version 330\n"
 			//"out vec2 texCoord;\n"
-			"varying vec2 vUv;\n"
+			//"varying vec2 vUv;\n"
 			"uniform vec2 resolution;\n"
 			"void main() {\n"
 			"	gl_Position = vec4(4 * (gl_VertexID & 1) - 1,  2 * (gl_VertexID & 2) - 1, 0.0, 1.0);\n"
@@ -218,8 +218,8 @@ struct FXAAProgram {
 					
 			"	dir = min(vec2(FXAA_SPAN_MAX,  FXAA_SPAN_MAX), max(vec2(-FXAA_SPAN_MAX, -FXAA_SPAN_MAX), dir * rcpDirMin)) * texcoordOffset;\n"
 						
-			"	vec3 rgbA = (1.0/2.0) * (texture2D(TEX, vertTexcoord.xy + dir * (1.0/3.0 - 0.5)).xyz + texture2D(TEX, vertTexcoord.xy + dir * (2.0/3.0 - 0.5)).xyz);\n"
-			"	vec3 rgbB = rgbA * (1.0/2.0) + (1.0/4.0) * (texture2D(TEX, vertTexcoord.xy + dir * (0.0/3.0 - 0.5)).xyz + texture2D(TEX, vertTexcoord.xy + dir * (3.0/3.0 - 0.5)).xyz);\n"
+			"	vec3 rgbA = (1.0/2.0) * (texture(TEX, vertTexcoord.xy + dir * (1.0/3.0 - 0.5)).xyz + texture(TEX, vertTexcoord.xy + dir * (2.0/3.0 - 0.5)).xyz);\n"
+			"	vec3 rgbB = rgbA * (1.0/2.0) + (1.0/4.0) * (texture(TEX, vertTexcoord.xy + dir * (0.0/3.0 - 0.5)).xyz + texture(TEX, vertTexcoord.xy + dir * (3.0/3.0 - 0.5)).xyz);\n"
 			"	float lumaB = dot(rgbB, luma);\n"
 
 			"	if((lumaB < lumaMin) || (lumaB > lumaMax)){\n"
