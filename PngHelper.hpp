@@ -102,6 +102,8 @@ struct PngHelper {
 		PngView* png_pause_MainMenu;
 		PngView* png_pause_MainMenu_selected;
 
+		PngView *png_buttons[18];
+
 	private:
 		// for barrels
 		int already_disposed = 0;
