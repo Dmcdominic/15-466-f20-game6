@@ -164,7 +164,7 @@ struct FXAAProgram {
 			//vertex shader -- draws a fullscreen triangle using no attribute streams
 			"#version 330\n"
 			//"out vec2 texCoord;\n"
-			"varying vec2 vUv;\n"
+			//"varying vec2 vUv;\n"
 			"uniform vec2 resolution;\n"
 			"void main() {\n"
 			"	gl_Position = vec4(4 * (gl_VertexID & 1) - 1,  2 * (gl_VertexID & 2) - 1, 0.0, 1.0);\n"
