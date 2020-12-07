@@ -3,6 +3,7 @@
 #include "LitColorTextureProgram.hpp"
 #include "LitToxicColorTextureProgram.hpp"
 #include "LitPlantColorTextureProgram.hpp"
+#include "Framebuffers.hpp"
 
 #include "DrawLines.hpp"
 #include "Mesh.hpp"
@@ -70,7 +71,7 @@ uint8_t PlayMode::completed_level = 0;
 PlayMode::PlayMode(uint8_t _completed_level, int _environment_score) : scene(*toxic_prefabs_scene), environment_score(_environment_score) {
 	// First, seed the random number generator
 
-    completed_level = _completed_level;
+	completed_level = _completed_level;
 	std::srand((unsigned int)time(NULL));
 
 	//create a camera
@@ -89,13 +90,13 @@ PlayMode::PlayMode(uint8_t _completed_level, int _environment_score) : scene(*to
 
 	// --- MODEL & GRID INITIALIZATION ---
 	model_loader = new ModelLoader;
-	
+
 	load_level(0);
 	menu = new Menu(pngHelper);
 
-	// Create cloud cover (for loading) 
-	cloud_scene = Scene(); 
-	cloud_cover = new CloudCover(&cloud_scene); 
+	// Create cloud cover (for loading)
+	cloud_scene = Scene();
+	cloud_cover = new CloudCover(&cloud_scene);
 	cloud_scene.transforms.emplace_back();
 	cloud_scene.cameras.emplace_back(&cloud_scene.transforms.back());
 	cloud_camera = &cloud_scene.cameras.back();
@@ -136,7 +137,7 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_e ||
 		           evt.key.keysym.sym == SDLK_SPACE ||
-							 evt.key.keysym.sym == SDLK_RETURN) { // INTERACT
+		           evt.key.keysym.sym == SDLK_RETURN) { // INTERACT
 			input_q.push(Input(InputType::INTERACT));
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_r || evt.key.keysym.sym == SDLK_x) { // RESET
@@ -176,17 +177,17 @@ void PlayMode::update(float elapsed) {
 
 	// Player animation
 	current_grid->player->on_update();
-	
+
 	// don't process input yet if clouds are moving
 	if(loading_level) {
-		cloud_cover->update(elapsed); 
+		cloud_cover->update(elapsed);
 
 		//if the clouds are done moving
 		if(!cloud_cover->moving && !cloud_cover->covering) {
 			loading_level = false;
 		}
 
-		//if the clouds need to start moving outwards 
+			//if the clouds need to start moving outwards
 		else if(!cloud_cover->moving && cloud_cover->covering) {
 			cloud_cover->uncover();
 			if (load_main_menu) {
@@ -201,6 +202,12 @@ void PlayMode::update(float elapsed) {
 		}
 		camera_velo = glm::vec3(0.0f);
 		return;
+	}
+
+	for (Barrel *barrel : current_grid->barrels) {
+		if (barrel->rolling) {
+			barrel->roll();
+		}
 	}
 
 	// Process input
@@ -270,16 +277,16 @@ void PlayMode::update(float elapsed) {
 			undo_move();
 		} else if (input.type == InputType::ESCAPE) {
 			menu->setSNode(menu->sNodes[(size_t)Menu::MENUS::PAUSE]);
-    } else if (level_completion && input.type == InputType::INTERACT) {
-      level_completion = false;
+		} else if (level_completion && input.type == InputType::INTERACT) {
+			level_completion = false;
 			environment_score += current_grid->grid_environment_score;
 			// load the Overworld (or credits if this was last level)
 			level_to_load = 0;
 			if (current_level == num_levels - 1) {
 				load_credits = true;
 			}
-			loading_level = true; 
-			cloud_cover->cover(); 
+			loading_level = true;
+			cloud_cover->cover();
 			break;
 		} else {
 			if (!is_Overworld()) { // Push an undo copy (Overworld excluded)
@@ -356,6 +363,12 @@ void PlayMode::update(float elapsed) {
 
 
 void PlayMode::draw(glm::uvec2 const &drawable_size) {
+
+
+	//https://github.com/15-466/15-466-f20-framebuffer/blob/master/PlayMode.cpp framebuffer code
+	//make sure framebuffers are the same size as the window:
+	framebuffers.realloc(drawable_size);
+
 	pngHelper->update_png_pos(drawable_size);
 	//update camera aspect ratio for drawable:
 	active_camera->aspect = float(drawable_size.x) / float(drawable_size.y);
@@ -380,8 +393,10 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	glUniform3fv(lit_toxic_color_texture_program->LIGHT_DIRECTION_vec3, 1, glm::value_ptr(glm::vec3(0.0f, 0.0f,-1.0f)));
 	glUniform3fv(lit_toxic_color_texture_program->LIGHT_ENERGY_vec3, 1, glm::value_ptr(glm::vec3(1.0f, 1.0f, 0.95f)));
 	glUniform1f(lit_toxic_color_texture_program->ENVIRONMENT_HEALTH_float, std::clamp(float(environment_score) / 100, 0.0f, 1.0f));
-
 	glUseProgram(0);
+
+	//---- draw scene to HDR framebuffer ----
+	glBindFramebuffer(GL_FRAMEBUFFER, framebuffers.hdr_fb);
 
 	glClearColor(0.4f, 0.6f, .85f, 1.0f);
 	glClearDepth(1.0f); //1.0 is actually the default value to clear the depth buffer to, but FYI you can change it.
@@ -399,42 +414,39 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	                is_Overworld(), // draw select at overworld
 	                (!is_Overworld() && !level_completion && (completed_level != current_level)), // reset during game
 	                current_grid->num_disposed, current_grid->goal, current_level, // for drawing faded/filled barrels
-									menu // for drawing whatever menu is open
+	                menu // for drawing whatever menu is open
 	);
 
 	//draw cloud overlay
 	cloud_scene.draw(*cloud_camera);
 
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	//copy scene to main window framebuffer:
+	
+	framebuffers.tone_map();
+
+	//tried adding anti-aliasing, but it looks funny :( 
+	//framebuffers.fxaa(drawable_size);
+
 	{ //use DrawLines to overlay some text:
 		glDisable(GL_DEPTH_TEST);
 		float aspect = float(drawable_size.x) / float(drawable_size.y);
 		DrawLines lines(glm::mat4(
-			1.0f / aspect, 0.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f, 0.0f,
-			0.0f, 0.0f, 1.0f, 0.0f,
-			0.0f, 0.0f, 0.0f, 1.0f
+				1.0f / aspect, 0.0f, 0.0f, 0.0f,
+				0.0f, 1.0f, 0.0f, 0.0f,
+				0.0f, 0.0f, 1.0f, 0.0f,
+				0.0f, 0.0f, 0.0f, 1.0f
 		));
-
-//		constexpr float H = 0.09f;
-//		lines.draw_text(std::to_string(environment_score),
-//			glm::vec3(-aspect + 0.335 + 0.1f * H, -0.76 + 0.1f * H, 0.0),
-//			glm::vec3(0.7 * H, 0.0f, 0.0f), glm::vec3(0.0f, 0.7 * H, 0.0f),
-//		    glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-//		if (level_completion) {
-//			lines.draw_text("Congratulations!",
-//			                glm::vec3(-aspect+0.8, 0.0, 0.0),
-//			                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
-//			                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-//		}
 	}
 	GL_ERRORS();
 }
 
 void PlayMode::on_quit() {
-    std::fstream out;
-    out.open(data_path("save0.enviro"), std::fstream::out);
-    out << (int)completed_level << " " << environment_score << std::endl;
-    out.close();
+	std::fstream out;
+	out.open(data_path("save0.enviro"), std::fstream::out);
+	out << (int)completed_level << " " << environment_score << std::endl;
+	out.close();
 }
 
 // Loads a level using the GridLoader
@@ -444,7 +456,7 @@ void PlayMode::load_level(uint8_t level_index) {
 	}
 	bool resetting = (level_index == current_level);
 	current_level = level_index % num_levels;
-	
+
 	current_grid = GridLoader::load_level(current_level, &scene);
 	if (is_Overworld() && current_grid->highest_level_node != nullptr) {
 		// Find the position of the node you should teleport the player to

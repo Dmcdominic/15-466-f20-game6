@@ -367,10 +367,16 @@ bool FgObj::try_to_move_by(const glm::ivec2& displ) {
   glm::ivec2 target_pos = this->cell->pos + displ;
   if (!current_grid->is_valid_pos(target_pos)) return false;
   Cell* target_cell = current_grid->cell_at(target_pos);
-  if (!target_cell->can_fg_obj_move_into(*this, displ)) return false;
+  if (!target_cell->can_fg_obj_move_into(*this, displ)) {
+  	if (current_grid->rolling) {
+  		current_grid->to_be_moved.push_back(new RollItem(*this, target_cell));
+  		return false;
+  	}
+  	return false;
+  }
   target_cell->when_fg_obj_moved_into(*this, displ);
   if (target_cell->fgObj != nullptr) {
-    throw std::runtime_error("Trying to move an FgObj into a cell that seems to still have one");
+	  throw std::runtime_error("else here: Trying to move an FgObj into a cell that seems to still have one");
   }
   target_cell->set_fg_obj(this);
   return true;
@@ -394,7 +400,7 @@ bool FgObj::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) 
 // Does whatever should happen when the given foreground object is moved/pushed into this object.
 void FgObj::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
   glm::ivec2 norm_displ = Grid::normalize_displ(displ);
-  if (!try_to_move_by(norm_displ)) {
+  if (!try_to_move_by(norm_displ) && !current_grid->rolling) {
     throw std::runtime_error("when_fg_obj_moved_into() somehow called for an object position & displacement that COULDN'T move.");
   }
   push_move_clip();
