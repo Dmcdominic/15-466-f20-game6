@@ -218,8 +218,8 @@ struct FXAAProgram {
 					
 			"	dir = min(vec2(FXAA_SPAN_MAX,  FXAA_SPAN_MAX), max(vec2(-FXAA_SPAN_MAX, -FXAA_SPAN_MAX), dir * rcpDirMin)) * texcoordOffset;\n"
 						
-			"	vec3 rgbA = (1.0/2.0) * (texture2D(TEX, vertTexcoord.xy + dir * (1.0/3.0 - 0.5)).xyz + texture2D(TEX, vertTexcoord.xy + dir * (2.0/3.0 - 0.5)).xyz);\n"
-			"	vec3 rgbB = rgbA * (1.0/2.0) + (1.0/4.0) * (texture2D(TEX, vertTexcoord.xy + dir * (0.0/3.0 - 0.5)).xyz + texture2D(TEX, vertTexcoord.xy + dir * (3.0/3.0 - 0.5)).xyz);\n"
+			"	vec3 rgbA = (1.0/2.0) * (texture(TEX, vertTexcoord.xy + dir * (1.0/3.0 - 0.5)).xyz + texture(TEX, vertTexcoord.xy + dir * (2.0/3.0 - 0.5)).xyz);\n"
+			"	vec3 rgbB = rgbA * (1.0/2.0) + (1.0/4.0) * (texture(TEX, vertTexcoord.xy + dir * (0.0/3.0 - 0.5)).xyz + texture(TEX, vertTexcoord.xy + dir * (3.0/3.0 - 0.5)).xyz);\n"
 			"	float lumaB = dot(rgbB, luma);\n"
 
 			"	if((lumaB < lumaMin) || (lumaB > lumaMax)){\n"
