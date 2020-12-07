@@ -40,7 +40,7 @@ PngHelper::PngHelper() {
 
 	png_clear = new PngView("clear.png", clear_xs, clear_ys);
 
-	png_main_background = new PngView("main_background.png", bckgrnd_xs, bckgrnd_ys);
+	png_main_background = new PngView("background0.png", bckgrnd_xs, bckgrnd_ys);
 	png_credits_background = new PngView("credits_background.png", bckgrnd_xs, bckgrnd_ys);
 	png_pause_background = new PngView("pause_background.png", bckgrnd_xs, bckgrnd_ys);
 
@@ -271,8 +271,16 @@ void PngHelper::draw(bool draw_barrel, bool draw_wasd, bool draw_return, bool dr
 	if (menu != nullptr && menu->current_sNode != nullptr) {
 		Menu::SNode* sNode = menu->current_sNode;
 		if (sNode == menu->sNodes[(size_t)Menu::MENUS::MAIN_MENU]) {
+			frame_count++;
+			if (frame_count >= frame_goal) {
+				frame_count = 0;
+				menu_frame = (menu_frame + 1) % menu_frames;
+				png_main_background->filename = "background" + std::to_string(menu_frame) + ".png";
+				png_main_background->load();
+			}
 			png_main_background->draw();
 		} else if (sNode == menu->sNodes[(size_t)Menu::MENUS::CREDITS]) {
+			png_main_background->draw();
 			png_credits_background->draw();
 		} else {
 			png_pause_background->draw();
