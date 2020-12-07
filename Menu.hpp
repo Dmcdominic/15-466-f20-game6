@@ -13,13 +13,14 @@ struct PngHelper;
 //   https://github.com/Dmcdominic/Primordials/blob/master/MenuMode.hpp
 struct Menu {
 	// Constructor
-	Menu::Menu(PngHelper* pngHelper);
+	Menu(PngHelper* pngHelper);
 
 	bool quit_asap = false;
 	bool restart_level = false;
 	bool return_to_OW = false;
 	bool new_game = false;
 	bool play = false;
+	bool load_main_menu = false;
 
 	// The different menu screens (SNodes)
   enum class MENUS { MAIN_MENU, CREDITS, PAUSE, END_SCREEN, MAX };
@@ -81,7 +82,7 @@ struct Menu {
 			int selected = (int)current_sNode->selected;
 			selected += incr;
 			if (selected < 0) selected = (int)current_sNode->items.size() - 1;
-			if (selected >= current_sNode->items.size()) selected = 0;
+			if (selected >= (int)current_sNode->items.size()) selected = 0;
 			current_sNode->selected = (uint32_t)selected;
 		} while (current_sNode->items[current_sNode->selected].on_select == nullptr);
 	}

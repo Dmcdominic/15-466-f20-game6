@@ -22,5 +22,7 @@ dist/Enviro.pdb
 dist/Enviro
 dist/Enviro.exe
 
+dist/save0.enviro
+
 .DS_Store
 vs_project/Debug/

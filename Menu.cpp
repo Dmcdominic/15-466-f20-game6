@@ -68,6 +68,7 @@ Menu::Menu(PngHelper* pngHelper) {
 
   pause->items.push_back(Item(pngHelper->png_pause_MainMenu, pngHelper->png_pause_MainMenu_selected));
   pause->items.back().on_select = [this, mainMenu](Menu::Item const&) {
-    this->setSNode(mainMenu);
+    //this->setSNode(mainMenu);
+    load_main_menu = true;
   };
 }

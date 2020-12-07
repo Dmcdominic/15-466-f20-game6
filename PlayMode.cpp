@@ -183,13 +183,21 @@ void PlayMode::update(float elapsed) {
 
 		//if the clouds are done moving
 		if(!cloud_cover->moving && !cloud_cover->covering) {
-			loading_level = false; 
+			loading_level = false;
 		}
 
 		//if the clouds need to start moving outwards 
 		else if(!cloud_cover->moving && cloud_cover->covering) {
-			cloud_cover->uncover(); 
-			load_level(level_to_load); 
+			cloud_cover->uncover();
+			if (load_main_menu) {
+				load_main_menu = false;
+				menu->setSNode(menu->sNodes[(size_t)Menu::MENUS::MAIN_MENU]);
+			} else if (load_credits) {
+				load_credits = false;
+				menu->setSNode(menu->sNodes[(size_t)Menu::MENUS::CREDITS]);
+			} else {
+				load_level(level_to_load);
+			}
 		}
 		camera_velo = glm::vec3(0.0f);
 		return;
@@ -243,6 +251,12 @@ void PlayMode::update(float elapsed) {
 				loading_level = true;
 				cloud_cover->cover();
 				break;
+			} else if (menu->load_main_menu) {
+				menu->load_main_menu = false;
+				load_main_menu = true;
+				loading_level = true;
+				cloud_cover->cover();
+				break;
 			}
 			continue;
 		}
@@ -256,11 +270,14 @@ void PlayMode::update(float elapsed) {
 			undo_move();
 		} else if (input.type == InputType::ESCAPE) {
 			menu->setSNode(menu->sNodes[(size_t)Menu::MENUS::PAUSE]);
-    } else if (level_completion&&input.type == InputType::INTERACT) {
+    } else if (level_completion && input.type == InputType::INTERACT) {
       level_completion = false;
 			environment_score += current_grid->grid_environment_score;
-			// load the Overworld
+			// load the Overworld (or credits if this was last level)
 			level_to_load = 0;
+			if (current_level == num_levels - 1) {
+				load_credits = true;
+			}
 			loading_level = true; 
 			cloud_cover->cover(); 
 			break;
@@ -277,8 +294,8 @@ void PlayMode::update(float elapsed) {
 
 		// Check if the output indicates a new level to load, e.g. they interacted with an overworld node.
 		if (output.level_to_load) {
-			cloud_cover->cover(); 
-			level_to_load = *output.level_to_load; 
+			cloud_cover->cover();
+			level_to_load = *output.level_to_load;
 			loading_level = true;
 			break;
 		}

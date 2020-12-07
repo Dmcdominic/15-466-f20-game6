@@ -34,7 +34,9 @@ struct PlayMode : Mode {
 	bool undo_move();
 	void clear_undo_stack();
 
-	bool loading_level = false; 
+	bool loading_level = false;
+	bool load_main_menu = false;
+	bool load_credits = false;
 	int level_to_load = 0;
 
 
