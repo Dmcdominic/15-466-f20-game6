@@ -67,10 +67,10 @@ uint8_t PlayMode::completed_level = 0;
 
 
 // Constructor
-PlayMode::PlayMode(uint8_t _current_level, int _environment_score) : scene(*toxic_prefabs_scene), environment_score(_environment_score) {
+PlayMode::PlayMode(uint8_t _completed_level, int _environment_score) : scene(*toxic_prefabs_scene), environment_score(_environment_score) {
 	// First, seed the random number generator
 
-    completed_level = _current_level;
+	completed_level = _completed_level;
 	std::srand((unsigned int)time(NULL));
 
 	//create a camera
@@ -81,7 +81,7 @@ PlayMode::PlayMode(uint8_t _current_level, int _environment_score) : scene(*toxi
 	active_camera->near = 0.01f;
 
 	// Init camera position & rotation
-	active_camera->transform->position = glm::vec3(2.0f, -1.0f, camera_height);
+	active_camera->transform->position = glm::vec3(2.0f, -1.0f, min_cam_height);
 	active_camera->transform->rotation = glm::quat(glm::vec3(0.3f, 0.0f, 0.0f));
 
 	// Start the background music
@@ -89,12 +89,13 @@ PlayMode::PlayMode(uint8_t _current_level, int _environment_score) : scene(*toxi
 
 	// --- MODEL & GRID INITIALIZATION ---
 	model_loader = new ModelLoader;
-	
-	load_level(0);
 
-	// Create cloud cover (for loading) 
-	cloud_scene = Scene(); 
-	cloud_cover = new CloudCover(&cloud_scene); 
+	load_level(0);
+	menu = new Menu(pngHelper);
+
+	// Create cloud cover (for loading)
+	cloud_scene = Scene();
+	cloud_cover = new CloudCover(&cloud_scene);
 	cloud_scene.transforms.emplace_back();
 	cloud_scene.cameras.emplace_back(&cloud_scene.transforms.back());
 	cloud_camera = &cloud_scene.cameras.back();
@@ -116,7 +117,9 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 
 	if (!loading_level && evt.type == SDL_KEYDOWN) {
 
-		if (evt.key.keysym.sym == SDLK_ESCAPE) { // TODO - PAUSE MENU
+		if (evt.key.keysym.sym == SDLK_ESCAPE) {
+			input_q.push(Input(InputType::ESCAPE));
+			return true;
 			/*SDL_SetRelativeMouseMode(SDL_FALSE);
 			return true;*/
 		} else if (evt.key.keysym.sym == SDLK_LEFT || evt.key.keysym.sym == SDLK_a) {
@@ -133,12 +136,11 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_e ||
 		           evt.key.keysym.sym == SDLK_SPACE ||
-							 evt.key.keysym.sym == SDLK_RETURN) { // INTERACT
+		           evt.key.keysym.sym == SDLK_RETURN) { // INTERACT
 			input_q.push(Input(InputType::INTERACT));
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_r || evt.key.keysym.sym == SDLK_x) { // RESET
 			input_q.push(Input(InputType::RESET));
-			pngHelper->reset();
 			return true;
 		} else if (evt.key.keysym.sym == SDLK_z) { // UNDO
 			input_q.push(Input(InputType::UNDO));
@@ -174,23 +176,37 @@ void PlayMode::update(float elapsed) {
 
 	// Player animation
 	current_grid->player->on_update();
-	
+
 	// don't process input yet if clouds are moving
 	if(loading_level) {
-		cloud_cover->update(elapsed); 
+		cloud_cover->update(elapsed);
 
 		//if the clouds are done moving
 		if(!cloud_cover->moving && !cloud_cover->covering) {
-			loading_level = false; 
+			loading_level = false;
 		}
 
-		//if the clouds need to start moving outwards 
+			//if the clouds need to start moving outwards
 		else if(!cloud_cover->moving && cloud_cover->covering) {
-			cloud_cover->uncover(); 
-			load_level(level_to_load); 
+			cloud_cover->uncover();
+			if (load_main_menu) {
+				load_main_menu = false;
+				menu->setSNode(menu->sNodes[(size_t)Menu::MENUS::MAIN_MENU]);
+			} else if (load_credits) {
+				load_credits = false;
+				menu->setSNode(menu->sNodes[(size_t)Menu::MENUS::CREDITS]);
+			} else {
+				load_level(level_to_load);
+			}
 		}
 		camera_velo = glm::vec3(0.0f);
 		return;
+	}
+
+	for (Barrel *barrel : current_grid->barrels) {
+		if (barrel->rolling) {
+			barrel->roll();
+		}
 	}
 
 	// Process input
@@ -198,27 +214,78 @@ void PlayMode::update(float elapsed) {
 		Output output = Output();
 		Input input = input_q.front();
 		input_q.pop();
-		if (input.type == InputType::RESET) {
-			if (!is_Overworld()) { // Push an undo copy (Overworld excluded)
-				undo_grids.push(GridLoader::create_undo_copy(current_grid));
+
+		// Menu case
+		if (menu->current_sNode != nullptr) {
+			if (input.type == InputType::DOWN) {
+				menu->select_up_down(1);
+			} else if (input.type == InputType::UP) {
+				menu->select_up_down(-1);
+			} else if (input.type == InputType::INTERACT) {
+				Menu::Item &item = menu->current_sNode->items[menu->current_sNode->selected];
+				item.on_select(item);
+			} else if (input.type == InputType::ESCAPE) {
+				if (menu->current_sNode == menu->sNodes[(size_t)Menu::MENUS::PAUSE]) menu->disableMenu();
+			} else if (input.type == InputType::RESET) {
+				reset_level();
 			}
-			// load_level(current_level);
-			level_to_load = current_level; 
-			loading_level = true; 
-			cloud_cover->cover(); 
+
+			// Now check if things should change
+			if (menu->quit_asap) {
+				menu->quit_asap = false;
+				this->quit = true;
+				return;
+			} else if (menu->play) {
+				menu->play = false;
+				level_to_load = 0;
+				loading_level = true;
+				cloud_cover->cover();
+			} else if (menu->restart_level) {
+				menu->restart_level = false;
+				reset_level();
+				break;
+			} else if (menu->new_game) {
+				menu->new_game = false;
+				completed_level = 0;
+				level_to_load = 0;
+				loading_level = true;
+				cloud_cover->cover();
+				break;
+			} else if (menu->return_to_OW) {
+				menu->return_to_OW = false;
+				level_to_load = 0;
+				loading_level = true;
+				cloud_cover->cover();
+				break;
+			} else if (menu->load_main_menu) {
+				menu->load_main_menu = false;
+				load_main_menu = true;
+				loading_level = true;
+				cloud_cover->cover();
+				break;
+			}
+			continue;
+		}
+
+		// Main case
+		if (input.type == InputType::RESET) {
+			reset_level();
 		} else if (input.type == InputType::SKIP_LVL) {
 			load_level(current_level + 1);
 		} else if (input.type == InputType::UNDO) {
 			undo_move();
-    } else if (level_completion&&input.type == InputType::INTERACT) {
-      level_completion = false;
+		} else if (input.type == InputType::ESCAPE) {
+			menu->setSNode(menu->sNodes[(size_t)Menu::MENUS::PAUSE]);
+		} else if (level_completion && input.type == InputType::INTERACT) {
+			level_completion = false;
 			environment_score += current_grid->grid_environment_score;
-			// load the Overworld
-			//load_level(0);
-	  		level_to_load = 0; 
-			loading_level = true; 
-			cloud_cover->cover(); 
-
+			// load the Overworld (or credits if this was last level)
+			level_to_load = 0;
+			if (current_level == num_levels - 1) {
+				load_credits = true;
+			}
+			loading_level = true;
+			cloud_cover->cover();
 			break;
 		} else {
 			if (!is_Overworld()) { // Push an undo copy (Overworld excluded)
@@ -233,16 +300,19 @@ void PlayMode::update(float elapsed) {
 
 		// Check if the output indicates a new level to load, e.g. they interacted with an overworld node.
 		if (output.level_to_load) {
-			cloud_cover->cover(); 
-			level_to_load = *output.level_to_load; 
-			loading_level = true; 
-
-			//load_level(*output.level_to_load);
+			cloud_cover->cover();
+			level_to_load = *output.level_to_load;
+			loading_level = true;
 			break;
 		}
 
 		// Check if level is complete
 		check_level_completion();
+	}
+
+	// if we broke out from the input loop but there are still inputs queued, clear them
+	while (!input_q.empty()) {
+		input_q.pop();
 	}
 
 	// Play audio
@@ -334,7 +404,8 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	                (level_completion && !loading_level && !is_Overworld()), // draw return after level completes
 	                is_Overworld(), // draw select at overworld
 	                (!is_Overworld() && !level_completion && (completed_level != current_level)), // reset during game
-	                current_grid->num_disposed, current_grid->goal, current_level // for drawing faded/filled barrels
+	                current_grid->num_disposed, current_grid->goal, current_level, // for drawing faded/filled barrels
+	                menu // for drawing whatever menu is open
 	);
 
 	//draw cloud overlay
@@ -344,39 +415,30 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 		glDisable(GL_DEPTH_TEST);
 		float aspect = float(drawable_size.x) / float(drawable_size.y);
 		DrawLines lines(glm::mat4(
-			1.0f / aspect, 0.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f, 0.0f,
-			0.0f, 0.0f, 1.0f, 0.0f,
-			0.0f, 0.0f, 0.0f, 1.0f
+				1.0f / aspect, 0.0f, 0.0f, 0.0f,
+				0.0f, 1.0f, 0.0f, 0.0f,
+				0.0f, 0.0f, 1.0f, 0.0f,
+				0.0f, 0.0f, 0.0f, 1.0f
 		));
-
-//		constexpr float H = 0.09f;
-//		lines.draw_text(std::to_string(environment_score),
-//			glm::vec3(-aspect + 0.335 + 0.1f * H, -0.76 + 0.1f * H, 0.0),
-//			glm::vec3(0.7 * H, 0.0f, 0.0f), glm::vec3(0.0f, 0.7 * H, 0.0f),
-//		    glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-//		if (level_completion) {
-//			lines.draw_text("Congratulations!",
-//			                glm::vec3(-aspect+0.8, 0.0, 0.0),
-//			                glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
-//			                glm::u8vec4(0xff, 0xff, 0xff, 0xff));
-//		}
 	}
 	GL_ERRORS();
 }
 
 void PlayMode::on_quit() {
-    std::fstream out;
-    out.open(data_path("in_game_data.txt"), std::fstream::out);
-    out << (int)completed_level << " " << environment_score << std::endl;
-    out.close();
+	std::fstream out;
+	out.open(data_path("save0.enviro"), std::fstream::out);
+	out << (int)completed_level << " " << environment_score << std::endl;
+	out.close();
 }
 
 // Loads a level using the GridLoader
 void PlayMode::load_level(uint8_t level_index) {
+	if (menu != nullptr) {
+		menu->disableMenu();
+	}
 	bool resetting = (level_index == current_level);
 	current_level = level_index % num_levels;
-	
+
 	current_grid = GridLoader::load_level(current_level, &scene);
 	if (is_Overworld() && current_grid->highest_level_node != nullptr) {
 		// Find the position of the node you should teleport the player to
@@ -388,11 +450,22 @@ void PlayMode::load_level(uint8_t level_index) {
 	if (!resetting) {
 		clear_undo_stack();
 	}
-	if (!resetting || is_Overworld()) {
-		glm::vec3 offset = reset_cam_offset_from_player();
-		active_camera->transform->position = current_grid->player->drawable->transform->position + offset;
-		camera_velo = glm::vec3();
+	glm::vec3 offset = reset_cam_offset_from_player();
+	active_camera->transform->position = current_grid->player->drawable->transform->position + offset;
+	camera_velo = glm::vec3();
+}
+
+
+// Resets (restarts) the level
+void PlayMode::reset_level() {
+	if (!is_Overworld()) { // Push an undo copy (Overworld excluded)
+		undo_grids.push(GridLoader::create_undo_copy(current_grid));
 	}
+	pngHelper->reset();
+	// load_level(current_level);
+	level_to_load = current_level;
+	loading_level = true;
+	cloud_cover->cover();
 }
 
 

@@ -12,10 +12,12 @@
 // Forward declarations
 struct Grid;
 struct Cell;
+struct CellItem;
 struct BgTile;
 struct FgObj;
 struct SkyObj;
 struct Player;
+struct Barrel;
 struct OverworldNode;
 
 
@@ -24,6 +26,14 @@ extern Grid* current_grid;
 
 // The undo stack
 extern std::stack<Grid*> undo_grids;
+
+
+struct RollItem {
+	FgObj &item;
+	Cell *target_cell;
+
+	RollItem(FgObj &_item, Cell *_target_cell): item(_item), target_cell(_target_cell) {};
+};
 
 
 /* A grid of cells. */
@@ -39,6 +49,10 @@ struct Grid {
 
 	Player *player = nullptr;
 	OverworldNode *highest_level_node = nullptr;
+
+	std::vector<Barrel *> barrels;
+	bool rolling = false;
+	std::vector<RollItem *> to_be_moved;
 
 	private: bool pre_tick_done = false;
 	public:

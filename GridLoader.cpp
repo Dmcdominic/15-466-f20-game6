@@ -204,11 +204,13 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
                     grid->player = new Player(scene);
                     cell.set_fg_obj(grid->player);
                     break; 
-                case 2:  
-                    cell.set_fg_obj(new Barrel(scene, 0));
+                case 2:
+                    grid->barrels.push_back(new Barrel(scene, 0));
+                    cell.set_fg_obj(grid->barrels.back());
                     break; 
                 case 3:
-                    cell.set_fg_obj(new Barrel(scene, 1));
+                	grid->barrels.push_back(new Barrel(scene, 1));
+                    cell.set_fg_obj(grid->barrels.back());
                     break; 
                 case 4:  
                     cell.set_fg_obj(new Rock(scene));
