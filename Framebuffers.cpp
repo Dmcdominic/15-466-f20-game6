@@ -4,6 +4,7 @@
 #include "gl_compile_program.hpp"
 #include "gl_check_fb.hpp"
 #include "gl_errors.hpp"
+#include <glm/gtc/type_ptr.hpp>
 
 #include <array>
 
@@ -96,53 +97,21 @@ struct ToneMapProgram {
 			"	gl_Position = vec4(4 * (gl_VertexID & 1) - 1,  2 * (gl_VertexID & 2) - 1, 0.0, 1.0);\n"
 			"}\n"
 		,
-			//FXAA fragment shader -- code adapted from https://github.com/spite/Wagner/blob/master/fragment-shaders/fxaa2-fs.glsl
+			//fragment shader -- reads a HDR texture, maps to output pixel colors
 			"#version 330\n"
 			"uniform sampler2D TEX;\n"
 			"out vec4 fragColor;\n"
 			"void main() {\n"
-			"	vec3 rgbM = texelFetch(TEX, ivec2(gl_FragCoord.xy), 0).rgb;\n"
-			// The parameters are hardcoded for now, but could be
-			// made into uniforms to control fromt he program.
-			"	float FXAA_SPAN_MAX = 8.0;\n"
-			"	float FXAA_REDUCE_MUL = 1.0/8.0;\n"
-			"	float FXAA_REDUCE_MIN = (1.0/128.0);\n"
-			"	vec3 rgbNW = texelFetch(TEX, ivec2(gl_FragCoord.x-1, gl_FragCoord.y-1), 0).rgb;\n"
-			"	vec3 rgbNE = texelFetch(TEX, ivec2(gl_FragCoord.x+1, gl_FragCoord.y-1), 0).rgb;\n"
-			"	vec3 rgbSW = texelFetch(TEX, ivec2(gl_FragCoord.x-1, gl_FragCoord.y+1), 0).rgb;\n"
-			"	vec3 rgbSE = texelFetch(TEX, ivec2(gl_FragCoord.x+1, gl_FragCoord.y+1), 0).rgb;\n"
-
-			" 	vec3 luma = vec3(0.299, 0.587, 0.114);\n"
-			"	float lumaNW = dot(rgbNW, luma);\n"
-			"	float lumaNE = dot(rgbNE, luma);\n"
-			"	float lumaSW = dot(rgbSW, luma);\n"
-			"	float lumaSE = dot(rgbSE, luma);\n"
-			"	float lumaM  = dot( rgbM, luma);\n"
-					
-			"	float lumaMin = min(lumaM, min(min(lumaNW, lumaNE), min(lumaSW, lumaSE)));\n"
-			"	float lumaMax = max(lumaM, max(max(lumaNW, lumaNE), max(lumaSW, lumaSE)));\n"
-					
-			"	vec2 dir;\n"
-			"	dir.x = -((lumaNW + lumaNE) - (lumaSW + lumaSE));\n"
-			"	dir.y =  ((lumaNW + lumaSW) - (lumaNE + lumaSE));\n"
-					
-			"	float dirReduce = max((lumaNW + lumaNE + lumaSW + lumaSE) * (0.25 * FXAA_REDUCE_MUL), FXAA_REDUCE_MIN);\n"
-					
-			"	float rcpDirMin = 1.0/(min(abs(dir.x), abs(dir.y)) + dirReduce);\n"
-					
-			"	dir = min(vec2(FXAA_SPAN_MAX,  FXAA_SPAN_MAX), max(vec2(-FXAA_SPAN_MAX, -FXAA_SPAN_MAX), dir * rcpDirMin));\n"
-						
-			"	vec3 rgbA = (1.0/2.0) * (texelFetch(TEX, ivec2(gl_FragCoord.xy + dir * (1.0/3.0 - 0.5)), 0).rgb + texelFetch(TEX, ivec2(gl_FragCoord.xy + dir * (2.0/3.0 - 0.5)), 0).rgb);\n"
-			"	vec3 rgbB = rgbA * (1.0/2.0) + (1.0/4.0) * (texelFetch(TEX, ivec2(gl_FragCoord.xy + dir * (0.0/3.0 - 0.5)), 0).rgb + texelFetch(TEX, ivec2(gl_FragCoord.xy + dir * (3.0/3.0 - 0.5)), 0).rgb);\n"
-			"	float lumaB = dot(rgbB, luma);\n"
-
-			"	if((lumaB < lumaMin) || (lumaB > lumaMax)){\n"
-			"		fragColor.xyz=rgbA;\n"
-			"	} else {\n"
-			"		fragColor.xyz=rgbB;\n"
-			"	}\n"
-			"	fragColor.a = 1.0;\n"
-
+			"	vec3 color = texelFetch(TEX, ivec2(gl_FragCoord.xy), 0).rgb;\n"
+			//exposure-correction-style range compression:
+			//"		color = vec3(log(color.r + 1.0), log(color.g + 1.0), log(color.b + 1.0)) / log(2.0 + 1.0);\n"
+			//weird color effect:
+			//"		color = vec3(color.rg, gl_FragCoord.x/textureSize(TEX,0).x);\n"
+			//basic gamma-style range compression:
+			//"		color = vec3(pow(color.r, 0.45), pow(color.g, 0.45), pow(color.b, 0.45));\n"
+			//raw values:
+			//"		color = color;\n"
+			"	fragColor = vec4(color, 1.0);\n"
 			"}\n"
 		);
 		
@@ -175,6 +144,123 @@ void Framebuffers::tone_map() {
 	glDisable(GL_DEPTH_TEST);
 
 	glUseProgram(tone_map_program->program);
+
+	glBindVertexArray(empty_vao);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, hdr_color_tex);
+
+	glDrawArrays(GL_TRIANGLES, 0, 3);
+
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glBindVertexArray(0);
+	glUseProgram(0);
+}
+
+struct FXAAProgram {
+	FXAAProgram() {
+		program = gl_compile_program(
+			//vertex shader -- draws a fullscreen triangle using no attribute streams
+			"#version 330\n"
+			//"out vec2 texCoord;\n"
+			"varying vec2 vUv;\n"
+			"uniform vec2 resolution;\n"
+			"void main() {\n"
+			"	gl_Position = vec4(4 * (gl_VertexID & 1) - 1,  2 * (gl_VertexID & 2) - 1, 0.0, 1.0);\n"
+	        //"   texCoord = Position.zw;\n"
+			"}\n"
+		,
+			//FXAA fragment shader -- code from https://github.com/spite/Wagner/blob/master/fragment-shaders/fxaa2-fs.glsl
+			"#version 330\n"
+			"uniform sampler2D TEX;\n"
+			"uniform vec2 resolution;\n"
+			//"varying vec2 vUv;\n"
+            "in vec2 texCoord;\n"
+
+			// The inverse of the texture dimensions along X and Y
+			"vec2 texcoordOffset = 1. / resolution;\n"
+			//varying vec4 vertColor;
+			//"vec4 vertTexcoord = vec4( texCoord, 1., 1. );\n"
+
+			"out vec4 fragColor;\n"
+			"void main() {\n"
+			"	vec2 vUv = gl_FragCoord.xy / resolution;\n"
+			"	vec4 vertTexcoord = vec4( vUv, 1., 1. );\n"
+			"	vec3 rgbM = texelFetch(TEX, ivec2(gl_FragCoord.xy), 0).rgb;\n"
+			// The parameters are hardcoded for now, but could be
+			// made into uniforms to control fromt he program.
+			"	float FXAA_SPAN_MAX = 8.0;\n"
+			"	float FXAA_REDUCE_MUL = 1.0/8.0;\n"
+			"	float FXAA_REDUCE_MIN = (1.0/128.0);\n"
+			"	vec3 rgbNW = texture(TEX, vertTexcoord.xy + (vec2(-1.0, -1.0) * texcoordOffset)).rgb;\n"
+			"	vec3 rgbNE = texture(TEX, vertTexcoord.xy + (vec2(+1.0, -1.0) * texcoordOffset)).rgb;\n"
+			"	vec3 rgbSW = texture(TEX, vertTexcoord.xy + (vec2(-1.0, +1.0) * texcoordOffset)).rgb;\n"
+			"	vec3 rgbSE = texture(TEX, vertTexcoord.xy + (vec2(-1.0, +1.0) * texcoordOffset)).rgb;\n"
+
+			" 	vec3 luma = vec3(0.299, 0.587, 0.114);\n"
+			"	float lumaNW = dot(rgbNW, luma);\n"
+			"	float lumaNE = dot(rgbNE, luma);\n"
+			"	float lumaSW = dot(rgbSW, luma);\n"
+			"	float lumaSE = dot(rgbSE, luma);\n"
+			"	float lumaM  = dot( rgbM, luma);\n"
+					
+			"	float lumaMin = min(lumaM, min(min(lumaNW, lumaNE), min(lumaSW, lumaSE)));\n"
+			"	float lumaMax = max(lumaM, max(max(lumaNW, lumaNE), max(lumaSW, lumaSE)));\n"
+					
+			"	vec2 dir;\n"
+			"	dir.x = -((lumaNW + lumaNE) - (lumaSW + lumaSE));\n"
+			"	dir.y =  ((lumaNW + lumaSW) - (lumaNE + lumaSE));\n"
+					
+			"	float dirReduce = max((lumaNW + lumaNE + lumaSW + lumaSE) * (0.25 * FXAA_REDUCE_MUL), FXAA_REDUCE_MIN);\n"
+					
+			"	float rcpDirMin = 1.0/(min(abs(dir.x), abs(dir.y)) + dirReduce);\n"
+					
+			"	dir = min(vec2(FXAA_SPAN_MAX,  FXAA_SPAN_MAX), max(vec2(-FXAA_SPAN_MAX, -FXAA_SPAN_MAX), dir * rcpDirMin)) * texcoordOffset;\n"
+						
+			"	vec3 rgbA = (1.0/2.0) * (texture2D(TEX, vertTexcoord.xy + dir * (1.0/3.0 - 0.5)).xyz + texture2D(TEX, vertTexcoord.xy + dir * (2.0/3.0 - 0.5)).xyz);\n"
+			"	vec3 rgbB = rgbA * (1.0/2.0) + (1.0/4.0) * (texture2D(TEX, vertTexcoord.xy + dir * (0.0/3.0 - 0.5)).xyz + texture2D(TEX, vertTexcoord.xy + dir * (3.0/3.0 - 0.5)).xyz);\n"
+			"	float lumaB = dot(rgbB, luma);\n"
+
+			"	if((lumaB < lumaMin) || (lumaB > lumaMax)){\n"
+			"		fragColor.xyz=rgbA;\n"
+			"	} else {\n"
+			"		fragColor.xyz=rgbB;\n"
+			"	}\n"
+						
+
+			"	fragColor.a = 1.0;\n"
+
+			"}\n"
+		);
+		
+		//set TEX to texture unit 0:
+		GLuint TEX_sampler2D = glGetUniformLocation(program, "TEX");
+		glUseProgram(program);
+		glUniform1i(TEX_sampler2D, 0);
+		glUseProgram(0);
+
+		GL_ERRORS();
+	}
+
+	GLuint program = 0;
+
+	//uniforms:
+	//none
+
+	//textures:
+	//texture0 -- texture to copy
+};
+
+Load< FXAAProgram > fxaa_program(LoadTagEarly);
+
+void Framebuffers::fxaa(glm::uvec2 resolution) {
+	glDisable(GL_BLEND);
+	glDisable(GL_DEPTH_TEST);
+
+	glUseProgram(fxaa_program->program);
+	glUniform2fv(glGetUniformLocation(fxaa_program->program, "resolution"), 1, glm::value_ptr(glm::vec2(resolution.x, resolution.y)));
+
 	glBindVertexArray(empty_vao);
 
 	glActiveTexture(GL_TEXTURE0);

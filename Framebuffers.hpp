@@ -17,11 +17,14 @@ struct Framebuffers {
 	GLuint hdr_depth_rb = 0; //GL_DEPTH_COMPONENT24 renderbuffer
 	GLuint hdr_fb = 0; // color0: color_tex , depth: depth_rb
 
-	void tone_map(); //copy hdr.color_tex to screen with tone mapping applied
-
+	void tone_map(); //copy hdr.color_tex to screen with tone mapping applied 
+	void fxaa(glm::uvec2 resolution);
 	//for the "bloom" effect:
 	GLuint blur_x_tex = 0; //GL_RGB16F color texture for first pass of blur
 	GLuint blur_x_fb = 0; // color0: blur_x_tex
+
+	//for fxaa
+	GLuint resolution_vec2 = -1U;
 
 	void add_bloom(); //do a basic bloom effect on the hdr.color_tex
 };

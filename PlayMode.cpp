@@ -352,7 +352,11 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	//copy scene to main window framebuffer:
+	
 	framebuffers.tone_map();
+
+	//tried adding anti-aliasing, but it looks funny :( 
+	//framebuffers.fxaa(drawable_size);
 
 	{ //use DrawLines to overlay some text:
 		glDisable(GL_DEPTH_TEST);
