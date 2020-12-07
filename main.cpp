@@ -103,33 +103,20 @@ int main(int argc, char **argv) {
 	//------------ load assets --------------
 	call_load_functions();
 
-	//------------ create game mode + make current --------------
-//	Mode::set_current(std::make_shared< PlayMode >());
+	//------------ read save data, then create game mode + make current --------------
     std::fstream in;
-    int current_level;
-    int environment_score;
-    in.open(data_path("in_game_data.txt"), std::fstream::in);
-    in >> current_level;
-    in >> environment_score;
+    int current_level = 0;
+    int environment_score = 0;
+    in.open(data_path("save0.enviro"), std::fstream::in);
+		if (!in.fail()) {
+			in >> current_level;
+			in >> environment_score;
+			Mode::set_play(std::make_shared< PlayMode >((uint8_t)current_level, environment_score));
+		} else {
+			Mode::set_play(std::make_shared< PlayMode >());
+		}
     in.close();
 
-    if(current_level!=0) {
-        std::vector< MenuMode::Item > items;
-        items.emplace_back("Continue");
-        items.back().on_select = [&current_level, &environment_score](MenuMode::Item const&) {
-            Mode::set_play(std::make_shared< PlayMode >((uint8_t)current_level, environment_score));
-            Mode::switch_to_play();
-        };
-        items.emplace_back("Restart Game");
-        items.back().on_select = [](MenuMode::Item const&) {
-            Mode::set_play(std::make_shared< PlayMode >(0, 100));
-            Mode::switch_to_play();
-        };
-        game_menu->update_items(items);
-    } else {
-        Mode::set_play(std::make_shared< PlayMode >((uint8_t)current_level, environment_score));
-    }
-    Mode::set_menu(game_menu);
 
 	//------------ main loop ------------
 
@@ -184,7 +171,10 @@ int main(int argc, char **argv) {
 				}
 			}
 			if (!Mode::current) break;
-			if (Mode::current->quit) break;
+			if (Mode::current->quit) {
+				Mode::current->on_quit();
+				break;
+			}
 		}
 
 		{ //(2) call the current mode's "update" function to deal with elapsed time:
@@ -199,7 +189,10 @@ int main(int argc, char **argv) {
 
 			Mode::current->update(elapsed);
 			if (!Mode::current) break;
-			if (Mode::current->quit) break;
+			if (Mode::current->quit) {
+				break;
+				Mode::current->on_quit();
+			}
 		}
 
 		{ //(3) call the current mode's "draw" function to produce output:

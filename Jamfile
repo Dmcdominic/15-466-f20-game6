@@ -140,6 +140,7 @@ GAME_NAMES =
 	Mud
 	CloudCover
 	PngHelper
+	Menu
 	;
 
 COMMON_NAMES =

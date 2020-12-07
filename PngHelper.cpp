@@ -40,14 +40,43 @@ PngHelper::PngHelper() {
 
 	png_clear = new PngView("clear.png", clear_xs, clear_ys);
 
+	png_main_background = new PngView("main_background.png", bckgrnd_xs, bckgrnd_ys);
+	png_credits_background = new PngView("credits_background.png", bckgrnd_xs, bckgrnd_ys);
+	png_pause_background = new PngView("pause_background.png", bckgrnd_xs, bckgrnd_ys);
+
+	png_mainMenu_Play = new PngView("buttons/play.png", menu_xs, menu0_ys);
+	png_mainMenu_Play_selected = new PngView("buttons/play_selected.png", menu_xs, menu0_ys);
+	png_mainMenu_NewGame = new PngView("buttons/new.png", menu_xs, menu1_ys);
+	png_mainMenu_NewGame_selected = new PngView("buttons/new_selected.png", menu_xs, menu1_ys);
+	png_mainMenu_Credits = new PngView("buttons/credits.png", menu_xs, menu2_ys);
+	png_mainMenu_Credits_selected = new PngView("buttons/credits_selected.png", menu_xs, menu2_ys);
+	png_mainMenu_Quit = new PngView("buttons/quit.png", menu_xs, menu3_ys);
+	png_mainMenu_Quit_selected = new PngView("buttons/quit_selected.png", menu_xs, menu3_ys);
+
+	png_credits_Credits = new PngView("credits.png", credits_xs, credits_ys);
+	png_credits_MainMenu = new PngView("buttons/menu.png", menu_xs, menu3_ys);
+	png_credits_MainMenu_selected = new PngView("buttons/menu_selected.png", menu_xs, menu3_ys);
+
+	png_pause_Continue = new PngView("buttons/continue.png", menu_xs, menu0_ys);
+	png_pause_Continue_selected = new PngView("buttons/continue_selected.png", menu_xs, menu0_ys);
+	png_pause_Restart = new PngView("buttons/restart.png", menu_xs, menu1_ys);
+	png_pause_Restart_selected = new PngView("buttons/restart_selected.png", menu_xs, menu1_ys);
+	png_pause_Overworld = new PngView("buttons/overworld.png", menu_xs, menu2_ys);
+	png_pause_Overworld_selected = new PngView("buttons/overworld_selected.png", menu_xs, menu2_ys);
+	png_pause_MainMenu = new PngView("buttons/menu.png", menu_xs, menu3_ys);
+	png_pause_MainMenu_selected = new PngView("buttons/menu_selected.png", menu_xs, menu3_ys);
+
 }
+
 
 PngHelper::~PngHelper() {
 }
 
+
 void PngHelper::update_env_score(int score) {
 	png_meter = png_meters[int((100 - score)/25)];
 }
+
 
 void PngHelper::update_png_pos(glm::uvec2 const &drawable_size) {
 	// only load new positions if window size changed
@@ -98,7 +127,7 @@ void PngHelper::update_png_pos(glm::uvec2 const &drawable_size) {
 				png_meters[j]->ys[top[i]] = meter_y - 1;
 			}
 			png_wasd->xs[left[i]] = 1 - keys_x;
-			png_wasd->ys[top[i]] = keys_y - 1;
+			png_wasd->ys[top[i]] = keys_y - 0.94f;
 			png_return->xs[left[i]] = 0.97f - enter_x;
 			png_return->ys[bottom[i]] = 1 - enter_y;
 			png_select->xs[left[i]] = 0.97f - enter_x;
@@ -124,6 +153,8 @@ void PngHelper::update_png_pos(glm::uvec2 const &drawable_size) {
 			png_clear->xs[right[i]] = clear_x/2;
 			png_clear->ys[top[i]] = clear_y;
 			png_clear->ys[bottom[i]] = -clear_y;
+
+			// TODO - do this for menu png's too!(?)
 		}
 
 		// load the new vertex positions
@@ -143,11 +174,13 @@ void PngHelper::update_png_pos(glm::uvec2 const &drawable_size) {
 		png_ret_inst->load();
 		png_clr_inst->load();
 		png_clear->load();
+		// TODO - do this for menu png's too!(?)
 
 		prev_drawable_size = drawable_size;
 	}
 
 }
+
 
 void PngHelper::reset() {
 	for (int i = 0; i < 3; i++) {
@@ -157,13 +190,15 @@ void PngHelper::reset() {
 	already_disposed = 0;
 }
 
+
 void PngHelper::draw() {
 	// for drawing on level completion
-	draw(true, true, true, false, false, barrels_drawn, barrels_drawn, drawing_level);
+	draw(true, true, true, false, false, barrels_drawn, barrels_drawn, drawing_level, nullptr);
 }
 
+
 void PngHelper::draw(bool draw_barrel, bool draw_wasd, bool draw_return, bool draw_select, bool draw_reset,
-		int num_disposed, int goal, int cur_level) {
+		int num_disposed, int goal, int cur_level, Menu *menu) {
 	if (draw_barrel) {
 		// set local fields to match current grid
 		if (drawing_level != cur_level) {
@@ -200,5 +235,24 @@ void PngHelper::draw(bool draw_barrel, bool draw_wasd, bool draw_return, bool dr
 	if (draw_reset) {
 		png_reset->draw();
 		png_undo->draw();
+	}
+
+	// Menu
+	if (menu != nullptr && menu->current_sNode != nullptr) {
+		Menu::SNode* sNode = menu->current_sNode;
+		if (sNode == menu->sNodes[(size_t)Menu::MENUS::MAIN_MENU]) {
+			png_main_background->draw();
+		} else if (sNode == menu->sNodes[(size_t)Menu::MENUS::CREDITS]) {
+			png_credits_background->draw();
+		} else {
+			png_pause_background->draw();
+		}
+		for (size_t i = 0; i < sNode->items.size(); i++) {
+			if (sNode->selected == i) {
+				sNode->items.at(i).pngView_selected->draw();
+			} else {
+				sNode->items.at(i).pngView->draw();
+			}
+		}
 	}
 }

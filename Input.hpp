@@ -5,7 +5,7 @@
 
 // Types of input
 enum class InputType {
-  UP, DOWN, LEFT, RIGHT, INTERACT, UNDO, RESET, SKIP_LVL
+  UP, DOWN, LEFT, RIGHT, INTERACT, UNDO, RESET, SKIP_LVL, ESCAPE
 };
 
 
