@@ -48,6 +48,8 @@ struct PlayMode : Mode {
 		return current_level == 0;
 	}
 
+	static glm::ivec2 last_node_pos;
+
 	ModelLoader loader; 
 
 	//input tracking:
