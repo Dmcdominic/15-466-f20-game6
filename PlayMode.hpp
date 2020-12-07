@@ -9,14 +9,14 @@
 #include "level_sequence.hpp"
 
 #include "PngHelper.hpp"
+#include "Menu.hpp"
 
 #include <glm/glm.hpp>
-
 #include <queue>
 
 
 struct PlayMode : Mode {
-	PlayMode(uint8_t _current_level, int _environment_score);
+	PlayMode(uint8_t _completed_level = 0, int _environment_score = 100);
 	virtual ~PlayMode();
 
 	//functions called by main loop:
@@ -30,10 +30,13 @@ struct PlayMode : Mode {
 //	void update_pass_items(std::vector< MenuMode::Item > &items);
 
 	void load_level(uint8_t level_index);
+	void reset_level();
 	bool undo_move();
 	void clear_undo_stack();
 
-	bool loading_level = false; 
+	bool loading_level = false;
+	bool load_main_menu = false;
+	bool load_credits = false;
 	int level_to_load = 0;
 
 
@@ -61,8 +64,11 @@ struct PlayMode : Mode {
 	//Cloud Cover for loading
 	CloudCover *cloud_cover = nullptr; 
 
-	float camera_height = 8.0f;
-	float camera_height_OW = 10.0f;
+	const float min_cam_height = 7.5f;
+	const float max_cam_height = 11.0f;
+	const float cam_height_OW = 10.0f;
+	const size_t min_grid_width = 4;
+	const size_t max_grid_width = 15;
 	glm::vec2 base_cam_offset_from_player = glm::vec2(-0.2f, -2.0f);
 	glm::vec3 camera_offset_from_player = glm::vec3();
 	glm::vec3 randomized_offset_range = glm::vec3(1.5f, 1.5f, 2.0f);
@@ -76,7 +82,9 @@ struct PlayMode : Mode {
 		return (is_Overworld()) ? camera_max_speed_OW : camera_max_speed;
 	}
 	glm::vec3 reset_cam_offset_from_player() {
-		float z = (is_Overworld()) ? camera_height_OW : camera_height;
+		float scalar = (std::max(current_grid->width, current_grid->height) - min_grid_width) / (float)(max_grid_width - min_grid_width);
+		float z = min_cam_height + scalar * (max_cam_height - min_cam_height);
+		if (is_Overworld()) z = cam_height_OW;
 		camera_offset_from_player = glm::vec3(base_cam_offset_from_player.x, base_cam_offset_from_player.y, z);
 		float rand_scale = -1.0f + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 2.0f;
 		return camera_offset_from_player + randomized_offset_range * rand_scale;
@@ -86,4 +94,7 @@ struct PlayMode : Mode {
 	bool level_completion = false;
 
 	PngHelper *pngHelper = new PngHelper();
+
+	// Menu
+	Menu *menu = nullptr;
 };

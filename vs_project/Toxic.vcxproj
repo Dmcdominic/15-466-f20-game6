@@ -104,6 +104,7 @@
     <ClCompile Include="..\load_save_png.cpp" />
     <ClCompile Include="..\load_wav.cpp" />
     <ClCompile Include="..\main.cpp" />
+    <ClCompile Include="..\Menu.cpp" />
     <ClCompile Include="..\MenuMode.cpp" />
     <ClCompile Include="..\Mesh.cpp" />
     <ClCompile Include="..\Mode.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="..\load_opus.hpp" />
     <ClInclude Include="..\load_save_png.hpp" />
     <ClInclude Include="..\load_wav.hpp" />
+    <ClInclude Include="..\Menu.hpp" />
     <ClInclude Include="..\MenuMode.hpp" />
     <ClInclude Include="..\Mesh.hpp" />
     <ClInclude Include="..\Mode.hpp" />

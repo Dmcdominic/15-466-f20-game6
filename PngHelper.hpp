@@ -2,8 +2,8 @@
 
 #include "PngView.hpp"
 #include <glm/glm.hpp>
+#include "Menu.hpp"
 
-#define NUM_PNG 6
 
 struct PngHelper {
 	PngHelper();
@@ -22,7 +22,7 @@ struct PngHelper {
 		float barrel_xs2[6] = {-0.8f, -0.8f, -0.6f, -0.8f, -0.6f, -0.6f};
 		float barrel_xs3[6] = {-0.6f, -0.6f, -0.4f, -0.6f, -0.4f, -0.4f};
 		float barrel_ys[6]  = { 1.0f,  0.8f,  0.8f,  1.0f,  0.8f,  1.0f};
-		float wasd_ys[6]    = {-0.3f, -0.9f, -0.9f, -0.3f, -0.9f, -0.3f};
+		float wasd_ys[6]    = {-0.2f, -0.9f, -0.9f, -0.2f, -0.9f, -0.2f};
 		float enter_xs[6]   = {0.63f, 0.63f, 0.97f, 0.63f, 0.97f, 0.97f};
 		float enter_ys[6]   = { 1.0f,  0.7f,  0.7f,  1.0f,  0.7f,  1.0f};
 		float reset_ys[6]   = { 0.2f, -0.3f, -0.3f,  0.2f, -0.3f,  0.2f};
@@ -35,6 +35,18 @@ struct PngHelper {
 		float clr_inst_ys[6]= { 0.2f, -0.3f, -0.3f,  0.2f, -0.3f,  0.2f};
 		float clear_xs[6]   = {-0.5f, -0.5f,  0.5f, -0.5f,  0.5f,  0.5f};
 		float clear_ys[6]   = { 0.7f, -0.7f, -0.7f,  0.7f, -0.7f,  0.7f};
+
+		float bckgrnd_xs[6] = {-1.0f, -1.0f,  1.0f, -1.0f,  1.0f,  1.0f };
+		float bckgrnd_ys[6] = { 1.0f, -1.0f, -1.0f,  1.0f, -1.0f,  1.0f };
+
+		float menu_xs[6]    = { -0.3f, -0.3f,  0.3f, -0.3f,  0.3f,  0.3f };
+		float menu0_ys[6]   = {  0.5f,  0.2f,  0.2f,  0.5f,  0.2f,  0.5f };
+		float menu1_ys[6]   = { 0.15f,-0.15f,-0.15f, 0.15f,-0.15f, 0.15f };
+		float menu2_ys[6]   = { -0.2f, -0.5f, -0.5f, -0.2f, -0.5f, -0.2f };
+		float menu3_ys[6]   = {-0.55f,-0.85f,-0.85f,-0.55f,-0.85f,-0.55f };
+		
+		float credits_xs[6] = {-1.0f, -1.0f,  1.0f, -1.0f,  1.0f,  1.0f };
+		float credits_ys[6] = { 0.9f, -0.5f, -0.5f,  0.9f, -0.5f,  0.9f };
 
 		PngView *png_meter100;
 		PngView *png_meter75;
@@ -63,6 +75,34 @@ struct PngHelper {
 
 		PngView *png_clear;
 
+		PngView* png_main_background;
+		PngView* png_credits_background;
+		PngView* png_pause_background;
+
+	public:
+		PngView* png_mainMenu_Play;
+		PngView* png_mainMenu_Play_selected;
+		PngView* png_mainMenu_NewGame;
+		PngView* png_mainMenu_NewGame_selected;
+		PngView* png_mainMenu_Credits;
+		PngView* png_mainMenu_Credits_selected;
+		PngView* png_mainMenu_Quit;
+		PngView* png_mainMenu_Quit_selected;
+
+		PngView* png_credits_Credits;
+		PngView* png_credits_MainMenu;
+		PngView* png_credits_MainMenu_selected;
+
+		PngView* png_pause_Continue;
+		PngView* png_pause_Continue_selected;
+		PngView* png_pause_Restart;
+		PngView* png_pause_Restart_selected;
+		PngView* png_pause_Overworld;
+		PngView* png_pause_Overworld_selected;
+		PngView* png_pause_MainMenu;
+		PngView* png_pause_MainMenu_selected;
+
+	private:
 		// for barrels
 		int already_disposed = 0;
 		int barrels_drawn = 0;
@@ -77,5 +117,5 @@ struct PngHelper {
 		void reset();
 		void draw();
 		void draw(bool draw_barrel, bool draw_wasd, bool draw_return, bool draw_select, bool draw_reset,
-				int num_disposed, int goal, int cur_level);
+				int num_disposed, int goal, int cur_level, Menu *menu);
 };
