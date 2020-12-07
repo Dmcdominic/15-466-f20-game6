@@ -5,7 +5,7 @@ on:
     types: [created]
 
 env:
-  BASE_NAME: Toxic
+  BASE_NAME: Enviro
   NEST_LIBS_VERSION: v0.6
 
 jobs:
