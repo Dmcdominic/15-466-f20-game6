@@ -53,7 +53,6 @@ struct Grid {
 	std::vector<Barrel *> barrels;
 	int barrel_count = 0;
 	bool rolling = false;
-	std::vector<RollItem *> to_be_moved;
 
 	private: bool pre_tick_done = false;
 	public: bool post_tick_queued = false;
