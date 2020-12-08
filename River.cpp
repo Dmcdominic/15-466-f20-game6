@@ -81,6 +81,7 @@ void River::position_models() {
   if (sunk_object != nullptr) {
     sunk_object->transform->position = this->drawable->transform->position;
     sunk_object->transform->position.z -= 0.25;
+    sunk_object->transform->rotation = sunk_obj_rotation;
   }
 }
 
@@ -92,6 +93,7 @@ River* River::clone_lightweight(Cell* new_cell) {
   new_river->drawable = nullptr;
   new_river->water = nullptr;
   new_river->sunk_object = nullptr;
+  new_river->sunk_obj_rotation = sunk_obj_rotation;
   new_river->extra_drawables.clear();
   return new_river;
 }
@@ -166,6 +168,7 @@ void River::on_post_tick(){
 	if(just_sunk) {
 		just_sunk = false; 
 		sunk_object = this->cell->fgObj->drawable;
+    sunk_obj_rotation = sunk_object->transform->rotation;
     sunk_object_model_name = this->cell->fgObj->get_model_name();
 		delete this->cell->fgObj; 
 		this->cell->fgObj = nullptr; 

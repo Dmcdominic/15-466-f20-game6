@@ -15,6 +15,7 @@ struct River : BgTile {
 
 	Scene::Drawable* water = nullptr;
 	Scene::Drawable* sunk_object = nullptr;
+	glm::quat sunk_obj_rotation = glm::quat();
 	std::string sunk_object_model_name = "";
 
 
