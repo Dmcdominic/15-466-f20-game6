@@ -22,6 +22,7 @@ dist/Enviro.pdb
 dist/Enviro
 dist/Enviro.exe
 
+dist/in_game_data.txt
 dist/save0.enviro
 
 .DS_Store
