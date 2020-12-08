@@ -32,13 +32,9 @@ void Bridge::position_models(){
 Bridge* Bridge::clone_lightweight(Cell* new_cell) {
   Bridge* new_bridge = new Bridge(*this);
   new_bridge->cell = new_cell;
-  // TODO - maybe call some River helper function cuz it's doing similar stuff?
-  new_bridge->drawable = nullptr;
-  new_bridge->water = nullptr;
-  new_bridge->sunk_object = nullptr;
+  new_bridge->make_lightweight();
   new_bridge->unactivated = nullptr;
   new_bridge->bridge = nullptr;
-  new_bridge->extra_drawables.clear();
   return new_bridge;
 }
 

@@ -126,7 +126,6 @@ Cell::Cell(glm::ivec2 _pos) : pos(_pos) {
 
 // Cell destructor
 Cell::~Cell() {
-  // TODO - implement these destructors?
   if (bgTile != nullptr) delete bgTile;
   if (fgObj != nullptr) delete fgObj;
   if (skyObj != nullptr) delete skyObj;
@@ -276,7 +275,7 @@ CellItem::CellItem(Scene* scene, int _rotations) : rotations(_rotations) {
 
 // Destructor
 CellItem::~CellItem() {
-  //TODO - Remove drawables? Currently this is just being done by clearing drawables
+  // Remove drawables? Currently this is just being done by clearing drawables
 }
 
 

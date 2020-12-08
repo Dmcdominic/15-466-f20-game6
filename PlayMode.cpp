@@ -147,9 +147,12 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 		} else if (evt.key.keysym.sym == SDLK_z) { // UNDO
 			input_q.push(Input(InputType::UNDO));
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_n) { // SKIP LEVEL. TODO - REMOVE THIS
-			input_q.push(Input(InputType::SKIP_LVL));
-			return true;
+		} else if (evt.key.keysym.sym == SDLK_n) { // SKIP LEVEL
+			/*input_q.push(Input(InputType::SKIP_LVL));
+			return true;*/
+		} else if (evt.key.keysym.sym == SDLK_o) { // JUMP TO OVERWORLD
+			/*input_q.push(Input(InputType::JUMP_TO_OW));
+			return true;*/
 		}
 	} else if (evt.type == SDL_KEYUP) {
 		if (evt.key.keysym.sym == SDLK_LEFT || evt.key.keysym.sym == SDLK_a) {
@@ -259,6 +262,7 @@ void PlayMode::update(float elapsed) {
 			} else if (menu->new_game) {
 				menu->new_game = false;
 				completed_level = 0;
+				environment_score = 100;
 				level_to_load = 0;
 				last_node_pos = glm::ivec2();
 				loading_level = true;
@@ -283,6 +287,9 @@ void PlayMode::update(float elapsed) {
 			}
 			else if (input.type == InputType::SKIP_LVL) {
 				load_level(current_level + 1);
+			}
+			else if (input.type == InputType::JUMP_TO_OW) {
+				load_level(0);
 			}
 			else if (input.type == InputType::UNDO) {
 				undo_move();

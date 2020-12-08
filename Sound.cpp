@@ -76,7 +76,7 @@ void Sound::init() {
 	} else {
 		//start audio playback:
 		SDL_PauseAudioDevice(device, 0);
-		std::cout << "Audio output initialized." << std::endl;
+		//std::cout << "Audio output initialized." << std::endl;
 	}
 }
 

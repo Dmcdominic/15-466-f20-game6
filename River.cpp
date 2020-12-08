@@ -90,12 +90,17 @@ void River::position_models() {
 River* River::clone_lightweight(Cell* new_cell) {
   River* new_river = new River(*this);
   new_river->cell = new_cell;
-  new_river->drawable = nullptr;
-  new_river->water = nullptr;
-  new_river->sunk_object = nullptr;
-  new_river->sunk_obj_rotation = sunk_obj_rotation;
-  new_river->extra_drawables.clear();
+  new_river->make_lightweight();
   return new_river;
+}
+
+
+// Does the stuff usually done in clone_lightweight, so that Bridge can call this too.
+void River::make_lightweight() {
+  drawable = nullptr;
+  water = nullptr;
+  sunk_object = nullptr;
+  extra_drawables.clear();
 }
 
 

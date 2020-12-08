@@ -28,6 +28,8 @@ struct River : BgTile {
 	void position_models() override;
 	River* clone_lightweight(Cell* new_cell) override;
 
+	void make_lightweight();
+
 	void apply_purple_amt();
 
 	bool can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;

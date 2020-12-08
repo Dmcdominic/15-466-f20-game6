@@ -277,7 +277,7 @@ Grid* GridLoader::load_level(unsigned int grid_id, Scene *scene) {
 // Clears the drawables and deletes the current_grid
 void GridLoader::unload_current_grid(Scene *scene) {
   if (current_grid == nullptr) return;
-  // clear all drawables. TODO - improve this so we don't clear ALL?
+  // clear all drawables. Could be improved so we don't clear ALL of them? (if necessary)
   scene->drawables.clear();
   delete current_grid;
   current_grid = nullptr;
