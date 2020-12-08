@@ -33,4 +33,6 @@ struct Barrel : FgObj {
 	void roll();
 	void when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) override;
 	bool try_to_move_by(const glm::ivec2 &displ) override;
+
+	static bool roll_rolling_barrels(Grid *grid);
 };

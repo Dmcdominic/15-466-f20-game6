@@ -51,6 +51,7 @@ Cell* Grid::cell_at(glm::ivec2 _pos) {
 // For now, it only allows 1 CellItem to handle any input.
 bool Grid::on_input(const Input& input, Output* output) {
   pre_tick_done = false;
+  // pre_tick() now must be called within every on_input() before returning true
 
   // on_input()
   bool input_handled = false;
@@ -71,11 +72,9 @@ bool Grid::on_input(const Input& input, Output* output) {
     return false;
   }
 
-  // post_tick()
-  for (size_t x = 0; x < width; x++) {
-    for (size_t y = 0; y < height; y++) {
-      cells[x][y].on_post_tick();
-    }
+  // If post_tick is queued, it will be handled later by PlayMode
+  if (!current_grid->post_tick_queued) {
+    post_tick();
   }
 
   return true;
@@ -90,6 +89,17 @@ void Grid::pre_tick() {
   for (size_t x = 0; x < width; x++) {
     for (size_t y = 0; y < height; y++) {
       cells[x][y].on_pre_tick();
+    }
+  }
+}
+
+
+// Call this to run on_post_tick() for all cells
+void Grid::post_tick() {
+  current_grid->post_tick_queued = false;
+  for (size_t x = 0; x < width; x++) {
+    for (size_t y = 0; y < height; y++) {
+      cells[x][y].on_post_tick();
     }
   }
 }
@@ -400,7 +410,9 @@ bool FgObj::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) 
 // Does whatever should happen when the given foreground object is moved/pushed into this object.
 void FgObj::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
   glm::ivec2 norm_displ = Grid::normalize_displ(displ);
+  // TODO - is this... cool?
   if (!try_to_move_by(norm_displ) && !current_grid->rolling) {
+  //if (!try_to_move_by(norm_displ)) {
     throw std::runtime_error("when_fg_obj_moved_into() somehow called for an object position & displacement that COULDN'T move.");
   }
   push_move_clip();
@@ -436,9 +448,9 @@ bool SkyObj::try_to_move_by(const glm::ivec2& displ) {
   Cell* target_cell = current_grid->cell_at(target_pos);
   if (!target_cell->can_sky_obj_move_into(*this, displ)) return false;
   target_cell->when_sky_obj_moved_into(*this, displ);
-  /*if (target_cell->skyObj != nullptr) {
+  if (target_cell->skyObj != nullptr) {
     throw std::runtime_error("Trying to move a SkyObj into a cell that seems to still have one");
-  }*/
+  }
   target_cell->set_sky_obj(this);
   return true;
 }

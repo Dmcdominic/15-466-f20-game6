@@ -56,7 +56,7 @@ struct Grid {
 	std::vector<RollItem *> to_be_moved;
 
 	private: bool pre_tick_done = false;
-	public:
+	public: bool post_tick_queued = false;
 
 	// Constructor
 	Grid(size_t _width, size_t _height, unsigned int _goal, unsigned int _num_disposed = 0, int env_score = 0);
@@ -68,6 +68,7 @@ struct Grid {
 	Cell* cell_at(glm::ivec2 _pos);
 	bool on_input(const Input& input, Output* output);
 	void pre_tick();
+	void post_tick();
 
 	static glm::ivec2 normalize_displ(const glm::ivec2& displ);
 };

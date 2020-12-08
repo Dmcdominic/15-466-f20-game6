@@ -205,19 +205,22 @@ void PlayMode::update(float elapsed) {
 		return;
 	}
 
-	// disable user input when a barrel is rolling
-	for (Barrel *barrel : current_grid->barrels) {
-		if (barrel->rolling) {
-			barrel->roll();
-			return;
-		}
+	// Roll any barrels that should be rolled, and process post_tick() if they just finished
+	bool barrels_still_rolling = Barrel::roll_rolling_barrels(current_grid);
+	if (current_grid->post_tick_queued && !barrels_still_rolling) {
+		current_grid->post_tick();
 	}
 
 	// Process input
-	while (!input_q.empty()) {
-		Output output = Output();
+	if (!current_grid->post_tick_queued && !input_q.empty()) {
+		// Pop down to only the most recent input
 		Input input = input_q.front();
-		input_q.pop();
+		while (!input_q.empty()) {
+			input = input_q.front();
+			input_q.pop();
+		}
+
+		Output output = Output();
 
 		// Menu case
 		if (menu->current_sNode != nullptr) {
@@ -247,58 +250,59 @@ void PlayMode::update(float elapsed) {
 			} else if (menu->restart_level) {
 				menu->restart_level = false;
 				reset_level();
-				break;
 			} else if (menu->new_game) {
 				menu->new_game = false;
 				completed_level = 0;
 				level_to_load = 0;
 				loading_level = true;
 				cloud_cover->cover();
-				break;
 			} else if (menu->return_to_OW) {
 				menu->return_to_OW = false;
 				level_to_load = 0;
 				loading_level = true;
 				cloud_cover->cover();
-				break;
 			} else if (menu->load_main_menu) {
 				menu->load_main_menu = false;
 				load_main_menu = true;
 				loading_level = true;
 				cloud_cover->cover();
-				break;
 			}
-			continue;
 		}
 
-		// Main case
-		if (input.type == InputType::RESET) {
-			reset_level();
-		} else if (input.type == InputType::SKIP_LVL) {
-			load_level(current_level + 1);
-		} else if (input.type == InputType::UNDO) {
-			undo_move();
-		} else if (input.type == InputType::ESCAPE) {
-			menu->setSNode(menu->sNodes[(size_t)Menu::MENUS::PAUSE]);
-		} else if (level_completion && input.type == InputType::INTERACT) {
-			level_completion = false;
-			environment_score += current_grid->grid_environment_score;
-			// load the Overworld (or credits if this was last level)
-			level_to_load = 0;
-			if (current_level == num_levels - 1) {
-				load_credits = true;
+		// Main case (in the overworld or a level, not in a menu)
+		else {
+			if (input.type == InputType::RESET) {
+				reset_level();
 			}
-			loading_level = true;
-			cloud_cover->cover();
-			break;
-		} else {
-			if (!is_Overworld()) { // Push an undo copy (Overworld excluded)
-				undo_grids.push(GridLoader::create_undo_copy(current_grid));
+			else if (input.type == InputType::SKIP_LVL) {
+				load_level(current_level + 1);
 			}
-			bool input_handled = current_grid->on_input(input, &output);
-			if (!input_handled && !is_Overworld()) {
-				delete undo_grids.top();
-				undo_grids.pop();
+			else if (input.type == InputType::UNDO) {
+				undo_move();
+			}
+			else if (input.type == InputType::ESCAPE) {
+				menu->setSNode(menu->sNodes[(size_t)Menu::MENUS::PAUSE]);
+			}
+			else if (level_completion && input.type == InputType::INTERACT) {
+				level_completion = false;
+				environment_score += current_grid->grid_environment_score;
+				// load the Overworld (or credits if this was last level)
+				level_to_load = 0;
+				if (current_level == num_levels - 1) {
+					load_credits = true;
+				}
+				loading_level = true;
+				cloud_cover->cover();
+			}
+			else {
+				if (!is_Overworld()) { // Push an undo copy (Overworld excluded)
+					undo_grids.push(GridLoader::create_undo_copy(current_grid));
+				}
+				bool input_handled = current_grid->on_input(input, &output);
+				if (!input_handled && !is_Overworld()) {
+					delete undo_grids.top();
+					undo_grids.pop();
+				}
 			}
 		}
 
@@ -311,16 +315,10 @@ void PlayMode::update(float elapsed) {
 			cloud_cover->cover();
 			level_to_load = *output.level_to_load;
 			loading_level = true;
-			break;
 		}
 
 		// Check if level is complete
 		check_level_completion();
-	}
-
-	// if we broke out from the input loop but there are still inputs queued, clear them
-	while (!input_q.empty()) {
-		input_q.pop();
 	}
 
 	// Play audio

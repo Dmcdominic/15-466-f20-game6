@@ -35,6 +35,7 @@ bool Barrel::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ)
 	  push_move_clip();
 	  rolling = true;
 	  current_grid->rolling = true;
+		current_grid->post_tick_queued = true;
 	  glm::ivec2 target_pos = this->cell->pos + displ;
 	  if (!current_grid->is_valid_pos(target_pos)) return false;
 	  Cell* target_cell = current_grid->cell_at(target_pos);
@@ -64,6 +65,7 @@ void Barrel::roll() {
 		}
 		this->cell->fgObj = nullptr;
 		saved_target_cell->set_fg_obj(this);
+		drawable->transform->rotation *= glm::quat(0.0f, 0.0f, sin(theta / 2.0f), cos(theta / 2.0f));
 
 		for (size_t i = 0; i < current_grid->to_be_moved.size(); i++) {
 			if(current_grid->to_be_moved[i]->target_cell->fgObj != nullptr) {
@@ -94,6 +96,20 @@ bool Barrel::try_to_move_by(const glm::ivec2 &displ) {
 	saved_target_cell = target_cell;
 	if (!target_cell->can_fg_obj_move_into(*this, displ)) return false;
 	return true;
+}
+
+
+// Call barrel->roll() on each barrel that is rolling.
+//   Return true iff there is at least 1 such barrel.
+bool Barrel::roll_rolling_barrels(Grid* grid) {
+	bool found_one = false;
+	for (Barrel* barrel : grid->barrels) {
+		if (barrel->rolling) {
+			barrel->roll();
+			found_one = true;
+		}
+	}
+	return found_one;
 }
 
 
