@@ -226,13 +226,19 @@ void PlayMode::update(float elapsed) {
 		if (menu->current_sNode != nullptr) {
 			if (input.type == InputType::DOWN) {
 				menu->select_up_down(1);
+				AudioManager::clips_to_play.push(AudioManager::AudioClip::TOGGLE);
 			} else if (input.type == InputType::UP) {
 				menu->select_up_down(-1);
+				AudioManager::clips_to_play.push(AudioManager::AudioClip::TOGGLE);
 			} else if (input.type == InputType::INTERACT) {
 				Menu::Item &item = menu->current_sNode->items[menu->current_sNode->selected];
 				item.on_select(item);
+				AudioManager::clips_to_play.push(AudioManager::AudioClip::SELECT);
 			} else if (input.type == InputType::ESCAPE) {
-				if (menu->current_sNode == menu->sNodes[(size_t)Menu::MENUS::PAUSE]) menu->disableMenu();
+				if (menu->current_sNode == menu->sNodes[(size_t)Menu::MENUS::PAUSE]) {
+					menu->disableMenu();
+					AudioManager::clips_to_play.push(AudioManager::AudioClip::SELECT);
+				}
 			} else if (input.type == InputType::RESET) {
 				reset_level();
 			}
@@ -282,9 +288,9 @@ void PlayMode::update(float elapsed) {
 			}
 			else if (input.type == InputType::ESCAPE) {
 				menu->setSNode(menu->sNodes[(size_t)Menu::MENUS::PAUSE]);
+				AudioManager::clips_to_play.push(AudioManager::AudioClip::TOGGLE);
 			}
 			else if (level_completion && input.type == InputType::INTERACT) {
-				level_completion = false;
 				environment_score += current_grid->grid_environment_score;
 				// load the Overworld (or credits if this was last level)
 				level_to_load = 0;
@@ -531,6 +537,9 @@ void PlayMode::check_level_completion() {
 	if (!is_Overworld() && current_grid->num_disposed >= current_grid->goal) {
 		completed_level = std::max(completed_level, current_level);
 		pngHelper->draw();
+		if (!level_completion) {
+			AudioManager::clips_to_play.push(AudioManager::AudioClip::VICTORY);
+		}
 		level_completion = true;
 	} else {
 		level_completion = false;

@@ -21,7 +21,11 @@ Load< std::vector<Sound::Sample> > AudioManager::Samples(LoadTagDefault, []() ->
 			Sound::Sample(data_path("audio/drag-stone.wav")),
 			Sound::Sample(data_path("audio/swosh.wav")),
 			Sound::Sample(data_path("audio/toxic-area.wav")),
-			Sound::Sample(data_path("audio/quack.wav"))
+			Sound::Sample(data_path("audio/quack.wav")),
+			Sound::Sample(data_path("audio/Toggle.wav")),
+			Sound::Sample(data_path("audio/Select.wav")),
+			Sound::Sample(data_path("audio/wind-gust.wav")),
+			Sound::Sample(data_path("audio/Victory.wav")),
 		});
 });
 

@@ -17,7 +17,8 @@ CloudCover::CloudCover(Scene *_scene) : scene(_scene) {
 
 void CloudCover::cover(){
     covering = true; 
-    moving = true; 
+    moving = true;
+    AudioManager::clips_to_play.push(AudioManager::AudioClip::WIND);
 }
 
 void CloudCover::uncover(){
