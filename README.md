@@ -1,27 +1,24 @@
 # Enviro
 
+A puzzle game about hazardous waste disposal. Created for CMU's Computer Game Programming (Fall, 2020).
 
-### Created By:
+![Screen Shot](screenshot.png)
+
+
+## Created By:
 * Jianrong Yu
 * Alyssa Lee
 * Michelle Chang
 * Dominic Calkosz
 
 
-## How To Play:
-
-* Arrow Keys - Movement
-* WASD - Camera control
-* Q - Quit
-
-
-## Screen Shot:
-
-![Screen Shot](screenshot.png)
+### Special Thanks To:
+* Jim McCann
+* Xiaoqiao Xu
+* All of our playtesters!
 
 
 ## Sources:
-
 This game was built with [NEST](NEST.md).
 
 "Deep Relaxation" Kevin MacLeod (incompetech.com)

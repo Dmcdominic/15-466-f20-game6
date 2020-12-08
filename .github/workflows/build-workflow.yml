@@ -28,7 +28,7 @@ jobs:
         run: |
           dir/w
           call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
-          ..\nest-libs\windows\jam\jam.exe JAM_TOOLSET=VISUALC -j3 -q && copy README.md dist
+          ..\nest-libs\windows\jam\jam.exe JAM_TOOLSET=VISUALC -j3 -q && copy README.md dist && copy NEST.md dist && copy screenshot.png dist
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
@@ -72,7 +72,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install ftjam libgl-dev
           ls
-          jam -j3 -q && cp README.md dist
+          jam -j3 -q && cp README.md dist && cp NEST.md dist && cp screenshot.png dist
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
@@ -115,7 +115,7 @@ jobs:
         run: |
           brew install ftjam
           ls
-          jam -j3 -q && cp README.md dist
+          jam -j3 -q && cp README.md dist && cp NEST.md dist && cp screenshot.png dist
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
