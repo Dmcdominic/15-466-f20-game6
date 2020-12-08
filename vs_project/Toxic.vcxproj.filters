@@ -198,6 +198,9 @@
     <ClCompile Include="..\Menu.cpp">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Framebuffers.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\glcorearb.h">
@@ -375,6 +378,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Menu.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Framebuffers.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gl_check_fb.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

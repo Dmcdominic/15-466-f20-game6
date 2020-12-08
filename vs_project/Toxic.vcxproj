@@ -82,6 +82,7 @@
     <ClCompile Include="..\Cloud.cpp" />
     <ClCompile Include="..\CloudCover.cpp" />
     <ClCompile Include="..\Disposal.cpp" />
+    <ClCompile Include="..\Framebuffers.cpp" />
     <ClCompile Include="..\game_menu.cpp" />
     <ClCompile Include="..\Grass.cpp" />
     <ClCompile Include="..\Grid.cpp" />
@@ -145,7 +146,9 @@
     <ClInclude Include="..\Cloud.hpp" />
     <ClInclude Include="..\CloudCover.hpp" />
     <ClInclude Include="..\Disposal.hpp" />
+    <ClInclude Include="..\Framebuffers.hpp" />
     <ClInclude Include="..\game_menu.hpp" />
+    <ClInclude Include="..\gl_check_fb.hpp" />
     <ClInclude Include="..\Grass.hpp" />
     <ClInclude Include="..\Grid.hpp" />
     <ClInclude Include="..\ColorProgram.hpp" />
