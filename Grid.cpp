@@ -406,8 +406,8 @@ bool FgObj::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) 
 // Does whatever should happen when the given foreground object is moved/pushed into this object.
 void FgObj::when_fg_obj_moved_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
   glm::ivec2 norm_displ = Grid::normalize_displ(displ);
-  if (!try_to_move_by(norm_displ) && !current_grid->rolling) {
-  //if (!try_to_move_by(norm_displ)) {
+  //if (!try_to_move_by(norm_displ) && !current_grid->rolling) {
+  if (!try_to_move_by(norm_displ)) {
     throw std::runtime_error("when_fg_obj_moved_into() somehow called for an object position & displacement that COULDN'T move.");
   }
   push_move_clip();

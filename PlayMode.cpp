@@ -260,6 +260,7 @@ void PlayMode::update(float elapsed) {
 				menu->new_game = false;
 				completed_level = 0;
 				level_to_load = 0;
+				last_node_pos = glm::ivec2();
 				loading_level = true;
 				cloud_cover->cover();
 			} else if (menu->return_to_OW) {

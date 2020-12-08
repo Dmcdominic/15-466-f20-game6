@@ -28,14 +28,6 @@ extern Grid* current_grid;
 extern std::stack<Grid*> undo_grids;
 
 
-struct RollItem {
-	FgObj &item;
-	Cell *target_cell;
-
-	RollItem(FgObj &_item, Cell *_target_cell): item(_item), target_cell(_target_cell) {};
-};
-
-
 /* A grid of cells. */
 struct Grid {
 	// Fields
