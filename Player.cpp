@@ -102,14 +102,6 @@ bool Player::on_input(const Input& input, Output* output) {
   if (!target_cell->can_fg_obj_move_into(*this, displ)) return false;
   current_grid->pre_tick();
   target_cell->when_fg_obj_moved_into(*this, displ);
-  if (current_grid->rolling) {
-  	current_grid->to_be_moved.push_back(new RollItem(*this, target_cell));
-//  	return false;
-    return true;
-  }
-  if (target_cell->fgObj != nullptr) {
-  	throw std::runtime_error("Trying to move player into a cell that seems to still have one");
-  }
   target_cell->set_fg_obj(this);
 
   if (rand() < RAND_MAX / 3) {

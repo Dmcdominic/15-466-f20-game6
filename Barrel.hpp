@@ -13,9 +13,7 @@ struct Barrel : FgObj {
 	float displ_step = 0.1f;
 	float displ_amt = 0.0f;
 	bool rolling = false;
-	int saved_rotations = 0;
 	glm::vec2 saved_displ = glm::vec2(0, 0);
-	glm::vec2 prev_pos = glm::vec2(0, 0);
 	Cell* saved_target_cell = nullptr;
 
 	// Methods

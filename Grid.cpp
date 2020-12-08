@@ -378,10 +378,6 @@ bool FgObj::try_to_move_by(const glm::ivec2& displ) {
   if (!current_grid->is_valid_pos(target_pos)) return false;
   Cell* target_cell = current_grid->cell_at(target_pos);
   if (!target_cell->can_fg_obj_move_into(*this, displ)) {
-  	if (current_grid->rolling) {
-  		current_grid->to_be_moved.push_back(new RollItem(*this, target_cell));
-  		return false;
-  	}
   	return false;
   }
   target_cell->when_fg_obj_moved_into(*this, displ);
