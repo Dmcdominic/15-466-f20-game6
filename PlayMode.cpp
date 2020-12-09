@@ -461,13 +461,6 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	GL_ERRORS();
 }
 
-void PlayMode::on_quit() {
-	std::fstream out;
-	out.open(data_path("save0.enviro"), std::fstream::out);
-	out << (int)completed_level << " " << environment_score << std::endl;
-	out.close();
-}
-
 // Loads a level using the GridLoader
 void PlayMode::load_level(uint8_t level_index) {
 	if (menu != nullptr) {
@@ -549,6 +542,10 @@ void PlayMode::check_level_completion() {
 			AudioManager::clips_to_play.push(AudioManager::AudioClip::VICTORY);
 		}
 		level_completion = true;
+        std::fstream out;
+        out.open(data_path("save0.enviro"), std::fstream::out);
+        out << (int)completed_level << " " << environment_score << std::endl;
+        out.close();
 	} else {
 		level_completion = false;
 	}

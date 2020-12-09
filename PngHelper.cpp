@@ -225,6 +225,7 @@ void PngHelper::reset() {
 void PngHelper::draw() {
 	// for drawing on level completion
 	draw(true, true, true, false, false, prev_goal, prev_goal, drawing_level, nullptr);
+	reset();
 }
 
 
