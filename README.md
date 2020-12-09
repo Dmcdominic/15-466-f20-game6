@@ -26,3 +26,11 @@ Licensed under Creative Commons: By Attribution 4.0 License
 http://creativecommons.org/licenses/by/4.0/
 
 Additional audio provided by https://freesound.org/
+
+
+## Command line arguments
+Enviro is fullscreen by default, except for Linux, which is windowed by default. Use either of these args to override this:
+```
+    --windowed
+    --fullscreen
+```

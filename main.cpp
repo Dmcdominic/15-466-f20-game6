@@ -56,15 +56,38 @@ int main(int argc, char **argv) {
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 
+#if !defined(__linux__)
+	bool fullscreen = true;
+#else
+	bool fullscreen = false;
+#endif
+
+	// Read command line args
+	for (int i = 0; i < argc; i++) {
+		if (std::strcmp(argv[i], "--fullscreen") == 0) {
+			fullscreen = true;
+		} else if (std::strcmp(argv[i], "--windowed") == 0) {
+			fullscreen = false;
+		}
+		// Add other command line args here!
+	}
+
+	Uint32 SDL_windowFlags =
+		SDL_WINDOW_OPENGL
+		| SDL_WINDOW_RESIZABLE //uncomment to allow resizing
+		| SDL_WINDOW_ALLOW_HIGHDPI //uncomment for full resolution on high-DPI screens
+		;
+	
+	if (fullscreen) {
+		SDL_windowFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+	}
+
 	//create window:
 	SDL_Window *window = SDL_CreateWindow(
 		"Enviro",
 		SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 		1280, 980, // modify window size if you'd like
-		SDL_WINDOW_OPENGL
-		| SDL_WINDOW_RESIZABLE //uncomment to allow resizing
-		| SDL_WINDOW_ALLOW_HIGHDPI //uncomment for full resolution on high-DPI screens
-		| SDL_WINDOW_FULLSCREEN_DESKTOP // uncomment for windowed mode
+		SDL_windowFlags
 	);
 
 	//prevent exceedingly tiny windows when resizing:
