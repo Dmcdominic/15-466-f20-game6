@@ -540,12 +540,13 @@ void PlayMode::check_level_completion() {
 		pngHelper->draw();
 		if (!level_completion) {
 			AudioManager::clips_to_play.push(AudioManager::AudioClip::VICTORY);
+            std::fstream out;
+            out.open(data_path("save0.enviro"), std::fstream::out);
+            out << (int)completed_level << " " << environment_score << std::endl;
+            out.close();
 		}
 		level_completion = true;
-        std::fstream out;
-        out.open(data_path("save0.enviro"), std::fstream::out);
-        out << (int)completed_level << " " << environment_score << std::endl;
-        out.close();
+
 	} else {
 		level_completion = false;
 	}
