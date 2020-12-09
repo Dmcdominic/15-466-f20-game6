@@ -106,8 +106,8 @@ struct PngHelper {
 
 	private:
 		// for barrels
-		int already_disposed = 0;
-		int barrels_drawn = 0;
+		int prev_num_disposed = 0;
+		int prev_goal = 0;
 
 		// animated main menu background
 		int menu_frame = 0;

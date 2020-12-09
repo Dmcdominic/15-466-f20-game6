@@ -217,13 +217,15 @@ void PngHelper::reset() {
 		png_barrels[i]->filename = "barrel_faded.png";
 		png_barrels[i]->load();
 	}
-	already_disposed = 0;
+	prev_goal = 0;
+	prev_num_disposed = 0;
 }
 
 
 void PngHelper::draw() {
 	// for drawing on level completion
-	draw(true, true, true, false, false, barrels_drawn, barrels_drawn, drawing_level, nullptr);
+	draw(true, true, true, false, false, prev_goal, prev_goal, drawing_level, nullptr);
+	reset();
 }
 
 
@@ -231,21 +233,25 @@ void PngHelper::draw(bool draw_barrel, bool draw_wasd, bool draw_return, bool dr
 		int num_disposed, int goal, int cur_level, Menu *menu) {
 	if (draw_barrel) {
 		// set local fields to match current grid
-		if (drawing_level != cur_level) {
+		if (drawing_level != cur_level || prev_goal != goal) {
 			reset();
 			drawing_level = cur_level;
-			barrels_drawn = goal;
+			prev_goal = goal;
 		}
-		if (already_disposed < num_disposed) {
-			for (int i = already_disposed; i < num_disposed; i++) {
-				png_barrels[i]->filename = "barrel.png";
+		// reload barrel filled/unfilled indicators if disposed status changed
+		if (prev_num_disposed != num_disposed) {
+			for (int i = 0; i < prev_goal; i++) {
+				if (i < num_disposed) png_barrels[i]->filename = "barrel.png";
+				else png_barrels[i]->filename = "barrel_faded.png";
 				png_barrels[i]->load();
 			}
-			already_disposed = num_disposed;
+			prev_num_disposed = num_disposed;
 		}
-		for (int i = 0; i < barrels_drawn; i++) {
+		// draw all barrels
+		for (int i = 0; i < prev_goal; i++) {
 			png_barrels[i]->draw();
 		}
+		// display instruction in first level
 		if (cur_level == 1) png_bar_inst->draw();
 	}
 	png_meter->draw();
