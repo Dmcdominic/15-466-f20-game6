@@ -200,6 +200,8 @@ void PlayMode::update(float elapsed) {
 			} else if (load_credits) {
 				load_credits = false;
 				menu->setSNode(menu->sNodes[(size_t)Menu::MENUS::CREDITS]);
+			} else if (level_to_load >= num_levels) {
+				menu->setSNode(menu->sNodes[(size_t)Menu::MENUS::CREDITS]);
 			} else {
 				load_level(level_to_load);
 			}
@@ -238,7 +240,8 @@ void PlayMode::update(float elapsed) {
 				item.on_select(item);
 				AudioManager::clips_to_play.push(AudioManager::AudioClip::SELECT);
 			} else if (input.type == InputType::ESCAPE) {
-				if (menu->current_sNode == menu->sNodes[(size_t)Menu::MENUS::PAUSE]) {
+				if (menu->current_sNode == menu->sNodes[(size_t)Menu::MENUS::PAUSE_LVL] ||
+						menu->current_sNode == menu->sNodes[(size_t)Menu::MENUS::PAUSE_OW]) {
 					menu->disableMenu();
 					AudioManager::clips_to_play.push(AudioManager::AudioClip::SELECT);
 				}
@@ -295,7 +298,8 @@ void PlayMode::update(float elapsed) {
 				undo_move();
 			}
 			else if (input.type == InputType::ESCAPE) {
-				menu->setSNode(menu->sNodes[(size_t)Menu::MENUS::PAUSE]);
+				Menu::MENUS menuToLoad = is_Overworld() ? Menu::MENUS::PAUSE_OW : Menu::MENUS::PAUSE_LVL;
+				menu->setSNode(menu->sNodes[(size_t)menuToLoad]);
 				AudioManager::clips_to_play.push(AudioManager::AudioClip::TOGGLE);
 			}
 			else if (level_completion && input.type == InputType::INTERACT) {

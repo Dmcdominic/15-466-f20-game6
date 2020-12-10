@@ -11,8 +11,11 @@ Menu::Menu(PngHelper* pngHelper) {
   SNode* credits = new SNode();
   sNodes.at((int)MENUS::CREDITS) = credits;
 
-  SNode* pause = new SNode();
-  sNodes.at((int)MENUS::PAUSE) = pause;
+  SNode* pause_lvl = new SNode();
+  sNodes.at((int)MENUS::PAUSE_LVL) = pause_lvl;
+
+  SNode* pause_OW = new SNode();
+  sNodes.at((int)MENUS::PAUSE_OW) = pause_OW;
 
   // Starting SNode is mainMenu
   current_sNode = mainMenu;
@@ -46,24 +49,35 @@ Menu::Menu(PngHelper* pngHelper) {
     this->setSNode(mainMenu);
   };
 
-  // Pause
-  pause->items.push_back(Item(pngHelper->png_pause_Continue, pngHelper->png_pause_Continue_selected));
-  pause->items.back().on_select = [this](Menu::Item const&) {
+  // Pause LVL
+  pause_lvl->items.push_back(Item(pngHelper->png_pause_Continue, pngHelper->png_pause_Continue_selected));
+  pause_lvl->items.back().on_select = [this](Menu::Item const&) {
     this->disableMenu();
   };
 
-  pause->items.push_back(Item(pngHelper->png_pause_Restart, pngHelper->png_pause_Restart_selected));
-  pause->items.back().on_select = [this](Menu::Item const&) {
+  pause_lvl->items.push_back(Item(pngHelper->png_pause_Restart, pngHelper->png_pause_Restart_selected));
+  pause_lvl->items.back().on_select = [this](Menu::Item const&) {
     this->restart_level = true;
   };
 
-  pause->items.push_back(Item(pngHelper->png_pause_Overworld, pngHelper->png_pause_Overworld_selected));
-  pause->items.back().on_select = [this](Menu::Item const&) {
+  pause_lvl->items.push_back(Item(pngHelper->png_pause_Overworld, pngHelper->png_pause_Overworld_selected));
+  pause_lvl->items.back().on_select = [this](Menu::Item const&) {
     this->return_to_OW = true;
   };
 
-  pause->items.push_back(Item(pngHelper->png_pause_MainMenu, pngHelper->png_pause_MainMenu_selected));
-  pause->items.back().on_select = [this](Menu::Item const&) {
+  pause_lvl->items.push_back(Item(pngHelper->png_pause_MainMenu, pngHelper->png_pause_MainMenu_selected));
+  pause_lvl->items.back().on_select = [this](Menu::Item const&) {
+    load_main_menu = true;
+  };
+
+  // Pause OW
+  pause_OW->items.push_back(Item(pngHelper->png_pause_Continue, pngHelper->png_pause_Continue_selected));
+  pause_OW->items.back().on_select = [this](Menu::Item const&) {
+    this->disableMenu();
+  };
+
+  pause_OW->items.push_back(Item(pngHelper->png_pause_MainMenu, pngHelper->png_pause_MainMenu_selected));
+  pause_OW->items.back().on_select = [this](Menu::Item const&) {
     load_main_menu = true;
   };
 }

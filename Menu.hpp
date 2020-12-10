@@ -24,7 +24,7 @@ struct Menu {
 	bool load_main_menu = false;
 
 	// The different menu screens (SNodes)
-  enum class MENUS { MAIN_MENU, CREDITS, PAUSE, END_SCREEN, MAX };
+  enum class MENUS { MAIN_MENU, CREDITS, PAUSE_LVL, PAUSE_OW, END_SCREEN, MAX };
 
 	// Types of items
 	enum class ITEM_TYPE {
