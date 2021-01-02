@@ -34,3 +34,8 @@ Enviro is fullscreen by default, except for Linux, which is windowed by default.
     --windowed
     --fullscreen
 ```
+Debugging tools can be enabled to display the level index and name, as well as to add two extra controls:
+'n' to skip to the next level, 'p' to return to the previous level, and 'o' to return to the overworld.
+```
+    --debug
+```

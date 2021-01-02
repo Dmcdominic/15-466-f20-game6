@@ -41,7 +41,8 @@ struct PlayMode : Mode {
 
 	//----- game state -----
 
-	static uint8_t current_level; 
+	static bool DEBUG;
+	static uint8_t current_level;
 	static uint8_t completed_level;
 	static bool is_Overworld() {
 		return current_level == 0;
@@ -93,6 +94,8 @@ struct PlayMode : Mode {
 	int environment_score;
 	void check_level_completion();
 	bool level_completion = false;
+
+	void save_game();
 
 	PngHelper *pngHelper = new PngHelper();
 

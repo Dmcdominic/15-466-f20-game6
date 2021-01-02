@@ -68,6 +68,8 @@ int main(int argc, char **argv) {
 			fullscreen = true;
 		} else if (std::strcmp(argv[i], "--windowed") == 0) {
 			fullscreen = false;
+		} else if (std::strcmp(argv[i], "--debug") == 0) {
+			PlayMode::DEBUG = true;
 		}
 		// Add other command line args here!
 	}

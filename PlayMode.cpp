@@ -14,6 +14,7 @@
 
 #include "GridLoader.hpp"
 #include "ModelLoader.hpp"
+#include "level_sequence.hpp"
 
 #include "Player.hpp"
 #include "Barrel.hpp"
@@ -63,6 +64,7 @@ Load< Scene > toxic_prefabs_scene(LoadTagDefault, []() -> Scene const * {
 
 
 // Static variable initialization
+bool PlayMode::DEBUG = false;
 uint8_t PlayMode::current_level = 0;
 uint8_t PlayMode::completed_level = 0;
 glm::ivec2 PlayMode::last_node_pos = glm::ivec2();
@@ -147,12 +149,22 @@ bool PlayMode::handle_event(SDL_Event const &evt, glm::uvec2 const &window_size)
 		} else if (evt.key.keysym.sym == SDLK_z) { // UNDO
 			input_q.push(Input(InputType::UNDO));
 			return true;
-		} else if (evt.key.keysym.sym == SDLK_n) { // SKIP LEVEL
-			/*input_q.push(Input(InputType::SKIP_LVL));
-			return true;*/
-		} else if (evt.key.keysym.sym == SDLK_o) { // JUMP TO OVERWORLD
-			/*input_q.push(Input(InputType::JUMP_TO_OW));
-			return true;*/
+		} else if (evt.key.keysym.sym == SDLK_n) { // SKIP TO NEXT LEVEL
+			if (PlayMode::DEBUG) {
+				input_q.push(Input(InputType::SKIP_LVL));
+				return true;
+			}
+		} else if (evt.key.keysym.sym == SDLK_p) { // BACK TO PREVIOUS LEVEL
+			if (PlayMode::DEBUG) {
+				input_q.push(Input(InputType::PREV_LVL));
+				return true;
+			}
+		}
+		else if (evt.key.keysym.sym == SDLK_o) { // JUMP TO OVERWORLD
+			if (PlayMode::DEBUG) {
+				input_q.push(Input(InputType::JUMP_TO_OW));
+				return true;
+			}
 		}
 	} else if (evt.type == SDL_KEYUP) {
 		if (evt.key.keysym.sym == SDLK_LEFT || evt.key.keysym.sym == SDLK_a) {
@@ -269,6 +281,7 @@ void PlayMode::update(float elapsed) {
 				level_to_load = 0;
 				last_node_pos = glm::ivec2();
 				loading_level = true;
+				save_game();
 				cloud_cover->cover();
 			} else if (menu->return_to_OW) {
 				menu->return_to_OW = false;
@@ -290,6 +303,9 @@ void PlayMode::update(float elapsed) {
 			}
 			else if (input.type == InputType::SKIP_LVL) {
 				load_level(current_level + 1);
+			}
+			else if (input.type == InputType::PREV_LVL) {
+				load_level(current_level - 1);
 			}
 			else if (input.type == InputType::JUMP_TO_OW) {
 				load_level(0);
@@ -452,7 +468,8 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 	//tried adding anti-aliasing, but it looks funny :( 
 	//framebuffers.fxaa(drawable_size);
 
-	{ //use DrawLines to overlay some text:
+	 //use DrawLines to overlay debugging text
+	if (PlayMode::DEBUG) {
 		glDisable(GL_DEPTH_TEST);
 		float aspect = float(drawable_size.x) / float(drawable_size.y);
 		DrawLines lines(glm::mat4(
@@ -461,7 +478,23 @@ void PlayMode::draw(glm::uvec2 const &drawable_size) {
 				0.0f, 0.0f, 1.0f, 0.0f,
 				0.0f, 0.0f, 0.0f, 1.0f
 		));
+
+		auto draw_text = [&](glm::vec2 const& at, std::string const& text, float H) {
+			lines.draw_text(text,
+				glm::vec3(at.x, at.y, 0.0),
+				glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
+				glm::u8vec4(0x00, 0x00, 0x00, 0x00));
+			float ofs = 2.0f / drawable_size.y;
+			lines.draw_text(text,
+				glm::vec3(at.x + ofs, at.y + ofs, 0.0),
+				glm::vec3(H, 0.0f, 0.0f), glm::vec3(0.0f, H, 0.0f),
+				glm::u8vec4(0xff, 0xff, 0xff, 0x00));
+		};
+
+		std::string lvl_display = std::to_string(current_level) + " - " + level_sequence[current_level].name;
+		draw_text(glm::vec2(-aspect + 0.05f, -0.9f), lvl_display, 0.09f);
 	}
+
 	GL_ERRORS();
 }
 
@@ -544,14 +577,20 @@ void PlayMode::check_level_completion() {
 		pngHelper->draw();
 		if (!level_completion) {
 			AudioManager::clips_to_play.push(AudioManager::AudioClip::VICTORY);
-            std::fstream out;
-            out.open(data_path("save0.enviro"), std::fstream::out);
-            out << (int)completed_level << " " << environment_score << std::endl;
-            out.close();
+      save_game();
 		}
 		level_completion = true;
 
 	} else {
 		level_completion = false;
 	}
+}
+
+
+// Saves the current level progress to file
+void PlayMode::save_game() {
+	std::fstream out;
+	out.open(data_path("save0.enviro"), std::fstream::out);
+	out << (int)completed_level << " " << environment_score << std::endl;
+	out.close();
 }

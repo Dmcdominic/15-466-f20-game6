@@ -4,6 +4,7 @@
 std::vector<level> level_sequence = std::vector<level>({
     //level(name, grid_size, goal),
     level("OW", glm::uvec2(20, 20), 9),
+    level("Test", glm::uvec2(13, 13), 1),
     level("0", glm::uvec2(4, 4), 1),
     level("1", glm::uvec2(4, 4), 2),
     level("RockTut", glm::uvec2(5, 5), 1),
