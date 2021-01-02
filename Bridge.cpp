@@ -40,7 +40,7 @@ Bridge* Bridge::clone_lightweight(Cell* new_cell) {
 
 
 bool Bridge::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ){
-    if (activated) return true;
+    if (activated) return BgTile::can_fg_obj_move_into(objBeingMoved, displ);
     return River::can_fg_obj_move_into(objBeingMoved, displ);
 }
 

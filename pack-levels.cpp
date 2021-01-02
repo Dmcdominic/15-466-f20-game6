@@ -71,7 +71,7 @@ int main(int argc, char **argv) {
 	std::ofstream out(data_path("../dist/levels.bin"), std::ios::binary);
     write_chunk("objs", obj_ids, &out); 
     write_chunk("grid", grids, &out); 
-    std::cout << "\nsuccessfully saved levels "; 
+    std::cout << "\nsuccessfully saved levels \n"; 
 
 	return 0;
 }

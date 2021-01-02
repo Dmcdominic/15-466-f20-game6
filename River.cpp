@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include "Ramp.hpp"
+#include "Acorn.hpp"
 
 
 // Constructor
@@ -134,6 +135,7 @@ void River::contaminated() {
 bool River::can_fg_obj_move_into(FgObj& objBeingMoved, const glm::ivec2& displ) {
   if (!sunk_object && dynamic_cast<Player*>(&objBeingMoved) != nullptr) return false;
   if (!sunk_object && dynamic_cast<Ramp*>(&objBeingMoved) != nullptr) return false;
+  if (!sunk_object && dynamic_cast<Acorn*>(&objBeingMoved) != nullptr) return false;
   return BgTile::can_fg_obj_move_into(objBeingMoved, displ);
 }
 
