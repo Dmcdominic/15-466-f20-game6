@@ -18,13 +18,12 @@ PngHelper::PngHelper() {
 	png_meters[3] = png_meter75;
 	png_meters[4] = png_meter100;
 
-	png_barrel1 = new PngView("barrel_faded.png", barrel_xs1, barrel_ys);
-	png_barrel2 = new PngView("barrel_faded.png", barrel_xs2, barrel_ys);
-	png_barrel3 = new PngView("barrel_faded.png", barrel_xs3, barrel_ys);
-
-	png_barrels[0] = png_barrel1;
-	png_barrels[1] = png_barrel2;
-	png_barrels[2] = png_barrel3;
+	png_barrels[0] = new PngView("barrel_faded.png", barrel_xs1, barrel_ys);
+	png_barrels[1] = new PngView("barrel_faded.png", barrel_xs2, barrel_ys);
+	png_barrels[2] = new PngView("barrel_faded.png", barrel_xs3, barrel_ys);
+	png_barrels[3] = new PngView("barrel_faded.png", barrel_xs4, barrel_ys);
+	png_barrels[4] = new PngView("barrel_faded.png", barrel_xs5, barrel_ys);
+	png_barrels[5] = new PngView("barrel_faded.png", barrel_xs6, barrel_ys);
 
 	png_wasd = new PngView("wasd.png", keys_xs, wasd_ys);
 	png_reset = new PngView("reset.png", keys_xs, reset_ys);
@@ -143,7 +142,7 @@ void PngHelper::update_png_pos(glm::uvec2 const &drawable_size) {
 
 		// update positions according to position on screen
 		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 3; j++) {
+			for (int j = 0; j < 6; j++) {
 				png_barrels[j]->xs[right[i]] = barrel_x - 1 + 0.2f * j;
 				png_barrels[j]->ys[bottom[i]] = 1 - barrel_y;
 			}
@@ -166,7 +165,7 @@ void PngHelper::update_png_pos(glm::uvec2 const &drawable_size) {
 			png_sel_inst->xs[right[i]] = png_select->xs[left[i]];
 			png_sel_inst->xs[left[i]] = png_sel_inst->xs[right[i]] - inst_x;
 			png_sel_inst->ys[bottom[i]] = 1 - inst_y;
-			png_bar_inst->xs[left[i]] = png_barrel1->xs[right[i]];
+			png_bar_inst->xs[left[i]] = png_barrels[0]->xs[right[i]];
 			png_bar_inst->xs[right[i]] = png_bar_inst->xs[left[i]] + inst_x;
 			png_bar_inst->ys[bottom[i]] = 1 - inst_y;
 			png_ret_inst->xs[right[i]] = png_select->xs[left[i]];
@@ -186,7 +185,7 @@ void PngHelper::update_png_pos(glm::uvec2 const &drawable_size) {
 		}
 
 		// load the new vertex positions
-		for (int j = 0; j < 3; j++) {
+		for (int j = 0; j < 6; j++) {
 			png_barrels[j]->load();
 		}
 		for (int j = 0; j < 5; j++) {
@@ -213,7 +212,7 @@ void PngHelper::update_png_pos(glm::uvec2 const &drawable_size) {
 
 
 void PngHelper::reset() {
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 6; i++) {
 		png_barrels[i]->filename = "barrel_faded.png";
 		png_barrels[i]->load();
 	}
@@ -254,7 +253,7 @@ void PngHelper::draw(bool draw_barrel, bool draw_wasd, bool draw_return, bool dr
 		// display instruction in first level
 		if (cur_level == 1) png_bar_inst->draw();
 	}
-	png_meter->draw();
+	//png_meter->draw(); // TODO - uncomment this when we have the thermometer balanced
 	if (draw_wasd) png_wasd->draw();
 	if (draw_return) {
 		png_return->draw();

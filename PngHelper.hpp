@@ -18,10 +18,15 @@ struct PngHelper {
 		                  /* lower left triangle */ /* upper right triangle */
 		float meter_xs[6]   = {-1.0f, -1.0f, -0.7f, -1.0f, -0.7f, -0.7f};
 		float meter_ys[6]   = {-0.5f, -1.0f, -1.0f, -0.5f, -1.0f, -0.5f};
+
 		float barrel_xs1[6] = {-1.0f, -1.0f, -0.8f, -1.0f, -0.8f, -0.8f};
 		float barrel_xs2[6] = {-0.8f, -0.8f, -0.6f, -0.8f, -0.6f, -0.6f};
 		float barrel_xs3[6] = {-0.6f, -0.6f, -0.4f, -0.6f, -0.4f, -0.4f};
+		float barrel_xs4[6] = {-0.4f, -0.4f, -0.2f, -0.4f, -0.2f, -0.2f };
+		float barrel_xs5[6] = {-0.2f, -0.2f,  0.0f, -0.2f,  0.0f,  0.0f };
+		float barrel_xs6[6] = { 0.0f,  0.0f,  0.2f,  0.0f,  0.2f,  0.2f };
 		float barrel_ys[6]  = { 1.0f,  0.8f,  0.8f,  1.0f,  0.8f,  1.0f};
+
 		float wasd_ys[6]    = {-0.2f, -0.9f, -0.9f, -0.2f, -0.9f, -0.2f};
 		float enter_xs[6]   = {0.63f, 0.63f, 0.97f, 0.63f, 0.97f, 0.97f};
 		float enter_ys[6]   = { 1.0f,  0.7f,  0.7f,  1.0f,  0.7f,  1.0f};
@@ -56,10 +61,10 @@ struct PngHelper {
 		PngView *png_meter;
 		PngView *png_meters[5];
 
-		PngView *png_barrel1;
+		/*PngView *png_barrel1;
 		PngView *png_barrel2;
-		PngView *png_barrel3;
-		PngView *png_barrels[3];
+		PngView *png_barrel3;*/
+		PngView *png_barrels[6];
 
 		PngView *png_wasd;
 		PngView *png_reset;
