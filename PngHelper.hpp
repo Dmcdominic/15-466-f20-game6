@@ -61,9 +61,6 @@ struct PngHelper {
 		PngView *png_meter;
 		PngView *png_meters[5];
 
-		/*PngView *png_barrel1;
-		PngView *png_barrel2;
-		PngView *png_barrel3;*/
 		PngView *png_barrels[6];
 
 		PngView *png_wasd;
