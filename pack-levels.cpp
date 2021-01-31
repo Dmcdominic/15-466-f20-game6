@@ -28,13 +28,15 @@ int main(int argc, char **argv) {
 
         PackedGrid grid;
 
-        grid.width = level_sequence[i].grid_size.x;
-        grid.height = level_sequence[i].grid_size.y;
+        /*grid.width = level_sequence[i].grid_size.x;
+        grid.height = level_sequence[i].grid_size.y;*/
         grid.goal = level_sequence[i].goal;
         grid.data_start = (unsigned int) obj_ids.size(); 
 
         //save bg 
         load_png(data_path(level_filename_full + "_bg.png"), &level_sequence[i].grid_size, &data, LowerLeftOrigin);
+        grid.width = level_sequence[i].grid_size.x;
+        grid.height = level_sequence[i].grid_size.y;
 
         for(unsigned int y = 0; y < grid.height; y++) {
             for(unsigned int x = 0; x < grid.width; x++) {
@@ -56,11 +58,19 @@ int main(int argc, char **argv) {
         }
 
         //save sky
-        load_png(data_path(level_filename_full + "_sky.png"), &level_sequence[i].grid_size, &data, LowerLeftOrigin);
+        // If there's no _sky.png file, just assume it's all blank
+        std::fstream in;
+        in.open(data_path(level_filename_full + "_sky.png"), std::fstream::in);
+        bool sky_exists = in.good();
+        in.close();
+
+        if (sky_exists) {
+          load_png(data_path(level_filename_full + "_sky.png"), &level_sequence[i].grid_size, &data, LowerLeftOrigin);
+        }
 
         for(unsigned int y = 0; y < grid.height; y++) {
             for(unsigned int x = 0; x < grid.width; x++) {
-                glm::u8vec4 color = data[x + y * grid.width];
+                glm::u8vec4 color = sky_exists ? data[x + y * grid.width] : glm::u8vec4();
                 int id = int(color[0] / 50) + 6 * int(color[1] / 50);
                 obj_ids.push_back(id);
             }

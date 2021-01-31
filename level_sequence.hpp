@@ -10,7 +10,7 @@ struct level {
   glm::uvec2 grid_size;
   unsigned int goal;
 
-  level(std::string _name, glm::uvec2 _grid_size, unsigned int _goal) : name(_name), grid_size(_grid_size), goal(_goal) {};
+  level(std::string _name, unsigned int _goal) : name(_name), grid_size(glm::uvec2()), goal(_goal) {};
 };
 
 
