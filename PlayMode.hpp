@@ -76,8 +76,8 @@ struct PlayMode : Mode {
 	glm::vec3 randomized_offset_range = glm::vec3(1.5f, 1.5f, 2.0f);
 
 	float camera_max_speed = 0.07f;
-	float camera_max_speed_OW = 0.09f;
-	float camera_accel = 0.15f;
+	float camera_max_speed_OW = 0.02f;
+	float camera_accel = 0.12f;
 	glm::vec3 camera_velo = glm::vec3();
 
 	float get_cam_max_speed() {

@@ -372,20 +372,26 @@ void PlayMode::update(float elapsed) {
 	check_level_completion();
 
 	// --- Move camera to follow player ---
+
 	glm::vec3 target_cam_pos = current_grid->player->drawable->transform->position + camera_offset_from_player;
 	glm::vec3 cam_displacement = target_cam_pos - active_camera->transform->position;
 	float dist = glm::length(cam_displacement);
-	float local_max_speed = glm::min(get_cam_max_speed(), dist);
+	float local_max_speed = glm::min(get_cam_max_speed(), dist * dist /	11.0f);
 
+	float dot = glm::dot(camera_velo, cam_displacement);
+	bool wrong_dir = dot < 0.2f * glm::length(camera_velo);
+
+	camera_velo = cam_displacement * glm::min(0.9f, 1.7f * elapsed);
+	active_camera->transform->position += camera_velo;
+
+	// OLD CAMERA LOGIC
+	/*
 	// Update the camera's velocity, and upper bound by local_max_speed
 	camera_velo += cam_displacement * camera_accel * elapsed * dist;
-	if (glm::length(camera_velo) > local_max_speed) {
-		camera_velo = local_max_speed * glm::normalize(camera_velo);
-	}
-
-	// If we're going in the wrong direction, slow it down
-	if (glm::dot(camera_velo, cam_displacement) < 0.2f * glm::length(camera_velo)) {
-		camera_velo *= 0.9f;
+	if (glm::length(camera_velo) > local_max_speed * dist) {
+		if (!wrong_dir) {
+			camera_velo = local_max_speed * glm::normalize(camera_velo);
+		}
 	}
 
 	// Update the camera's position
@@ -393,8 +399,18 @@ void PlayMode::update(float elapsed) {
 		active_camera->transform->position = target_cam_pos;
 		camera_velo = glm::vec3(0.0f);
 	} else {
+		// Project onto the displacement vector (in the direction of the player)
+		dot = glm::dot(camera_velo, cam_displacement);
+		glm::vec3 proj_onto_displ = cam_displacement * dot / dist / dist;
+		// If we're going in the wrong direction, slow it down
+		if (wrong_dir) {
+			camera_velo = proj_onto_displ * 0.5f + camera_velo * 0.3f;
+		} else {
+			camera_velo = proj_onto_displ * 0.3f + camera_velo * 0.7f;
+		}
 		active_camera->transform->position += camera_velo;
 	}
+	*/
 
 	// Update environment score meter
 	pngHelper->update_env_score(environment_score);
