@@ -71,6 +71,8 @@ struct PlayMode : Mode {
 	const float cam_height_OW = 10.0f;
 	const size_t min_grid_width = 4;
 	const size_t max_grid_width = 15;
+
+	glm::vec3 smooth_player_target_for_cam = glm::vec3();
 	glm::vec2 base_cam_offset_from_player = glm::vec2(-0.2f, -2.0f);
 	glm::vec3 camera_offset_from_player = glm::vec3();
 	glm::vec3 randomized_offset_range = glm::vec3(1.5f, 1.5f, 2.0f);
@@ -80,17 +82,11 @@ struct PlayMode : Mode {
 	float camera_accel = 0.12f;
 	glm::vec3 camera_velo = glm::vec3();
 
+	virtual void update_camera(float elapsed);
 	float get_cam_max_speed() {
 		return (is_Overworld()) ? camera_max_speed_OW : camera_max_speed;
 	}
-	glm::vec3 reset_cam_offset_from_player() {
-		float scalar = (std::max(current_grid->width, current_grid->height) - min_grid_width) / (float)(max_grid_width - min_grid_width);
-		float z = min_cam_height + scalar * (max_cam_height - min_cam_height);
-		if (is_Overworld()) z = cam_height_OW;
-		camera_offset_from_player = glm::vec3(base_cam_offset_from_player.x, base_cam_offset_from_player.y, z);
-		float rand_scale = -1.0f + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 2.0f;
-		return camera_offset_from_player + randomized_offset_range * rand_scale;
-	}
+	virtual glm::vec3 reset_cam_offset_from_player();
 	int environment_score;
 	void check_level_completion();
 	bool level_completion = false;

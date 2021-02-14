@@ -14,6 +14,17 @@ void Player::load_models(Scene* scene) {
   this->idle0 = &(scene->drawables.back());
   this->extra_drawables.push_back(idle0);
   idle0->disabled = true;
+
+  // TESTING - display the smooth target
+  /*scene->drawables.push_back(model_loader->create_model("Player_idle0"));
+  this->smooth_target_0 = &(scene->drawables.back());
+  this->extra_drawables.push_back(smooth_target_0);
+  scene->drawables.push_back(model_loader->create_model("Player"));
+  this->smooth_target_1 = &(scene->drawables.back());
+  this->extra_drawables.push_back(smooth_target_1);
+  this->smooth_target_1->disabled = true;
+
+  drawable->disabled = true;*/
 }
 
 
@@ -23,6 +34,8 @@ Player* Player::clone_lightweight(Cell* new_cell) {
   new_player->cell = new_cell;
   new_player->drawable = nullptr;
   new_player->idle0 = nullptr;
+  /*new_player->smooth_target_0 = nullptr;
+  new_player->smooth_target_1 = nullptr;*/
   new_player->extra_drawables.clear();
   next_forced_move = std::nullopt;
   return new_player;
@@ -125,11 +138,15 @@ void Player::on_update() {
       player_state = 1;
       drawable->disabled = false;
       idle0->disabled = true;
+      /*smooth_target_0->disabled = false;
+      smooth_target_1->disabled = true;*/
     }
     else if (player_state == 1) {
       player_state = 0;
       drawable->disabled = true;
       idle0->disabled = false;
+      /*smooth_target_1->disabled = false;
+      smooth_target_0->disabled = true;*/
     }
   }
 }

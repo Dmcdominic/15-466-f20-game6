@@ -16,6 +16,9 @@ struct Player : FgObj {
 	size_t idle_counter = 0;
 	bool player_state = false;
 
+	/*Scene::Drawable *smooth_target_0 = nullptr;
+	Scene::Drawable* smooth_target_1 = nullptr;*/
+
 	// Constructors (inherited)
 	using FgObj::FgObj;
 
