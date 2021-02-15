@@ -78,7 +78,7 @@ struct PlayMode : Mode {
 	glm::vec3 randomized_offset_range = glm::vec3(1.5f, 1.5f, 2.0f);
 
 	float camera_max_speed = 0.07f;
-	float camera_max_speed_OW = 0.02f;
+	float camera_max_speed_OW = 0.04f;
 	float camera_accel = 0.12f;
 	glm::vec3 camera_velo = glm::vec3();
 
@@ -86,7 +86,7 @@ struct PlayMode : Mode {
 	float get_cam_max_speed() {
 		return (is_Overworld()) ? camera_max_speed_OW : camera_max_speed;
 	}
-	virtual glm::vec3 reset_cam_offset_from_player();
+	virtual void reset_cam_offset_from_player();
 	int environment_score;
 	void check_level_completion();
 	bool level_completion = false;

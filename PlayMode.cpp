@@ -502,9 +502,7 @@ void PlayMode::load_level(uint8_t level_index) {
 	if (!resetting) {
 		clear_undo_stack();
 	}
-	glm::vec3 offset = reset_cam_offset_from_player();
-	active_camera->transform->position = current_grid->player->drawable->transform->position + offset;
-	camera_velo = glm::vec3();
+	reset_cam_offset_from_player();
 }
 
 
@@ -575,20 +573,22 @@ void PlayMode::save_game() {
 
 // Updates the camera
 void PlayMode::update_camera(float elapsed) {
+	if (menu->current_sNode != nullptr) return;
+
+	// NEW CAMERA LOGIC
 	// Move the smooth player target for camera
 	glm::vec3 smooth_target_target = current_grid->player->drawable->transform->position;
 
 	glm::vec3 target_displacement = smooth_target_target - smooth_player_target_for_cam;
-	glm::vec3 target_velo = target_displacement * 5.5f * glm::min(0.9f, 1.7f * elapsed);
+	glm::vec3 target_velo = target_displacement * 4.5f * glm::min(0.9f, 1.7f * elapsed);
 	smooth_player_target_for_cam += target_velo;
 
 	// FOR TESTING
-	/*current_grid->player->smooth_target_0->transform->position = smooth_player_target_for_cam;
-	current_grid->player->smooth_target_1->transform->position = smooth_player_target_for_cam;*/
+	//current_grid->player->smooth_target_0->transform->position = smooth_player_target_for_cam;
+	//current_grid->player->smooth_target_1->transform->position = smooth_player_target_for_cam;
 
 	// Move the camera itself
 	glm::vec3 target_cam_pos = smooth_player_target_for_cam + camera_offset_from_player;
-
 	glm::vec3 cam_displacement = target_cam_pos - active_camera->transform->position;
 
 	camera_velo = cam_displacement * glm::min(0.9f, 1.7f * elapsed);
@@ -596,6 +596,17 @@ void PlayMode::update_camera(float elapsed) {
 
 	// OLD CAMERA LOGIC
 	/*
+	glm::vec3 target_cam_pos = current_grid->player->drawable->transform->position + camera_offset_from_player;
+	glm::vec3 cam_displacement = target_cam_pos - active_camera->transform->position;
+	float dist = glm::length(cam_displacement);
+	float local_max_speed = glm::min(get_cam_max_speed(), dist /	11.0f);
+
+	float dot = glm::dot(camera_velo, cam_displacement);
+	bool wrong_dir = dot < 0.2f * glm::length(camera_velo);
+
+	//camera_velo = cam_displacement * glm::min(0.9f, 1.7f * elapsed);
+	//active_camera->transform->position += camera_velo;
+	
 	// Update the camera's velocity, and upper bound by local_max_speed
 	camera_velo += cam_displacement * camera_accel * elapsed * dist;
 	if (glm::length(camera_velo) > local_max_speed * dist) {
@@ -625,12 +636,17 @@ void PlayMode::update_camera(float elapsed) {
 
 
 // Resets the camera offset from the player
-glm::vec3 PlayMode::reset_cam_offset_from_player() {
-	smooth_player_target_for_cam = current_grid->player->drawable->transform->position;
+void PlayMode::reset_cam_offset_from_player() {
+	//smooth_player_target_for_cam = current_grid->player->drawable->transform->position;
 	float scalar = (std::max(current_grid->width, current_grid->height) - min_grid_width) / (float)(max_grid_width - min_grid_width);
 	float z = min_cam_height + scalar * (max_cam_height - min_cam_height);
 	if (is_Overworld()) z = cam_height_OW;
 	camera_offset_from_player = glm::vec3(base_cam_offset_from_player.x, base_cam_offset_from_player.y, z);
 	float rand_scale = -1.0f + static_cast<float>(rand()) / static_cast<float>(RAND_MAX) * 2.0f;
-	return camera_offset_from_player + randomized_offset_range * rand_scale;
+
+	glm::vec3 offset = camera_offset_from_player + randomized_offset_range * rand_scale;
+
+	active_camera->transform->position = current_grid->player->drawable->transform->position + offset;
+	smooth_player_target_for_cam = active_camera->transform->position;
+	camera_velo = glm::vec3();
 }

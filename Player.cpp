@@ -16,15 +16,19 @@ void Player::load_models(Scene* scene) {
   idle0->disabled = true;
 
   // TESTING - display the smooth target
-  /*scene->drawables.push_back(model_loader->create_model("Player_idle0"));
+  /*
+  //scene->drawables.push_back(model_loader->create_model("Player_idle0"));
+  scene->drawables.push_back(model_loader->create_model("Rock"));
   this->smooth_target_0 = &(scene->drawables.back());
   this->extra_drawables.push_back(smooth_target_0);
-  scene->drawables.push_back(model_loader->create_model("Player"));
+  //scene->drawables.push_back(model_loader->create_model("Player"));
+  scene->drawables.push_back(model_loader->create_model("Rock"));
   this->smooth_target_1 = &(scene->drawables.back());
   this->extra_drawables.push_back(smooth_target_1);
   this->smooth_target_1->disabled = true;
 
-  drawable->disabled = true;*/
+  drawable->disabled = true;
+  */
 }
 
 
