@@ -64,7 +64,7 @@ struct PlayMode : Mode {
 	Scene::Camera *cloud_camera = nullptr;
 
 	//Cloud Cover for loading
-	CloudCover *cloud_cover = nullptr; 
+	CloudCover *cloud_cover = nullptr;
 
 	const float min_cam_height = 7.5f;
 	const float max_cam_height = 11.0f;
@@ -75,17 +75,9 @@ struct PlayMode : Mode {
 	glm::vec3 smooth_player_target_for_cam = glm::vec3();
 	glm::vec2 base_cam_offset_from_player = glm::vec2(-0.2f, -2.0f);
 	glm::vec3 camera_offset_from_player = glm::vec3();
-	glm::vec3 randomized_offset_range = glm::vec3(1.5f, 1.5f, 2.0f);
-
-	float camera_max_speed = 0.07f;
-	float camera_max_speed_OW = 0.04f;
-	float camera_accel = 0.12f;
-	glm::vec3 camera_velo = glm::vec3();
+	glm::vec3 randomized_offset_range = glm::vec3(1.9f, 1.9f, 2.5f);
 
 	virtual void update_camera(float elapsed);
-	float get_cam_max_speed() {
-		return (is_Overworld()) ? camera_max_speed_OW : camera_max_speed;
-	}
 	virtual void reset_cam_offset_from_player();
 	int environment_score;
 	void check_level_completion();
