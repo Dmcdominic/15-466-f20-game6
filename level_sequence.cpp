@@ -12,15 +12,15 @@ std::vector<level> level_sequence = std::vector<level>({
     level("RockTut", 1),
     level("RockRev", 1),
     level("RockNRoll", 5),
-    level("RockRiverTut", 1),
+    level("RockRiverTut", 1), // TODO - this could be simplified to make you try the rock -> river thing
     // TODO - rock river level(s)
     level("TurnstileTut", 1),
-    // TODO - turnstile levels (sequence of turnstiles in zig zag)
+    level("TurnstileCircle", 1),
     level("ParityTutNoRock", 1),
-    // TODO - Parity (no rock) levels
+    level("TurnstileScramble", 1),
+    level("RiverTParity", 1),
     level("ParityTut", 1),
-    // TODO - Parity WITH rock levels
-    level("LongRocks", 1),
+    level("LongRocks", 1), // TODO - Make this require rock parity (rather than no-rock parity)?
     level("2", 1),
     level("4", 1),
     level("5", 3),
